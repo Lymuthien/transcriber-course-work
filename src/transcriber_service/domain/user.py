@@ -13,7 +13,9 @@ class User(object):
     Should not be instantiated directly - use AuthUser or Admin subclasses.
     """
 
-    def __init__(self, email: str, password: str):
+    def __init__(self,
+                 email: str,
+                 password: str):
         """
         Create User instance with validated credentials.
 
@@ -61,7 +63,8 @@ class User(object):
     def last_updated(self) -> datetime:
         return self.__last_updated
 
-    def verify_password(self, password: str) -> bool:
+    def verify_password(self,
+                        password: str) -> bool:
         """
         Verify if provided password matches stored hash.
 
@@ -70,7 +73,9 @@ class User(object):
         """
         return self.__password_hash == self.__hash_password(password)
 
-    def change_password(self, current_password: str, new_password: str) -> bool:
+    def change_password(self,
+                        current_password: str,
+                        new_password: str) -> bool:
         if self.verify_password(current_password):
             self.__password_hash = self.__hash_password(new_password)
             return True
@@ -86,7 +91,9 @@ class AuthUser(User):
     Should be used for all registered non-admin users.
     """
 
-    def __init__(self, email: str, password: str):
+    def __init__(self,
+                 email: str,
+                 password: str):
         super().__init__(email, password)
         self._role = "user"
 
@@ -99,6 +106,8 @@ class Admin(AuthUser):
     Should be instantiated only through proper admin creation process.
     """
 
-    def __init__(self, email: str, password: str):
+    def __init__(self,
+                 email: str,
+                 password: str):
         super().__init__(email, password)
         self._role = "admin"
