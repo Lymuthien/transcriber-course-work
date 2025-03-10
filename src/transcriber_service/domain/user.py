@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 import hashlib
 from email_validator import validate_email
@@ -21,8 +22,10 @@ class User(object):
         :raises InvalidEmailException: If email is not valid.
         """
         self.__email = self.__validated_normalized_email(email)
-        self.__id = uuid4()
+        self.__id = uuid4().hex
         self.__password_hash = self.__hash_password(password)
+        self.__registration_date = datetime.now()
+        self.__last_updated = self.__registration_date
         self._role = "guest"
 
     @staticmethod
@@ -49,6 +52,14 @@ class User(object):
     @property
     def role(self) -> str:
         return self._role
+
+    @property
+    def registration_date(self) -> datetime:
+        return self.__registration_date
+
+    @property
+    def last_updated(self) -> datetime:
+        return self.__last_updated
 
     def verify_password(self, password: str) -> bool:
         """
