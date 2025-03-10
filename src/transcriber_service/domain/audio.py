@@ -1,39 +1,32 @@
 from datetime import datetime
 from uuid import uuid4
 
+from ..services.processing import ITranscribeProcessor
+
 
 class AudioRecord(object):
-    """
-    Represents an audio record entity with metadata and transcription capabilities.
-    Performs transcription of audio files into text during initialization.
-    """
-
-    def __init__(self, file_name: str, content: bytes, file_path: str, storage_id: str):
+    def __init__(self,
+                 file_name: str,
+                 content: bytes,
+                 file_path: str,
+                 storage_id: str,
+                 transcribe_processor: ITranscribeProcessor):
         """
-        Create AudioRecord instance with basic metadata and do transcription into text.
+        Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
 
         :param file_name: Name of audio file.
         :param content: Content of audio file (mp3).
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
+        :param transcribe_processor: Instance of transcribe_processor.
         """
+
         self.__id = uuid4().hex
         self.__record_name = file_name
         self.__file_path = file_path
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
-        self.__text = self._transcribe(content)
-
-    @staticmethod
-    def _transcribe(content: bytes = None) -> str:
-        """
-        Placeholder for audio transcription functionality.
-        Use whisper model to transcribe audio file into text.
-
-        :param content: Audio bytes to transcribe (not currently processed).
-        :return: Transcription text.
-        """
-        return ""
+        self.__text = transcribe_processor.transcribe_audio(content)
 
     @property
     def id(self) -> str:
@@ -45,7 +38,8 @@ class AudioRecord(object):
         return self.__record_name
 
     @record_name.setter
-    def record_name(self, note_name: str):
+    def record_name(self,
+                    note_name: str):
         """Sets the display name for the audio record."""
         self.__record_name = note_name
 
@@ -68,7 +62,8 @@ class AudioRecord(object):
 class Tag(object):
     """Represents a named tag with a UUID."""
 
-    def __init__(self, tag_name: str):
+    def __init__(self,
+                 tag_name: str):
         self.__id = uuid4().hex
         self.__tag_name = tag_name
 
@@ -84,7 +79,9 @@ class Tag(object):
 class RecordTag(object):
     """Establishes many-to-many relationship between AudioRecords and Tags."""
 
-    def __init__(self, tag_id: str, record_id: str):
+    def __init__(self,
+                 tag_id: str,
+                 record_id: str):
         """Creates a relationship between specific Tag and AudioRecord with their id."""
         self.__tag_id = tag_id
         self.__record_id = record_id
