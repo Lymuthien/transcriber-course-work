@@ -30,7 +30,7 @@ class AudioRecord(object):
 
     @property
     def id(self) -> str:
-        return str(self.__id)
+        return self.__id
 
     @property
     def record_name(self) -> str:
@@ -69,7 +69,7 @@ class Tag(object):
 
     @property
     def id(self) -> str:
-        return str(self.__id)
+        return self.__id
 
     @property
     def tag_name(self) -> str:

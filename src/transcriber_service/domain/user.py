@@ -45,7 +45,7 @@ class User(object):
 
     @property
     def id(self) -> str:
-        return str(self.__id)
+        return self.__id
 
     @property
     def email(self) -> str:
