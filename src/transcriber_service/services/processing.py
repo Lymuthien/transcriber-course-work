@@ -30,7 +30,7 @@ class WhisperProcessor(ITranscribeProcessor):
         Uses whisper model to transcribe audio file.
         It is the main function of the class.
 
-        :param content: Audio bytes to transcribe.
+        :param content: Audio bytes to transcribe (mp3 format).
         :return: Transcribed text.
         """
         pass
