@@ -1,6 +1,7 @@
 from typing import List
 
-from ..domain import Storage
+from .processing import ITranscribeProcessor
+from ..domain import Storage, AudioRecord
 
 
 class StorageService:
@@ -9,7 +10,8 @@ class StorageService:
     def __init__(self):
         self.__storages = []
 
-    def create_storage(self, user_id: str) -> Storage:
+    def create_storage(self,
+                       user_id: str) -> Storage:
         """Creates a new storage container for a user."""
         storage = Storage(user_id)
         self.__storages.append(storage)
@@ -18,3 +20,9 @@ class StorageService:
     @property
     def storages(self) -> List[Storage]:
         return self.__storages.copy()
+
+    def get_storage(self,
+                    user_id: str) -> Storage | None:
+        for storage in self.__storages:
+            if storage.user_id == user_id:
+                return storage
