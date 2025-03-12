@@ -1,7 +1,6 @@
 from typing import List
 
-from .processing import ITranscribeProcessor
-from ..domain import Storage, AudioRecord
+from ..domain import Storage
 
 
 class StorageService:
