@@ -27,6 +27,7 @@ class AudioRecord(object):
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
         self.__text = transcribe_processor.transcribe_audio(content)
+        self.__tags = []
 
     @property
     def id(self) -> str:
@@ -35,6 +36,17 @@ class AudioRecord(object):
     @property
     def text(self) -> str:
         return self.__text
+
+    @property
+    def tags(self) -> list:
+        return self.__tags.copy()
+
+    def add_tag(self, tag_name: str) -> None:
+        if tag_name not in self.__tags:
+            self.__tags.append(tag_name)
+
+    def remove_tag(self, tag_name: str) -> None:
+        self.__tags.remove(tag_name)
 
     @property
     def record_name(self) -> str:
@@ -66,40 +78,3 @@ class AudioRecord(object):
         """Timestamp of last modification in UTC."""
 
         return self.__last_updated
-
-
-class Tag(object):
-    """Represents a named tag with a UUID."""
-
-    def __init__(self,
-                 tag_name: str):
-        self.__id = uuid4().hex
-        self.__tag_name = tag_name
-
-    @property
-    def id(self) -> str:
-        return self.__id
-
-    @property
-    def name(self) -> str:
-        return self.__tag_name
-
-
-class RecordTag(object):
-    """Establishes many-to-many relationship between AudioRecords and Tags."""
-
-    def __init__(self,
-                 tag_id: str,
-                 record_id: str):
-        """Creates a relationship between specific Tag and AudioRecord with their id."""
-
-        self.__tag_id = tag_id
-        self.__record_id = record_id
-
-    @property
-    def tag_id(self) -> str:
-        return self.__tag_id
-
-    @property
-    def record_id(self) -> str:
-        return self.__record_id
