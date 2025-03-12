@@ -72,7 +72,7 @@ class Tag(object):
         return self.__id
 
     @property
-    def tag_name(self) -> str:
+    def name(self) -> str:
         return self.__tag_name
 
 
