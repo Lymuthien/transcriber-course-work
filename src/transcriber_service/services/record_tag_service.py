@@ -1,7 +1,7 @@
 from ..domain import Tag, RecordTag, TagException
 
 
-class TagService(object):
+class RecordTagService(object):
     """
     Manages tagging operations and relationships between tags and audio records.
 
