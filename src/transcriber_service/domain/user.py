@@ -23,6 +23,7 @@ class User(object):
         :param password: Plain-text password to be hashed.
         :raises InvalidEmailException: If email is not valid.
         """
+
         self.__email = self.__validated_normalized_email(email)
         self.__id = uuid4().hex
         self.__password_hash = self.__hash_password(password)
@@ -33,11 +34,13 @@ class User(object):
     @staticmethod
     def __hash_password(password: str) -> str:
         """Generate secure hash from plain text password."""
+
         return hashlib.sha256(password.encode()).hexdigest()
 
     @staticmethod
     def __validated_normalized_email(email: str) -> str:
         """Validate email format and return normalized version."""
+
         try:
             return validate_email(email).normalized
         except Exception as e:
@@ -71,6 +74,7 @@ class User(object):
         :param password: Plain-text password to be verified.
         :return: True if password matches stored hash, False otherwise.
         """
+
         return self.__password_hash == self.__hash_password(password)
 
     def change_password(self,

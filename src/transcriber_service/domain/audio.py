@@ -35,27 +35,32 @@ class AudioRecord(object):
     @property
     def record_name(self) -> str:
         """Display name for the audio record."""
+
         return self.__record_name
 
     @record_name.setter
     def record_name(self,
                     note_name: str):
         """Sets the display name for the audio record."""
+
         self.__record_name = note_name
 
     @property
     def file_path(self) -> str:
         """Absolute filesystem path to the audio file."""
+
         return self.__file_path
 
     @property
     def storage_id(self) -> str:
         """Identifier of associated storage container."""
+
         return self.__storage_id
 
     @property
     def last_updated(self) -> datetime:
         """Timestamp of last modification in UTC."""
+
         return self.__last_updated
 
 
@@ -83,6 +88,7 @@ class RecordTag(object):
                  tag_id: str,
                  record_id: str):
         """Creates a relationship between specific Tag and AudioRecord with their id."""
+
         self.__tag_id = tag_id
         self.__record_id = record_id
 

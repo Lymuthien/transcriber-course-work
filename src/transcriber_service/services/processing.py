@@ -11,6 +11,7 @@ class ITranscribeProcessor(ABC):
         :param content: Audio bytes to transcribe.
         :return: Transcribed text.
         """
+
         pass
 
 
@@ -21,6 +22,7 @@ class WhisperProcessor(ITranscribeProcessor):
 
         :param model_size: Whisper model size (default 'base').
         """
+
         pass
 
     def transcribe_audio(self,
@@ -33,4 +35,5 @@ class WhisperProcessor(ITranscribeProcessor):
         :param content: Audio bytes to transcribe (mp3 format).
         :return: Transcribed text.
         """
+
         pass

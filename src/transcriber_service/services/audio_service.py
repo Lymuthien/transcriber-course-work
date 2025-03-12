@@ -31,6 +31,7 @@ class AudioService:
 
         Note: The audio record will be automatically added to the service's internal storage
         """
+
         audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor)
         self.__audio_records.append(audio)
         return audio
@@ -38,6 +39,7 @@ class AudioService:
     @property
     def audio_records(self) -> list:
         """Gets all stored audio records."""
+
         return self.__audio_records
 
     def get_records(self, storage_id: str) -> tuple | None:
@@ -47,6 +49,7 @@ class AudioService:
         :param storage_id: Storage id of audio file.
         :return: Tuple of audio records if it is found else None.
         """
+
         return tuple(record for record in self.__audio_records if record.storage_id == storage_id)
 
 

@@ -82,21 +82,25 @@ class TagService(object):
 
     def _find_tag_id(self, tag_name: str) -> str | None:
         """Finds tag ID by name (case-insensitive search)."""
+
         for tag in self.__tags:
             if tag.name == tag_name.lower():
                 return tag.id
 
     def _find_records(self, tag_id: str):
         """Generator yielding record IDs associated with a tag ID."""
+
         return (record_tag.record_id for record_tag in self.__record_tags if record_tag.tag_id == tag_id)
 
     def _create_tag_id(self, tag_name: str) -> str:
         """Creates new tag and returns its ID."""
+
         self.__tags.append(Tag(tag_name.lower()))
         return self.__tags[-1].id
 
     def _find_tag_record(self, tag_id: str, record_id) -> RecordTag | None:
         """Finds specific tag-record association."""
+
         for record_tag in self.__record_tags:
             if record_tag.tag_id == tag_id and record_tag.record_id == record_id:
                 return record_tag

@@ -12,6 +12,7 @@ class StorageService:
     def create_storage(self,
                        user_id: str) -> Storage:
         """Creates a new storage container for a user."""
+
         storage = Storage(user_id)
         self.__storages.append(storage)
         return storage

@@ -8,6 +8,7 @@ class Storage:
 
         :param user_id: The user's ID (only one user for storage).
         """
+
         self.__id = uuid4().hex
         self.__user_id = user_id
 
