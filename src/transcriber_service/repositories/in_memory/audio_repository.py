@@ -12,15 +12,15 @@ class InMemoryAudioRepository(IAudioRepository):
 
     def add(self, record: AudioRecord) -> None:
         if record.id in self._records:
-            raise ValueError("Record already exists")
+            raise ValueError('Record already exists.')
         self._records[record.id] = record
 
     def update(self, record: AudioRecord) -> None:
         if record.id not in self._records:
-            raise ValueError("Record not found")
+            raise ValueError('Record not found.')
         self._records[record.id] = record
 
     def delete(self, record_id: str) -> None:
         if record_id not in self._records:
-            raise ValueError("Record not found")
+            raise ValueError('Record not found.')
         del self._records[record_id]
