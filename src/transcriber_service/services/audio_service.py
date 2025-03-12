@@ -1,5 +1,5 @@
 from .processing import ITranscribeProcessor
-from ..domain import AudioRecord, Tag, RecordTag, TagExistsException
+from ..domain import AudioRecord, Tag, RecordTag, TagException
 
 
 class AudioService:
@@ -9,6 +9,7 @@ class AudioService:
     Provides functionality to create, store, and retrieve audio records with optional
     transcription processing.
     """
+
     def __init__(self):
         self.__audio_records = []
 
@@ -57,31 +58,51 @@ class TagService(object):
     def get_tag(self, tag_id: str):
         pass
 
-    def add_tag_to_record(self, tag_name: str, record_id: str):
-        tag_id, create_flag = self._find_tag_id_or_create(tag_name)
+    def add_tag_to_record(self, tag_name: str, record_id: str) -> None:
+        tag_id = self._find_tag_id(tag_name)
 
-        if not create_flag:
-            if self._check_if_tag_record_exists(tag_id, record_id):
-                raise TagExistsException('Tag already exists.')
+        if tag_id is not None:
+            if self._find_tag_record(tag_id, record_id):
+                raise TagException('Tag already exists.')
+        else:
+            tag_id = self._create_tag_id(tag_name)
 
         self.__record_tags.append(RecordTag(tag_id, record_id))
 
-    def _find_tag_id_or_create(self, tag_name: str) -> tuple[str, bool]:
-        create_flag = False
-        tag_id = None
-
-        for tag in self.__tags:
-            if tag.name == tag_name:
-                tag_id = tag.id
+    def remove_tag_from_record(self, tag_name: str, record_id: str) -> None:
+        tag_id = self._find_tag_id(tag_name)
         if not tag_id:
-            self.__tags.append(Tag(tag_name))
-            tag_id = self.__tags[-1].id
-            create_flag = True
+            raise TagException('Tag not found.')
 
-        return tag_id, create_flag
+        record_tag = self._find_tag_record(tag_id, record_id)
+        if not record_tag:
+            raise TagException('There is no audio record with that tag.')
 
-    def _check_if_tag_record_exists(self, tag_id: str, record_id) -> bool:
+        self.__record_tags.remove(record_tag)
+
+    def find_records_by_tag(self, tag_name: str):
+        tag_id = self._find_tag_id(tag_name)
+        if not tag_id:
+            raise TagException('Tag not found.')
+
+        return tuple(self._find_records(tag_id))
+
+    def find_tags_by_record(self, record_id: str) -> tuple:
+        return tuple(record_tag.tag_id for record_tag in self.__record_tags if record_tag.record_id == record_id)
+
+    def _find_tag_id(self, tag_name: str) -> str | None:
+        for tag in self.__tags:
+            if tag.name == tag_name.lower():
+                return tag.id
+
+    def _find_records(self, tag_id: str):
+        return (record_tag.record_id for record_tag in self.__record_tags if record_tag.tag_id == tag_id)
+
+    def _create_tag_id(self, tag_name: str) -> str:
+        self.__tags.append(Tag(tag_name.lower()))
+        return self.__tags[-1].id
+
+    def _find_tag_record(self, tag_id: str, record_id) -> RecordTag | None:
         for record_tag in self.__record_tags:
             if record_tag.tag_id == tag_id and record_tag.record_id == record_id:
-                return True
-        return False
+                return record_tag
