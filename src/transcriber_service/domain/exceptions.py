@@ -3,3 +3,6 @@ class InvalidEmailException(Exception):
 
 class AuthException(Exception):
     pass
+
+class TagExistsException(Exception):
+    pass
