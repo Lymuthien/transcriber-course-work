@@ -2,6 +2,6 @@ from .auth import AuthService
 from .storage_service import StorageService
 from .processing import WhisperProcessor
 from .audio_service import AudioService
-from .tag_service import TagService
+from .record_tag_service import RecordTagService
 
-__all__ = ['WhisperProcessor', 'AuthService', 'StorageService', 'AudioService', 'TagService']
+__all__ = ['WhisperProcessor', 'AuthService', 'StorageService', 'AudioService', 'RecordTagService']

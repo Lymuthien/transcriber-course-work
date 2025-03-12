@@ -33,6 +33,10 @@ class AudioRecord(object):
         return self.__id
 
     @property
+    def text(self) -> str:
+        return self.__text
+
+    @property
     def record_name(self) -> str:
         """Display name for the audio record."""
 
