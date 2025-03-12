@@ -2,6 +2,8 @@ from datetime import datetime
 from uuid import uuid4
 import hashlib
 from email_validator import validate_email
+
+from . import AuthException
 from .exceptions import InvalidEmailException
 
 
@@ -79,12 +81,12 @@ class User(object):
 
     def change_password(self,
                         current_password: str,
-                        new_password: str) -> bool:
-        if self.verify_password(current_password):
-            self.__password_hash = self.__hash_password(new_password)
-            return True
-        else:
-            return False
+                        new_password: str) -> None:
+        if not self.verify_password(current_password):
+            raise AuthException('Invalid current password')
+
+        self.__password_hash = self.__hash_password(new_password)
+        self.__last_updated = datetime.now()
 
 
 class AuthUser(User):

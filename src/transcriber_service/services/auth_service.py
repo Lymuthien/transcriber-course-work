@@ -32,3 +32,14 @@ class AuthService:
         if not user or not user.verify_password(password):
             raise AuthException("Invalid credentials")
         return user
+
+    def change_password(self, email: str, current_password: str, new_password: str) -> None:
+        user = self.__user_repo.get_by_email(email)
+        if not user:
+            raise AuthException("User not found")
+
+        try:
+            user.change_password(current_password, new_password)
+            self.__user_repo.update(user)
+        except AuthException:
+            raise
