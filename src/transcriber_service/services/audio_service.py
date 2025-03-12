@@ -35,12 +35,6 @@ class AudioService:
         self.__audio_repo.add(audio)
         return audio
 
-    # @property
-    # def audio_records(self) -> list:
-    #     """Gets all stored audio records."""
-    #
-    #     return self.__audio_records
-
     def get_records(self, storage_id: str) -> tuple | None:
         """
         Retrieves audio record by its storage container ID.
@@ -51,4 +45,21 @@ class AudioService:
 
         return self.__audio_repo.get_by_storage(storage_id)
 
+    def add_tag_to_record(self, record_id: str, tag: str) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
+        if record:
+            record.add_tag(tag)
+            self.__audio_repo.update(record)
+        else:
+            raise KeyError('Record not found')
 
+    def remove_tag_from_record(self, record_id: str, tag: str) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
+        if record:
+            try:
+                record.remove_tag(tag)
+                self.__audio_repo.update(record)
+            except ValueError:
+                pass
+        else:
+            raise KeyError('Record not found')

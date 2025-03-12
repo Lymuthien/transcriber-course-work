@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from ..interfaces.iaudio_repository import IAudioRepository
 from ..interfaces.istorage_repository import IStorageRepository
 from ...domain.audio import AudioRecord
@@ -11,6 +11,9 @@ class InMemoryAudioRepository(IAudioRepository):
 
     def get_by_storage(self, storage_id: str) -> tuple[AudioRecord, ...]:
         return tuple(r for r in self.__records.values() if r.storage_id == storage_id)
+
+    def get_by_id(self, record_id: str) -> Optional[AudioRecord]:
+        return self.__records.get(record_id)
 
     def add(self, record: AudioRecord) -> None:
         if record.id in self.__records:
