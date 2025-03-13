@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 from ...domain.user import User
 
 
 class IUserRepository(ABC):
     @abstractmethod
-    def get_by_id(self, user_id: str) -> Optional[User]: ...
+    def get_by_id(self, user_id: str) -> User | None: ...
 
     @abstractmethod
-    def get_by_email(self, email: str) -> Optional[User]: ...
+    def get_by_email(self, email: str) -> User | None: ...
 
     @abstractmethod
     def add(self, user: User) -> None: ...

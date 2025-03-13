@@ -2,9 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 import hashlib
 from email_validator import validate_email
-
-from . import AuthException
-from .exceptions import InvalidEmailException
+from .exceptions import InvalidEmailException, AuthException
 
 
 class User(object):

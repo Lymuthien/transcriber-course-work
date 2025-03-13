@@ -1,16 +1,15 @@
-from typing import Dict, Optional
 from ..interfaces.iuser_repository import IUserRepository
 from ...domain.user import User
 
 
 class InMemoryUserRepository(IUserRepository):
     def __init__(self):
-        self._users: Dict[str, User] = {}
+        self._users: dict[str, User] = {}
 
-    def get_by_id(self, user_id: str) -> Optional[User]:
+    def get_by_id(self, user_id: str) -> User | None:
         return self._users.get(user_id)
 
-    def get_by_email(self, email: str) -> Optional[User]:
+    def get_by_email(self, email: str) -> User | None:
         return next((u for u in self._users.values() if u.email == email), None)
 
     def add(self, user: User) -> None:

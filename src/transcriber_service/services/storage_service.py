@@ -1,4 +1,3 @@
-from typing import Optional
 from ..repositories import IStorageRepository
 from ..domain import Storage
 
@@ -16,5 +15,5 @@ class StorageService:
         self.__storage_repository.add(storage)
         return storage
 
-    def get_user_storage(self, user_id: str) -> Optional[Storage]:
+    def get_user_storage(self, user_id: str) -> Storage | None:
         return self.__storage_repository.get_by_user(user_id)
