@@ -10,7 +10,9 @@ class AudioRecord(object):
                  content: bytes,
                  file_path: str,
                  storage_id: str,
-                 transcribe_processor: ITranscribeProcessor):
+                 transcribe_processor: ITranscribeProcessor,
+                 language: str = None,
+                 main_theme: str = None):
         """
         Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
 
@@ -19,6 +21,8 @@ class AudioRecord(object):
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
         :param transcribe_processor: Instance of transcribe_processor.
+        :param language: Language of audio file (defaults None).
+        :param main_theme: Main theme of audio file (defaults None).
         """
 
         self.__id = uuid4().hex
@@ -26,7 +30,8 @@ class AudioRecord(object):
         self.__file_path = file_path
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
-        self.__text = transcribe_processor.transcribe_audio(content)
+        self.__language = language
+        self.__text = transcribe_processor.transcribe_audio(content, language, main_theme)
         self.__tags = []
 
     @property
@@ -36,6 +41,10 @@ class AudioRecord(object):
     @property
     def text(self) -> str:
         return self.__text
+
+    @property
+    def language(self) -> str:
+        return self.__language
 
     @property
     def tags(self) -> list:

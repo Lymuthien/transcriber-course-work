@@ -19,7 +19,9 @@ class AudioService:
                      content: bytes,
                      file_path: str,
                      storage_id: str,
-                     transcribe_processor: ITranscribeProcessor
+                     transcribe_processor: ITranscribeProcessor,
+                     language: str = None,
+                     main_theme: str = None,
                      ) -> AudioRecord:
         """
         Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
@@ -29,9 +31,11 @@ class AudioService:
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
         :param transcribe_processor: Instance of transcribe_processor.
+        :param language: Language of audio file (defaults None).
+        :param main_theme: Main theme of audio file (defaults None).
         """
 
-        audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor)
+        audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor, language, main_theme)
         self.__audio_repo.add(audio)
         return audio
 
