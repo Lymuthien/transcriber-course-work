@@ -39,8 +39,8 @@ class AudioRecord(object):
         return self.__id
 
     @property
-    def text(self) -> str:
-        return self.__text
+    def text(self) -> list:
+        return self.__text.copy()
 
     @property
     def language(self) -> str:
