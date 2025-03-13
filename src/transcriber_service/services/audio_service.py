@@ -1,6 +1,7 @@
 from .processing import ITranscribeProcessor
 from ..domain import AudioRecord
 from ..repositories import IAudioRepository
+from .export.text_exporter import TextExporter
 
 
 class AudioService:
@@ -13,6 +14,7 @@ class AudioService:
 
     def __init__(self, repo: IAudioRepository):
         self.__audio_repo = repo
+        self.__exporter = TextExporter()
 
     def create_audio(self,
                      file_name: str,
@@ -39,7 +41,8 @@ class AudioService:
         self.__audio_repo.add(audio)
         return audio
 
-    def get_records(self, storage_id: str) -> tuple | None:
+    def get_records(self,
+                    storage_id: str) -> tuple | None:
         """
         Retrieves audio record by its storage container ID.
 
@@ -49,7 +52,9 @@ class AudioService:
 
         return self.__audio_repo.get_by_storage(storage_id)
 
-    def add_tag_to_record(self, record_id: str, tag: str) -> None:
+    def add_tag_to_record(self,
+                          record_id: str,
+                          tag: str) -> None:
         record = self.__audio_repo.get_by_id(record_id)
         if record:
             record.add_tag(tag)
@@ -57,7 +62,9 @@ class AudioService:
         else:
             raise KeyError('Record not found')
 
-    def remove_tag_from_record(self, record_id: str, tag: str) -> None:
+    def remove_tag_from_record(self,
+                               record_id: str,
+                               tag: str) -> None:
         record = self.__audio_repo.get_by_id(record_id)
         if record:
             try:
@@ -68,9 +75,23 @@ class AudioService:
         else:
             raise KeyError('Record not found')
 
-    def change_record_name(self, record_id: str, name: str) -> None:
+    def change_record_name(self,
+                           record_id: str,
+                           name: str) -> None:
         record = self.__audio_repo.get_by_id(record_id)
 
         record.record_name = name
         self.__audio_repo.update(record)
+
+    def export_record_text(self,
+                           record_id: str,
+                           output_dir: str,
+                           file_format: str) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
+        if not record:
+            raise ValueError("Audio record not found")
+
+        self.__exporter.export_text(''.join(record.text), output_dir, record.record_name, file_format)
+        # Do something with punctuation and spaces. After transcribe.
+
 
