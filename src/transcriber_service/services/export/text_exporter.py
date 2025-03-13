@@ -1,4 +1,3 @@
-from pathlib import Path
 from .formats.docx_exporter import DocxExporter
 from .formats.iexporter import IExporter
 
