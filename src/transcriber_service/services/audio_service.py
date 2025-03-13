@@ -63,3 +63,10 @@ class AudioService:
                 pass
         else:
             raise KeyError('Record not found')
+
+    def change_record_name(self, record_id: str, name: str) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
+
+        record.record_name = name
+        self.__audio_repo.update(record)
+

@@ -26,6 +26,12 @@ class InMemoryAudioRepository(IAudioRepository):
 
         return tuple(record for record in records if matches(record))
 
+    def search_by_name(self, storage_id: str, name: str) -> tuple[AudioRecord, ...]:
+        records = self.get_by_storage(storage_id)
+        name = name.lower()
+
+        return tuple(record for record in records if record.record_name.lower() == name)
+
     def add(self, record: AudioRecord) -> None:
         if record.id in self.__records:
             raise ValueError('Record already exists.')
