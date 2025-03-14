@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from ..services.processing import ITranscribeProcessor
+from ..services.transcribe_processor import ITranscribeProcessor
 
 
 class AudioRecord(object):

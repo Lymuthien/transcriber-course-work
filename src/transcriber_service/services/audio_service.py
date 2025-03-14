@@ -1,4 +1,4 @@
-from .processing import ITranscribeProcessor
+from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
 from ..repositories import IAudioRepository
 from .export.text_exporter import TextExporter
