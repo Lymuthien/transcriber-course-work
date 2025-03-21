@@ -24,12 +24,21 @@ class User(object):
         :raises InvalidEmailException: If email is not valid.
         """
 
-        self.__email = self.__validated_normalized_email(email)
-        self.__id = uuid4().hex
-        self.__password_hash = self.__hash_password(password)
-        self.__registration_date = datetime.now()
-        self.__last_updated = self.__registration_date
+        self.__email: str = self.__validated_normalized_email(email)
+        self.__id: str = uuid4().hex
+        self.__password_hash: str = self.__hash_password(password)
+        self.__registration_date: datetime = datetime.now()
+        self.__last_updated: datetime = self.__registration_date
+        self.__is_blocked: bool = False
         self._role = "guest"
+
+    @property
+    def is_blocked(self):
+        return self.__is_blocked
+
+    @is_blocked.setter
+    def is_blocked(self, is_blocked: bool):
+        self.__is_blocked = is_blocked
 
     @staticmethod
     def __hash_password(password: str) -> str:
@@ -115,3 +124,4 @@ class Admin(AuthUser):
                  password: str):
         super().__init__(email, password)
         self._role = "admin"
+

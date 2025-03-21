@@ -21,3 +21,8 @@ class InMemoryUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users[user.id] = user
+
+    def delete(self, user: User) -> None:
+        if user.id not in self._users:
+            raise ValueError("User not found")
+        self._users.pop(user.id)
