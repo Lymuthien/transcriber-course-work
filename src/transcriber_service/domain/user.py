@@ -1,8 +1,8 @@
 from datetime import datetime
 from uuid import uuid4
-import hashlib
 from email_validator import validate_email
 from .exceptions import InvalidEmailException, AuthException
+from ..services import PasswordManager
 
 
 class User(object):
@@ -26,7 +26,8 @@ class User(object):
 
         self.__email: str = self.__validated_normalized_email(email)
         self.__id: str = uuid4().hex
-        self.__password_hash: str = self.__hash_password(password)
+        self.__password_hash: str = PasswordManager.hash_password(password)
+        self.__temp_password_hash: str | None = None
         self.__registration_date: datetime = datetime.now()
         self.__last_updated: datetime = self.__registration_date
         self.__is_blocked: bool = False
@@ -39,12 +40,6 @@ class User(object):
     @is_blocked.setter
     def is_blocked(self, is_blocked: bool):
         self.__is_blocked = is_blocked
-
-    @staticmethod
-    def __hash_password(password: str) -> str:
-        """Generate secure hash from plain text password."""
-
-        return hashlib.sha256(password.encode()).hexdigest()
 
     @staticmethod
     def __validated_normalized_email(email: str) -> str:
@@ -83,8 +78,10 @@ class User(object):
         :param password: Plain-text password to be verified.
         :return: True if password matches stored hash, False otherwise.
         """
+        if self.__temp_password_hash == PasswordManager.hash_password(password):
+            self.__password_hash = self.__temp_password_hash
 
-        return self.__password_hash == self.__hash_password(password)
+        return self.__password_hash == PasswordManager.hash_password(password)
 
     def change_password(self,
                         current_password: str,
@@ -92,8 +89,13 @@ class User(object):
         if not self.verify_password(current_password):
             raise AuthException('Invalid current password')
 
-        self.__password_hash = self.__hash_password(new_password)
+        self.__password_hash = PasswordManager.hash_password(new_password)
         self.__last_updated = datetime.now()
+
+    def generate_temp_password(self) -> str:
+        temp_password = PasswordManager.create_password()
+        self.__temp_password_hash = PasswordManager.hash_password(temp_password)
+        return temp_password
 
 
 class AuthUser(User):
@@ -124,4 +126,3 @@ class Admin(AuthUser):
                  password: str):
         super().__init__(email, password)
         self._role = "admin"
-

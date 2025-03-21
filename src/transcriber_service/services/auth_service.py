@@ -3,6 +3,7 @@ from password_strength import PasswordPolicy
 from ..domain import AuthUser, AuthException, Admin, User
 from ..repositories import IUserRepository
 from .storage_service import StorageService
+from .email_service import EmailService
 
 
 class AuthService:
@@ -76,11 +77,16 @@ class AuthService:
         if not user:
             raise AuthException('User not found')
 
-        if self.__policy.test(new_password):
-            raise AuthException('Password is weak')
+        errors = self.__policy.test(new_password)
+        if errors:
+            raise AuthException(f'Password is weak: {errors}')
 
-        try:
-            user.change_password(current_password, new_password)
-            self.__user_repo.update(user)
-        except AuthException:
-            raise
+        user.change_password(current_password, new_password)
+        self.__user_repo.update(user)
+
+    def recover_password(self, email: str) -> None:
+        user = self.__user_repo.get_by_email(email)
+        if not user:
+            raise AuthException('User not found')
+
+        EmailService().send_recovery_email(user.email, user.generate_temp_password())
