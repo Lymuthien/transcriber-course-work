@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 from email_validator import validate_email
 from .exceptions import InvalidEmailException, AuthException
-from ..services import PasswordManager
+from .password_manager import PasswordManager
 
 
 class User(object):
