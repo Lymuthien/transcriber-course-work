@@ -1,13 +1,20 @@
 from typing import Dict, Optional
+from .local_file_manager import LocalFileManager
 from ..interfaces.iaudio_repository import IAudioRepository
 from ..interfaces.istorage_repository import IStorageRepository
 from ...domain.audio import AudioRecord
 
 
 class InMemoryAudioRepository(IAudioRepository):
-    def __init__(self, storage_repository: IStorageRepository) -> None:
+    def __init__(self, storage_repository: IStorageRepository, data_dir: str) -> None:
         self.__records: Dict[str, AudioRecord] = {}
         self.__storage_repository = storage_repository
+        self.__dir = data_dir
+
+        try:
+            self.__records = LocalFileManager.load(self.__dir)
+        except:
+            pass
 
     def get_by_storage(self, storage_id: str) -> tuple[AudioRecord, ...]:
         return tuple(r for r in self.__records.values() if r.storage_id == storage_id)
@@ -42,11 +49,13 @@ class InMemoryAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         self.__records[record.id] = record
+        LocalFileManager.save(self.__records, self.__dir)
 
     def update(self, record: AudioRecord) -> None:
         if record.id not in self.__records:
             raise ValueError('Record not found.')
         self.__records[record.id] = record
+        LocalFileManager.save(self.__records, self.__dir)
 
     def delete(self, record_id: str) -> None:
         record = self.__records.get(record_id)
@@ -59,3 +68,4 @@ class InMemoryAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         del self.__records[record_id]
+        LocalFileManager.save(self.__records, self.__dir)
