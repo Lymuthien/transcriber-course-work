@@ -102,3 +102,10 @@ class AudioService:
         record = self.__audio_repo.get_by_id(record_id)
 
         record.text = self.__stopwords_remover.remove_parasite_words(record.text, remove_swear_words)
+
+    def remove_words(self,
+                     record_id: str,
+                     words: list | tuple) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
+
+        record.text = self.__stopwords_remover.remove_words(record.text, words)
