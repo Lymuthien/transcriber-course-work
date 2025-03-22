@@ -1,11 +1,11 @@
+from .export.text_exporter import TextExporter
 from .natasha_stopwords_remover import NatashaStopwordsRemover
 from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
 from ..repositories import IAudioRepository
-from .export.text_exporter import TextExporter
 
 
-class AudioService:
+class AudioService(object):
     """
     Service class for managing audio records and their lifecycle operations.
 
@@ -37,6 +37,7 @@ class AudioService:
         :param transcribe_processor: Instance of transcribe_processor.
         :param language: Language of audio file (defaults None).
         :param main_theme: Main theme of audio file (defaults None).
+        :return: Created Audio Record.
         """
 
         audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor, language, main_theme)
@@ -57,16 +58,32 @@ class AudioService:
     def add_tag_to_record(self,
                           record_id: str,
                           tag: str) -> None:
+        """
+        Add tag to record by its ID.
+
+        :param record_id: ID of audio record.
+        :param tag: Name of tag to add.
+        :raise ValueError: If tag is not found.
+        """
+
         record = self.__audio_repo.get_by_id(record_id)
         if record:
             record.add_tag(tag)
             self.__audio_repo.update(record)
         else:
-            raise KeyError('Record not found')
+            raise ValueError('Record not found')
 
     def remove_tag_from_record(self,
                                record_id: str,
                                tag: str) -> None:
+        """
+        Remove tag from record by its ID and tag name.
+
+        :param record_id: ID of audio record.
+        :param tag: Name of tag to remove.
+        :raise ValueError: If tag is not found.
+        """
+
         record = self.__audio_repo.get_by_id(record_id)
         if record:
             try:
@@ -75,11 +92,13 @@ class AudioService:
             except ValueError:
                 pass
         else:
-            raise KeyError('Record not found')
+            raise ValueError('Record not found')
 
     def change_record_name(self,
                            record_id: str,
                            name: str) -> None:
+        """Change name of record by its ID."""
+
         record = self.__audio_repo.get_by_id(record_id)
 
         record.record_name = name
@@ -89,9 +108,18 @@ class AudioService:
                            record_id: str,
                            output_dir: str,
                            file_format: str) -> None:
+        """
+        Export text of audio record by its ID.
+
+        :param record_id: ID of audio record.
+        :param output_dir: Target directory of exported text (without file name).
+        :param file_format: Format to export.
+        :raise ValueError: If record is not found.
+        """
+
         record = self.__audio_repo.get_by_id(record_id)
         if not record:
-            raise ValueError("Audio record not found")
+            raise ValueError('Audio record not found')
 
         self.__exporter.export_text(''.join(record.text), output_dir, record.record_name, file_format)
         # Do something with punctuation and spaces. After transcribe.
@@ -99,13 +127,45 @@ class AudioService:
     def remove_stopwords(self,
                          record_id: str,
                          remove_swear_words: bool = True) -> None:
+        """
+        Remove stopwords from audio record by its ID.
+
+        Only records with russian language supports removing.
+        :param record_id: ID of audio record.
+        :param remove_swear_words: True if swear words should be removed.
+        :raise ValueError:
+            If record is not found.
+            If language is not supported.
+        """
+
         record = self.__audio_repo.get_by_id(record_id)
+
+        if not record:
+            raise ValueError('Audio record not found')
+        if record.language != 'ru' or record.language != 'russian':
+            raise ValueError(f'Unsupported language: {record.language}')
 
         record.text = self.__stopwords_remover.remove_parasite_words(record.text, remove_swear_words)
 
     def remove_words(self,
                      record_id: str,
                      words: list | tuple) -> None:
+        """
+        Remove words from audio record by its ID with given words.
+
+        Only records with russian language supports removing.
+        :param record_id: ID of audio record.
+        :param words: List or tuple of removing words.
+        :raise ValueError:
+            If record is not found.
+            If language is not supported.
+        """
+
         record = self.__audio_repo.get_by_id(record_id)
+
+        if not record:
+            raise ValueError('Audio record not found')
+        if record.language != 'ru' or record.language != 'russian':
+            raise ValueError(f'Unsupported language: {record.language}')
 
         record.text = self.__stopwords_remover.remove_words(record.text, words)

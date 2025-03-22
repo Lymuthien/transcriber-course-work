@@ -17,4 +17,6 @@ class StorageService(IStorageService):
         return storage
 
     def get_user_storage(self, user_id: str) -> Storage | None:
+        """Returns storage by user id if it exists else None."""
+
         return self.__storage_repository.get_by_user(user_id)

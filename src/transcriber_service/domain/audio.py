@@ -33,37 +33,52 @@ class AudioRecord(object):
         self.__language = language
         self.__text: str = transcribe_processor.transcribe_audio(content, language, main_theme)
         self.__tags = []
+        # language must be returned from transcribe processor
 
     @property
     def id(self) -> str:
+        """Return ID of audio record."""
+
         return self.__id
 
     @property
     def text(self) -> str:
+        """Return text of audio record."""
+
         return self.__text
 
     @text.setter
     def text(self, value: str) -> None:
+        """Set text for audio record."""
+
         self.__text = value
 
     @property
     def language(self) -> str:
+        """Return language of audio file."""
+
         return self.__language
 
     @property
     def tags(self) -> list:
+        """Return tags of audio record."""
+
         return self.__tags.copy()
 
     def add_tag(self, tag_name: str) -> None:
+        """Add tag to audio record. Saved in lower case."""
+
         if tag_name not in self.__tags:
-            self.__tags.append(tag_name)
+            self.__tags.append(tag_name.lower())
 
     def remove_tag(self, tag_name: str) -> None:
-        self.__tags.remove(tag_name)
+        """Remove tag from audio record."""
+
+        self.__tags.remove(tag_name.lower())
 
     @property
     def record_name(self) -> str:
-        """Display name for the audio record."""
+        """Return name for the audio record."""
 
         return self.__record_name
 

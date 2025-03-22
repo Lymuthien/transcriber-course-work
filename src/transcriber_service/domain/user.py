@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import uuid4
+
 from email_validator import validate_email
+
 from .exceptions import InvalidEmailException, AuthException
 from .password_manager import PasswordManager
 
@@ -34,12 +36,17 @@ class User(object):
         self._role = "guest"
 
     @property
-    def is_blocked(self):
+    def is_blocked(self) -> bool:
+        """Returns True if the user is blocked else False."""
+
         return self.__is_blocked
 
     @is_blocked.setter
     def is_blocked(self, is_blocked: bool):
+        """Sets the blocked state of the user."""
+
         self.__is_blocked = is_blocked
+        self.__last_updated = datetime.now()
 
     @staticmethod
     def __validated_normalized_email(email: str) -> str:
@@ -52,22 +59,32 @@ class User(object):
 
     @property
     def id(self) -> str:
+        """Returns user ID."""
+
         return self.__id
 
     @property
     def email(self) -> str:
+        """Returns user email."""
+
         return self.__email
 
     @property
     def role(self) -> str:
+        """Returns user role."""
+
         return self._role
 
     @property
     def registration_date(self) -> datetime:
+        """Returns user registration date."""
+
         return self.__registration_date
 
     @property
     def last_updated(self) -> datetime:
+        """Returns user last updated date."""
+
         return self.__last_updated
 
     def verify_password(self,
@@ -86,6 +103,14 @@ class User(object):
     def change_password(self,
                         current_password: str,
                         new_password: str) -> None:
+        """
+        Change user password.
+
+        :param current_password: Current user password.
+        :param new_password: New password.
+        :return: None
+        :raise AuthException: if current password does not match.
+        """
         if not self.verify_password(current_password):
             raise AuthException('Invalid current password')
 
@@ -93,6 +118,12 @@ class User(object):
         self.__last_updated = datetime.now()
 
     def generate_temp_password(self) -> str:
+        """
+        Generate temporary password.
+
+        When creating a new once the old one will be invalid.
+        :return: Not hashed temporary password.
+        """
         temp_password = PasswordManager.create_password()
         self.__temp_password_hash = PasswordManager.hash_password(temp_password)
         return temp_password
