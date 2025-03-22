@@ -1,8 +1,9 @@
+from .interfaces import IStorageService
 from ..repositories import IStorageRepository
 from ..domain import Storage
 
 
-class StorageService:
+class StorageService(IStorageService):
     """Manages storage creation and retrieval."""
 
     def __init__(self, storage_repo: IStorageRepository):

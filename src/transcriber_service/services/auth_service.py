@@ -2,12 +2,12 @@ from password_strength import PasswordPolicy
 
 from ..domain import AuthUser, AuthException, Admin, User
 from ..repositories import IUserRepository
-from .storage_service import StorageService
+from .interfaces import IStorageService
 from .email_service import EmailService
 
 
 class AuthService:
-    def __init__(self, repo: IUserRepository, storage_service: StorageService):
+    def __init__(self, repo: IUserRepository, storage_service: IStorageService):
         self.__users = {}
         self.__user_repo: IUserRepository = repo
         self.__storage_service = storage_service
