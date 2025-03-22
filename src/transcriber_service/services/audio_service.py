@@ -1,4 +1,5 @@
 from .export.text_exporter import TextExporter
+from .interfaces import IStopwordsRemover
 from .natasha_stopwords_remover import NatashaStopwordsRemover
 from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
@@ -13,7 +14,7 @@ class AudioService(object):
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository, stopwords_remover: NatashaStopwordsRemover):
+    def __init__(self, repo: IAudioRepository, stopwords_remover: IStopwordsRemover):
         self.__audio_repo = repo
         self.__exporter = TextExporter()
         self.__stopwords_remover = stopwords_remover
