@@ -31,7 +31,7 @@ class AudioRecord(object):
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
         self.__language = language
-        self.__text = transcribe_processor.transcribe_audio(content, language, main_theme)
+        self.__text: str = transcribe_processor.transcribe_audio(content, language, main_theme)
         self.__tags = []
 
     @property
@@ -39,8 +39,12 @@ class AudioRecord(object):
         return self.__id
 
     @property
-    def text(self) -> list:
-        return self.__text.copy()
+    def text(self) -> str:
+        return self.__text
+
+    @text.setter
+    def text(self, value: str) -> None:
+        self.__text = value
 
     @property
     def language(self) -> str:

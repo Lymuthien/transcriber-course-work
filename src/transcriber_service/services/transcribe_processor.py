@@ -6,7 +6,7 @@ class ITranscribeProcessor(ABC):
     def transcribe_audio(self,
                          content: bytes,
                          language: str = None,
-                         main_theme: str = None) -> list:
+                         main_theme: str = None) -> str:
         """
         Transcribe given audio bytes into text.
 
@@ -32,7 +32,7 @@ class WhisperProcessor(ITranscribeProcessor):
     def transcribe_audio(self,
                          content: bytes,
                          language: str = None,
-                         main_theme: str = None) -> list:
+                         main_theme: str = None) -> str:
         """
         Transcribe given audio bytes into text.
         Uses whisper model to transcribe audio file.

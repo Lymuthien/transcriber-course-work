@@ -1,3 +1,4 @@
+from .natasha_stopwords_remover import NatashaStopwordsRemover
 from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
 from ..repositories import IAudioRepository
@@ -12,9 +13,10 @@ class AudioService:
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository):
+    def __init__(self, repo: IAudioRepository, stopwords_remover: NatashaStopwordsRemover):
         self.__audio_repo = repo
         self.__exporter = TextExporter()
+        self.__stopwords_remover = stopwords_remover
 
     def create_audio(self,
                      file_name: str,
@@ -94,4 +96,9 @@ class AudioService:
         self.__exporter.export_text(''.join(record.text), output_dir, record.record_name, file_format)
         # Do something with punctuation and spaces. After transcribe.
 
+    def remove_stopwords(self,
+                         record_id: str,
+                         remove_swear_words: bool = True) -> None:
+        record = self.__audio_repo.get_by_id(record_id)
 
+        record.text = self.__stopwords_remover.remove_parasite_words(record.text, remove_swear_words)
