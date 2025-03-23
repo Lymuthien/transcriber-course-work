@@ -1,9 +1,9 @@
 from password_strength import PasswordPolicy
 
 from .email_service import EmailService
-from .interfaces import IStorageService
+from ..interfaces.istorage_service import IStorageService
 from ..domain import AuthUser, AuthException, Admin, User
-from ..repositories import IUserRepository
+from ..interfaces.iuser_repository import IUserRepository
 
 
 class AuthService(object):

@@ -1,10 +1,10 @@
 from os.path import exists
-from typing import Dict, Optional
+from typing import Dict
 
-from .local_file_manager import LocalFileManager
-from ..interfaces.iaudio_repository import IAudioRepository
-from ..interfaces.istorage_repository import IStorageRepository
-from ...domain.audio import AudioRecord
+from .local_file_manager import LocalPickleFileManager
+from ...interfaces.iaudio_repository import IAudioRepository
+from ...interfaces.istorage_repository import IStorageRepository
+from ...domain import AudioRecord
 
 
 class LocalAudioRepository(IAudioRepository):
@@ -21,7 +21,7 @@ class LocalAudioRepository(IAudioRepository):
         self.__dir = data_dir
 
         if exists(self.__dir):
-            self.__records = LocalFileManager.load(self.__dir)
+            self.__records = LocalPickleFileManager.load(self.__dir)
 
     def get_by_storage(self, storage_id: str) -> tuple[AudioRecord, ...]:
         """Return list of audio records by storage id."""
@@ -84,7 +84,7 @@ class LocalAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         self.__records[record.id] = record
-        LocalFileManager.save(self.__records, self.__dir)
+        LocalPickleFileManager.save(self.__records, self.__dir)
 
     def update(self, record: AudioRecord) -> None:
         """
@@ -97,7 +97,7 @@ class LocalAudioRepository(IAudioRepository):
         if record.id not in self.__records:
             raise ValueError('Record not found.')
         self.__records[record.id] = record
-        LocalFileManager.save(self.__records, self.__dir)
+        LocalPickleFileManager.save(self.__records, self.__dir)
 
     def delete(self, record_id: str) -> None:
         """
@@ -117,4 +117,4 @@ class LocalAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         del self.__records[record_id]
-        LocalFileManager.save(self.__records, self.__dir)
+        LocalPickleFileManager.save(self.__records, self.__dir)

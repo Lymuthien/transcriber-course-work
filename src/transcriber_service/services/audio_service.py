@@ -1,9 +1,8 @@
 from .export.text_exporter import TextExporter
-from .interfaces import IStopwordsRemover
-from .natasha_stopwords_remover import NatashaStopwordsRemover
-from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
-from ..repositories import IAudioRepository
+from ..interfaces.iaudio_repository import IAudioRepository
+from ..interfaces.istopwords_remover import IStopwordsRemover
+from ..interfaces.itranscribe_processor import ITranscribeProcessor
 
 
 class AudioService(object):
@@ -14,17 +13,20 @@ class AudioService(object):
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository, stopwords_remover: IStopwordsRemover):
+    def __init__(self,
+                 repo: IAudioRepository,
+                 stopwords_remover: IStopwordsRemover,
+                 transcribe_processor: ITranscribeProcessor):
         self.__audio_repo = repo
         self.__exporter = TextExporter()
         self.__stopwords_remover = stopwords_remover
+        self.__transcribe_processor = transcribe_processor
 
     def create_audio(self,
                      file_name: str,
                      content: bytes,
                      file_path: str,
                      storage_id: str,
-                     transcribe_processor: ITranscribeProcessor,
                      language: str = None,
                      main_theme: str = None,
                      ) -> AudioRecord:
@@ -35,13 +37,13 @@ class AudioService(object):
         :param content: Content of audio file (mp3).
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
-        :param transcribe_processor: Instance of transcribe_processor.
         :param language: Language of audio file (defaults None).
         :param main_theme: Main theme of audio file (defaults None).
         :return: Created Audio Record.
         """
 
-        audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor, language, main_theme)
+        audio = AudioRecord(file_name, content, file_path, storage_id, self.__transcribe_processor, language,
+                            main_theme)
         self.__audio_repo.add(audio)
         return audio
 

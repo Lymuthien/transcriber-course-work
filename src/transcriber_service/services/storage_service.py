@@ -1,5 +1,5 @@
-from .interfaces import IStorageService
-from ..repositories import IStorageRepository
+from ..interfaces.istorage_repository import IStorageRepository
+from ..interfaces.istorage_service import IStorageService
 from ..domain import Storage
 
 

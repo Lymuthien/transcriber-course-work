@@ -7,7 +7,7 @@ from natasha import (
     Doc
 )
 
-from .interfaces import IStopwordsRemover
+from ..interfaces.istopwords_remover import IStopwordsRemover
 
 
 class NatashaStopwordsRemover(IStopwordsRemover):

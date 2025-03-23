@@ -1,10 +1,11 @@
 from datetime import datetime
 from uuid import uuid4
 
-from ..services.transcribe_processor import ITranscribeProcessor
+from ..interfaces.itranscribe_processor import ITranscribeProcessor
+from ..interfaces.iaudio_record import IAudioRecord
 
 
-class AudioRecord(object):
+class AudioRecord(IAudioRecord):
     def __init__(self,
                  file_name: str,
                  content: bytes,

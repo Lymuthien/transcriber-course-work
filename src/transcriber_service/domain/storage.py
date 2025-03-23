@@ -1,7 +1,8 @@
 from uuid import uuid4
+from ..interfaces.istorage import IStorage
 
 
-class Storage(object):
+class Storage(IStorage):
     def __init__(self, user_id: str):
         """
         Represents a user's personal storage container for audio records.
