@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from email_validator import validate_email
 
-from .exceptions import InvalidEmailException, AuthException
+from .exceptions import AuthException
 from .password_manager import PasswordManager
 
 
@@ -23,10 +23,10 @@ class User(object):
 
         :param email: User's email address.
         :param password: Plain-text password to be hashed.
-        :raises InvalidEmailException: If email is not valid.
+        :raises: If email is not valid.
         """
 
-        self.__email: str = self.__validated_normalized_email(email)
+        self.__email: str = validate_email(email).normalized
         self.__id: str = uuid4().hex
         self.__password_hash: str = PasswordManager.hash_password(password)
         self.__temp_password_hash: str | None = None
@@ -47,15 +47,6 @@ class User(object):
 
         self.__is_blocked = is_blocked
         self.__last_updated = datetime.now()
-
-    @staticmethod
-    def __validated_normalized_email(email: str) -> str:
-        """Validate email format and return normalized version."""
-
-        try:
-            return validate_email(email).normalized
-        except Exception as e:
-            raise InvalidEmailException(str(e))
 
     @property
     def id(self) -> str:

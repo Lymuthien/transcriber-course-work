@@ -16,7 +16,7 @@ class WhisperProcessor(ITranscribeProcessor):
     def transcribe_audio(self,
                          content: bytes,
                          language: str = None,
-                         main_theme: str = None) -> str:
+                         main_theme: str = None) -> tuple[str, str]:
         """
         Transcribe given audio bytes into text.
         Uses whisper model to transcribe audio file.
@@ -25,7 +25,7 @@ class WhisperProcessor(ITranscribeProcessor):
         :param content: Audio bytes to transcribe (mp3 format).
         :param language: Language of the audio.
         :param main_theme: Main theme of the audio.
-        :return: Transcribed text.
+        :return: Transcribed text and language.
         """
 
-        return 'Пустой вокзал нам шепчет что я стану...'
+        return 'Пустой вокзал нам шепчет что я стану...', 'ru'

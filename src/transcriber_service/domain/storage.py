@@ -45,5 +45,6 @@ class Storage(IStorage):
 
         :param record_id: The audio record ID to remove.
         :return: None
+        :raise ValueError: If record_id is not in the list of audio record IDs.
         """
         self.__audio_record_ids.remove(record_id)
