@@ -1,23 +1,27 @@
 from os.path import exists
 
 from .local_file_manager import LocalPickleFileManager
+from ...interfaces.ifile_manager import IFileManager
 from ...interfaces.iuser_repository import IUserRepository
 from ...domain import User
 
 
 class LocalUserRepository(IUserRepository):
-    def __init__(self, data_dir: str):
+    def __init__(self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager):
         """
         Create local user repository.
 
         :param data_dir: Directory to store local user data.
         """
 
+        self.__file_manager = file_manager
         self._users: dict[str, User] = {}
         self.__dir: str = data_dir
 
-        if exists(self.__dir):
-            self._users = LocalPickleFileManager.load(data_dir)
+        try:
+            self._users = self.__file_manager.load(data_dir)
+        except:
+            pass
 
     def get_by_id(self, user_id: str) -> User | None:
         """Return user by its ID if it exists else None."""
@@ -40,7 +44,7 @@ class LocalUserRepository(IUserRepository):
         if user.id in self._users:
             raise ValueError("User already exists")
         self._users[user.id] = user
-        LocalPickleFileManager.save(self._users, self.__dir)
+        self.__file_manager.save(self._users, self.__dir)
 
     def update(self, user: User) -> None:
         """
@@ -53,7 +57,7 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users[user.id] = user
-        LocalPickleFileManager.save(self._users, self.__dir)
+        self.__file_manager.save(self._users, self.__dir)
 
     def delete(self, user: User) -> None:
         """
@@ -66,4 +70,4 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users.pop(user.id)
-        LocalPickleFileManager.save(self._users, self.__dir)
+        self.__file_manager.save(self._users, self.__dir)
