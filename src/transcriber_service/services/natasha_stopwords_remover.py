@@ -7,7 +7,7 @@ from natasha import (
     Doc
 )
 
-from .interfaces import IStopwordsRemover
+from ..interfaces.istopwords_remover import IStopwordsRemover
 
 
 class NatashaStopwordsRemover(IStopwordsRemover):
@@ -17,7 +17,7 @@ class NatashaStopwordsRemover(IStopwordsRemover):
     """
 
     def __init__(self):
-        self.__stopwords = {'типа', 'короче', 'ну', 'э', 'вообще', 'походу', 'вот', 'блин', }
+        self.__stopwords = {'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм'}
         self.__swear_words = {'бля', 'блять', 'пиздец', 'ахуеть', }
         self._segmenter = Segmenter()
         self._morph_vocab = MorphVocab()
@@ -25,19 +25,21 @@ class NatashaStopwordsRemover(IStopwordsRemover):
         self._morph_tagger = NewsMorphTagger(self._emb)
         self._syntax_parser = NewsSyntaxParser(self._emb)
 
-    def remove_parasite_words(self,
-                              text: str,
-                              remove_swear_words: bool = True) -> str:
+    def remove_stopwords(self,
+                         text: str,
+                         remove_swear_words: bool = True) -> str:
         """
         Remove parasite words from text.
 
         Removing words:
-        'типа', 'короче', 'ну', 'э', 'вообще', 'походу', 'вот', 'блин'
+        'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм'
 
         Swear words:
         'бля', 'блять', 'пиздец', 'ахуеть'
 
         Words removed from text by the context.
+        If some stopwords weren't removed, try remove them one more time. If text haven't changed, it's a final result.
+        Removing of swear words can work incorrect.
 
         :param text: Target text.
         :param remove_swear_words: True to remove swear words.
@@ -61,7 +63,7 @@ class NatashaStopwordsRemover(IStopwordsRemover):
 
             new_paragraphs.append(self._restore_text(new_text))
 
-        return '\n'.join(new_paragraphs)
+        return '\n'.join(new_paragraphs)[1:] if new_paragraphs else ''
 
     def remove_words(self,
                      text: str,
@@ -74,7 +76,7 @@ class NatashaStopwordsRemover(IStopwordsRemover):
         :return: Target text without words.
         """
 
-        removing_words = set(map(lambda s: s.lower(), removing_words))
+        removing_words = set(map(lambda s: s.lower().strip(), removing_words))
         paragraphs = text.split('\n')
         new_paragraphs = []
 
@@ -91,7 +93,7 @@ class NatashaStopwordsRemover(IStopwordsRemover):
 
             new_paragraphs.append(self._restore_text(new_text))
 
-        return '\n'.join(new_paragraphs)
+        return '\n'.join(new_paragraphs)[1:] if new_paragraphs else ''
 
     def _is_stopword(self, all_tokens, target_token, remove_swear_words: bool) -> bool:
         """

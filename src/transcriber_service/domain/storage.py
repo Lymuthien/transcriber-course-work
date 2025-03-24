@@ -1,7 +1,8 @@
 from uuid import uuid4
+from ..interfaces.istorage import IStorage
 
 
-class Storage(object):
+class Storage(IStorage):
     def __init__(self, user_id: str):
         """
         Represents a user's personal storage container for audio records.
@@ -44,5 +45,6 @@ class Storage(object):
 
         :param record_id: The audio record ID to remove.
         :return: None
+        :raise ValueError: If record_id is not in the list of audio record IDs.
         """
         self.__audio_record_ids.remove(record_id)

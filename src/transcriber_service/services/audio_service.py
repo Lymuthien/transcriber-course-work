@@ -1,9 +1,8 @@
 from .export.text_exporter import TextExporter
-from .interfaces import IStopwordsRemover
-from .natasha_stopwords_remover import NatashaStopwordsRemover
-from .transcribe_processor import ITranscribeProcessor
 from ..domain import AudioRecord
-from ..repositories import IAudioRepository
+from ..interfaces.iaudio_repository import IAudioRepository
+from ..interfaces.istopwords_remover import IStopwordsRemover
+from ..interfaces.itranscribe_processor import ITranscribeProcessor
 
 
 class AudioService(object):
@@ -14,17 +13,21 @@ class AudioService(object):
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository, stopwords_remover: IStopwordsRemover):
+    def __init__(self,
+                 repo: IAudioRepository,
+                 stopwords_remover: IStopwordsRemover,
+                 transcribe_processor: ITranscribeProcessor,
+                 exporter: TextExporter = TextExporter()):
         self.__audio_repo = repo
-        self.__exporter = TextExporter()
+        self.__exporter = exporter
         self.__stopwords_remover = stopwords_remover
+        self.__transcribe_processor = transcribe_processor
 
     def create_audio(self,
                      file_name: str,
                      content: bytes,
                      file_path: str,
                      storage_id: str,
-                     transcribe_processor: ITranscribeProcessor,
                      language: str = None,
                      main_theme: str = None,
                      ) -> AudioRecord:
@@ -35,13 +38,13 @@ class AudioService(object):
         :param content: Content of audio file (mp3).
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
-        :param transcribe_processor: Instance of transcribe_processor.
         :param language: Language of audio file (defaults None).
         :param main_theme: Main theme of audio file (defaults None).
         :return: Created Audio Record.
         """
 
-        audio = AudioRecord(file_name, content, file_path, storage_id, transcribe_processor, language, main_theme)
+        audio = AudioRecord(file_name, content, file_path, storage_id, self.__transcribe_processor, language,
+                            main_theme)
         self.__audio_repo.add(audio)
         return audio
 
@@ -122,8 +125,7 @@ class AudioService(object):
         if not record:
             raise ValueError('Audio record not found')
 
-        self.__exporter.export_text(''.join(record.text), output_dir, record.record_name, file_format)
-        # Do something with punctuation and spaces. After transcribe.
+        self.__exporter.export_text(record.text, output_dir, record.record_name, file_format)
 
     def remove_stopwords(self,
                          record_id: str,
@@ -143,10 +145,10 @@ class AudioService(object):
 
         if not record:
             raise ValueError('Audio record not found')
-        if record.language != 'ru' or record.language != 'russian':
+        if record.language.lower() != 'ru' and record.language.lower() != 'russian':
             raise ValueError(f'Unsupported language: {record.language}')
 
-        record.text = self.__stopwords_remover.remove_parasite_words(record.text, remove_swear_words)
+        record.text = self.__stopwords_remover.remove_stopwords(record.text, remove_swear_words)
 
     def remove_words(self,
                      record_id: str,
@@ -166,7 +168,7 @@ class AudioService(object):
 
         if not record:
             raise ValueError('Audio record not found')
-        if record.language != 'ru' or record.language != 'russian':
+        if record.language.lower() != 'ru' and record.language.lower() != 'russian':
             raise ValueError(f'Unsupported language: {record.language}')
 
         record.text = self.__stopwords_remover.remove_words(record.text, words)

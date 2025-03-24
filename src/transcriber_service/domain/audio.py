@@ -1,10 +1,11 @@
 from datetime import datetime
 from uuid import uuid4
 
-from ..services.transcribe_processor import ITranscribeProcessor
+from ..interfaces.itranscribe_processor import ITranscribeProcessor
+from ..interfaces.iaudio_record import IAudioRecord
 
 
-class AudioRecord(object):
+class AudioRecord(IAudioRecord):
     def __init__(self,
                  file_name: str,
                  content: bytes,
@@ -30,10 +31,8 @@ class AudioRecord(object):
         self.__file_path = file_path
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
-        self.__language = language
-        self.__text: str = transcribe_processor.transcribe_audio(content, language, main_theme)
+        self.__text, self.__language  = transcribe_processor.transcribe_audio(content, language, main_theme)
         self.__tags = []
-        # language must be returned from transcribe processor
 
     @property
     def id(self) -> str:
@@ -52,6 +51,7 @@ class AudioRecord(object):
         """Set text for audio record."""
 
         self.__text = value
+        self.__last_updated = datetime.now()
 
     @property
     def language(self) -> str:
@@ -68,13 +68,19 @@ class AudioRecord(object):
     def add_tag(self, tag_name: str) -> None:
         """Add tag to audio record. Saved in lower case."""
 
-        if tag_name not in self.__tags:
+        if tag_name.lower() not in self.__tags:
             self.__tags.append(tag_name.lower())
+            self.__last_updated = datetime.now()
 
     def remove_tag(self, tag_name: str) -> None:
-        """Remove tag from audio record."""
+        """
+        Remove tag from audio record.
+
+        :raise ValueError: If tag does not exist.
+        """
 
         self.__tags.remove(tag_name.lower())
+        self.__last_updated = datetime.now()
 
     @property
     def record_name(self) -> str:
@@ -88,6 +94,7 @@ class AudioRecord(object):
         """Sets the display name for the audio record."""
 
         self.__record_name = note_name
+        self.__last_updated = datetime.now()
 
     @property
     def file_path(self) -> str:

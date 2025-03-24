@@ -17,7 +17,7 @@ class PasswordManager(object):
     @staticmethod
     def create_password() -> str:
         """
-        Create password from random 12 symbols.
+        Create password.
 
         :return: Not hashed password."""
 

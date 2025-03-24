@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ...domain.user import User
+from ..domain import User
 
 
 class IUserRepository(ABC):
