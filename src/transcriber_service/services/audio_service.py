@@ -16,9 +16,10 @@ class AudioService(object):
     def __init__(self,
                  repo: IAudioRepository,
                  stopwords_remover: IStopwordsRemover,
-                 transcribe_processor: ITranscribeProcessor):
+                 transcribe_processor: ITranscribeProcessor,
+                 exporter: TextExporter = TextExporter()):
         self.__audio_repo = repo
-        self.__exporter = TextExporter()
+        self.__exporter = exporter
         self.__stopwords_remover = stopwords_remover
         self.__transcribe_processor = transcribe_processor
 
@@ -124,8 +125,7 @@ class AudioService(object):
         if not record:
             raise ValueError('Audio record not found')
 
-        self.__exporter.export_text(''.join(record.text), output_dir, record.record_name, file_format)
-        # Do something with punctuation and spaces. After transcribe.
+        self.__exporter.export_text(record.text, output_dir, record.record_name, file_format)
 
     def remove_stopwords(self,
                          record_id: str,
@@ -145,10 +145,10 @@ class AudioService(object):
 
         if not record:
             raise ValueError('Audio record not found')
-        if record.language != 'ru' or record.language != 'russian':
+        if record.language.lower() != 'ru' and record.language.lower() != 'russian':
             raise ValueError(f'Unsupported language: {record.language}')
 
-        record.text = self.__stopwords_remover.remove_parasite_words(record.text, remove_swear_words)
+        record.text = self.__stopwords_remover.remove_stopwords(record.text, remove_swear_words)
 
     def remove_words(self,
                      record_id: str,
@@ -168,7 +168,7 @@ class AudioService(object):
 
         if not record:
             raise ValueError('Audio record not found')
-        if record.language != 'ru' or record.language != 'russian':
+        if record.language.lower() != 'ru' and record.language.lower() != 'russian':
             raise ValueError(f'Unsupported language: {record.language}')
 
         record.text = self.__stopwords_remover.remove_words(record.text, words)

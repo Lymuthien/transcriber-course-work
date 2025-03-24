@@ -118,6 +118,8 @@ class AuthService(object):
 
         user = Admin(email, password)
         self.__user_repo.add(user)
+        self.__storage_service.create_storage(user.id)
+
         return user
 
     def login(self, email: str, password: str) -> User:
