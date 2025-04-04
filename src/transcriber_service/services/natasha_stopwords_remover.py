@@ -17,7 +17,8 @@ class NatashaStopwordsRemover(IStopwordsRemover):
     """
 
     def __init__(self):
-        self.__stopwords = {'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм'}
+        self.__stopwords = {'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин',
+                            'эм', 'так'}
         self.__swear_words = {'бля', 'блять', 'пиздец', 'ахуеть', }
         self._segmenter = Segmenter()
         self._morph_vocab = MorphVocab()
@@ -27,41 +28,50 @@ class NatashaStopwordsRemover(IStopwordsRemover):
 
     def remove_stopwords(self,
                          text: str,
-                         remove_swear_words: bool = True) -> str:
+                         remove_swear_words: bool = True,
+                         go_few_times: bool = False) -> str:
         """
         Remove parasite words from text.
 
         Removing words:
-        'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм'
+        'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм', 'так'
 
         Swear words:
         'бля', 'блять', 'пиздец', 'ахуеть'
 
         Words removed from text by the context.
-        If some stopwords weren't removed, try remove them one more time. If text haven't changed, it's a final result.
+        If go_few_times and some stopwords weren't removed, try remove them one more time. If text haven't changed,
+        it's a final result. This flag can delete important words. Be careful.
         Removing of swear words can work incorrect.
 
         :param text: Target text.
         :param remove_swear_words: True to remove swear words.
+        :param go_few_times: True to remove stopwords one more time if text have changed.
         :return: Target text without swear words.
         """
 
         paragraphs = text.split('\n')
         new_paragraphs = []
+        restart_flag = True
 
-        for paragraph in paragraphs:
-            doc = Doc(paragraph)
-            doc.segment(self._segmenter)
-            doc.tag_morph(self._morph_tagger)
-            doc.parse_syntax(self._syntax_parser)
+        while restart_flag:
+            restart_flag = False
 
-            new_text = []
+            for paragraph in paragraphs:
+                doc = Doc(paragraph)
+                doc.segment(self._segmenter)
+                doc.tag_morph(self._morph_tagger)
+                doc.parse_syntax(self._syntax_parser)
 
-            for token in doc.tokens:
-                if not self._is_stopword(doc.tokens, token, remove_swear_words):
-                    new_text.append(token)
+                new_text = []
 
-            new_paragraphs.append(self._restore_text(new_text))
+                for token in doc.tokens:
+                    if not self._is_stopword(doc.tokens, token, remove_swear_words):
+                        new_text.append(token)
+                    elif go_few_times:
+                        restart_flag = True
+
+                new_paragraphs.append(self._restore_text(new_text))
 
         return '\n'.join(new_paragraphs)[1:] if new_paragraphs else ''
 

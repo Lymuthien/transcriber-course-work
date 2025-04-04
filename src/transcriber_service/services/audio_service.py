@@ -129,13 +129,15 @@ class AudioService(object):
 
     def remove_stopwords(self,
                          record_id: str,
-                         remove_swear_words: bool = True) -> None:
+                         remove_swear_words: bool = True,
+                         go_few_times: bool = False) -> None:
         """
         Remove stopwords from audio record by its ID.
 
         Only records with russian language supports removing.
         :param record_id: ID of audio record.
         :param remove_swear_words: True if swear words should be removed.
+        :param go_few_times: True to remove stopwords one more time if text have changed.
         :raise ValueError:
             If record is not found.
             If language is not supported.
