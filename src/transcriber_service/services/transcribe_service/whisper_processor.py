@@ -2,7 +2,9 @@ import whisper
 import numpy as np
 import soundfile as sf
 from io import BytesIO
-from ..interfaces.itranscribe_processor import ITranscribeProcessor
+import librosa
+
+from ...interfaces.itranscribe_processor import ITranscribeProcessor, IVoiceSeparator
 
 
 class WhisperProcessor(ITranscribeProcessor):
@@ -12,6 +14,7 @@ class WhisperProcessor(ITranscribeProcessor):
 
         :param model_size: Whisper model size (e.g., 'base', 'small', 'medium', 'large') (default 'base').
         """
+
         self.model_size = model_size
         self.model = whisper.load_model(model_size)
 
@@ -27,13 +30,13 @@ class WhisperProcessor(ITranscribeProcessor):
         :param main_theme: Main theme of the audio (optional).
         :return: Transcribed text and detected language.
         """
+
         audio_stream = BytesIO(content)
         audio, sr = sf.read(audio_stream)
 
         if len(audio.shape) > 1:
             audio = np.mean(audio, axis=1)
         if sr != 16000:
-            import librosa
             audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
 
         audio = audio.astype(np.float32)

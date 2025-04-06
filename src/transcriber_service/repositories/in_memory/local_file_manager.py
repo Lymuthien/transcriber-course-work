@@ -31,16 +31,18 @@ class LocalPickleFileManager(IFileManager):
 class LocalFileManager(IFileManager):
     @staticmethod
     def save(data,
-             filename: str) -> None:
+             filename: str,
+             binary: bool = True) -> None:
         """Save data to file."""
         file_path = Path(filename)
 
-        with open(file_path, 'wb') as f:
+        with open(file_path, 'wb' if binary else 'w') as f:
             f.write(data)
 
     @staticmethod
-    def load(filename: str):
+    def load(filename: str,
+             binary: bool = True):
         """Load data from file."""
 
-        with open(filename, 'rb') as f:
+        with open(filename, 'rb' if binary else 'r') as f:
             return f.read()
