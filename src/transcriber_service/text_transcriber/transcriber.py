@@ -1,9 +1,11 @@
 from io import BytesIO
 import soundfile as sf
+import time
 
 from .voice_separator import VoiceSeparatorWithPyAnnote
 from .natasha_stopwords_remover import NatashaStopwordsRemover
 from .whisper_processor import WhisperProcessor
+from .faster_whisper_processor import FasterWhisperProcessor
 
 
 class Transcriber(object):
@@ -18,34 +20,39 @@ class Transcriber(object):
     def transcribe(self,
                    content: bytes,
                    language: str | None = None) -> str:
+        start_time = time.time()
         try:
             segments = self._voice_processor.separate_speakers(content)
         except Exception as e:
             raise RuntimeError(f"Error while separating by voices: {e}")
+        end_time = time.time()
+        print(f"Time for voice separation: {end_time - start_time}")
 
-        return segments
+        transcription_results = []
 
-        # transcription_results = []
-        #
-        # for segment in segments:
-        #     start_time = segment["start"]
-        #     end_time = segment["end"]
-        #     speaker = segment["speaker"]
-        #
-        #     segment_audio = self._extract_audio_segment(content, start_time, end_time)
-        #
-        #     try:
-        #         segment_text, detected_language = self._whisper_processor.transcribe_audio(
-        #             content=segment_audio,
-        #             language=language
-        #         )
-        #         transcription_results.append(f"[{speaker}] {segment_text.strip()}")
-        #     except Exception as e:
-        #         raise RuntimeError(f"Error while transcribe segment {speaker}: {e}")
-        #
-        # full_transcription = "\n\n".join(transcription_results)
-        #
-        # return full_transcription
+        start_time1 = time.time()
+        for segment in segments:
+            start_time = segment["start"]
+            end_time = segment["end"]
+            speaker = segment["speaker"]
+
+            segment_audio = self._extract_audio_segment(content, start_time, end_time)
+
+            try:
+                segment_text, detected_language = self._whisper_processor.transcribe_audio(
+                    content=segment_audio,
+                    language=language
+                )
+                transcription_results.append(f"[{speaker}] {segment_text.strip()}")
+            except Exception as e:
+                raise RuntimeError(f"Error while transcribe segment {speaker}: {e}")
+
+        end_time1 = time.time()
+        print(f"Time for transcription: {end_time1 - start_time1}")
+
+        full_transcription = "\n\n".join(transcription_results)
+
+        return full_transcription
 
     def remove_stopwords(self,
                          text: str,
@@ -82,3 +89,7 @@ class Transcriber(object):
         segment_stream = BytesIO()
         sf.write(segment_stream, segment, samplerate=sr, format='WAV')
         return segment_stream.getvalue()
+
+    # TODO: add asyncio or concurrent.futures import ThreadPoolExecutor (use threads)
+
+    # TODO: compare all ways

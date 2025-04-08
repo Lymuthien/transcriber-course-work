@@ -1,11 +1,12 @@
 from copy import deepcopy
+import scipy.signal
 from typing import Any
 from pyannote.audio import Pipeline
 import torch
-import librosa
 import numpy as np
 import soundfile as sf
 from io import BytesIO
+
 from .interfaces import IVoiceSeparator
 
 
@@ -45,7 +46,8 @@ class VoiceSeparatorWithPyAnnote(IVoiceSeparator):
         audio, sr = sf.read(audio_stream)
 
         if sr != 16000:
-            audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
+            number_of_samples = round(len(audio) * float(16000) / sr)
+            audio = scipy.signal.resample(audio, number_of_samples)
 
         if len(audio.shape) > 1:
             audio = np.mean(audio, axis=1)

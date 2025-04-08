@@ -1,22 +1,22 @@
-import whisper
+from faster_whisper import WhisperModel
 import numpy as np
-import scipy.signal
 import soundfile as sf
 from io import BytesIO
+import scipy.signal
 
 from .interfaces import ITranscribeProcessor
 
 
-class WhisperProcessor(ITranscribeProcessor):
+class FasterWhisperProcessor(ITranscribeProcessor):
     def __init__(self, model_size: str = 'base'):
         """
-        Initialize Whisper model.
+        Initialize Faster Whisper model.
 
         :param model_size: Whisper model size (e.g., 'base', 'small', 'medium', 'large') (default 'base').
         """
 
         self.model_size = model_size
-        self.model = whisper.load_model(model_size)
+        self.model = WhisperModel(model_size)
 
     def transcribe_audio(self,
                          content: bytes,
@@ -43,9 +43,10 @@ class WhisperProcessor(ITranscribeProcessor):
         audio = audio.astype(np.float32)
 
         options = {"language": language, }
-        result = whisper.transcribe(self.model, audio, **options)
+        segments, info = self.model.transcribe(audio, **options)
 
-        transcription = result.get('text', '').strip()
-        detected_language = result.get('language', language or 'unknown')
+        transcription = " ".join(segment.text for segment in segments).strip()
+
+        detected_language = info.language if language is None else language
 
         return transcription, detected_language
