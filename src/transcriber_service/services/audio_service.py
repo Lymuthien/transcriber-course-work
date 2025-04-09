@@ -1,8 +1,7 @@
 from .export.text_exporter import TextExporter
 from ..domain import AudioRecord
 from ..interfaces.iaudio_repository import IAudioRepository
-from ..interfaces.istopwords_remover import IStopwordsRemover
-from ..interfaces.itranscribe_processor import ITranscribeProcessor
+from ..text_transcriber.interfaces import ITranscribeProcessor, IStopwordsRemover
 
 
 class AudioService(object):

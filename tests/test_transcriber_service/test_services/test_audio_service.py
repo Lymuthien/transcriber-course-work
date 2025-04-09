@@ -4,8 +4,7 @@ from unittest.mock import MagicMock
 from transcriber_service.domain import AudioRecord
 from transcriber_service.interfaces.iaudio_record import IAudioRecord
 from transcriber_service.interfaces.iaudio_repository import IAudioRepository
-from transcriber_service.interfaces.istopwords_remover import IStopwordsRemover
-from transcriber_service.interfaces.itranscribe_processor import ITranscribeProcessor
+from transcriber_service.text_transcriber.interfaces import ITranscribeProcessor, IStopwordsRemover
 from transcriber_service.services import AudioService
 from transcriber_service.services.export.text_exporter import TextExporter
 

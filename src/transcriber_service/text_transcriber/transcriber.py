@@ -1,6 +1,8 @@
 from io import BytesIO
 import soundfile as sf
 import time
+from multiprocessing import Pool
+
 
 from .voice_separator import VoiceSeparatorWithPyAnnote
 from .natasha_stopwords_remover import NatashaStopwordsRemover
@@ -58,7 +60,11 @@ class Transcriber(object):
                          text: str,
                          remove_swear_words: bool = True,
                          go_few_times: bool = False) -> str:
-        return self._natasha_processor.remove_stopwords(text)
+        return self._natasha_processor.remove_stopwords(
+            text=text,
+            remove_swear_words=remove_swear_words,
+            go_few_times=go_few_times
+        )
 
     def remove_words(self,
                      text: str,
