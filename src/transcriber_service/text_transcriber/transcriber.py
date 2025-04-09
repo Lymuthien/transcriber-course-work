@@ -1,22 +1,26 @@
 from io import BytesIO
 import soundfile as sf
 import time
-from multiprocessing import Pool
 
+# from multiprocessing import Pool
 
-from .voice_separator import VoiceSeparatorWithPyAnnote
-from .natasha_stopwords_remover import NatashaStopwordsRemover
-from .whisper_processor import WhisperProcessor
-from .faster_whisper_processor import FasterWhisperProcessor
+from .models import VoiceSeparatorWithPyAnnote, NatashaStopwordsRemover, WhisperProcessor, FasterWhisperProcessor
+from .builders import TranscribeProcessorDirector, VoiceSeparatorDirector
 
 
 class Transcriber(object):
     def __init__(self,
                  token: str,
                  whisper_model: str = "medium",
-                 speaker_diarization_model: str = "pyannote/speaker-diarization-3.1"):
-        self._whisper_processor = WhisperProcessor(model_size=whisper_model)
-        self._voice_processor = VoiceSeparatorWithPyAnnote(token, model_name=speaker_diarization_model)
+                 speaker_diarization_model: str = "pyannote/speaker-diarization-3.1",
+                 use_faster_whisper: bool = False):
+        whisper_processor = WhisperProcessor(model_size=whisper_model) if not use_faster_whisper else \
+            FasterWhisperProcessor(model_size=whisper_model)
+        self._whisper_director = TranscribeProcessorDirector(whisper_processor)
+
+        voice_processor = VoiceSeparatorWithPyAnnote(token, model_name=speaker_diarization_model)
+        self._voice_sep_director = VoiceSeparatorDirector(voice_processor)
+
         self._natasha_processor = NatashaStopwordsRemover()
 
     def transcribe(self,
@@ -24,7 +28,7 @@ class Transcriber(object):
                    language: str | None = None) -> str:
         start_time = time.time()
         try:
-            segments = self._voice_processor.separate_speakers(content)
+            segments = self._voice_sep_director.separate_speakers(content)
         except Exception as e:
             raise RuntimeError(f"Error while separating by voices: {e}")
         end_time = time.time()
@@ -41,7 +45,7 @@ class Transcriber(object):
             segment_audio = self._extract_audio_segment(content, start_time, end_time)
 
             try:
-                segment_text, detected_language = self._whisper_processor.transcribe_audio(
+                segment_text, detected_language = self._whisper_director.transcribe_audio(
                     content=segment_audio,
                     language=language
                 )

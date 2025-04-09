@@ -1,16 +1,13 @@
 from copy import deepcopy
-import scipy.signal
 from typing import Any
 from pyannote.audio import Pipeline
 import torch
 import numpy as np
-import soundfile as sf
-from io import BytesIO
 
-from .interfaces import IVoiceSeparator
+from ..interfaces import ResamplingVoiceSeparator
 
 
-class VoiceSeparatorWithPyAnnote(IVoiceSeparator):
+class VoiceSeparatorWithPyAnnote(ResamplingVoiceSeparator):
     def __init__(self,
                  token: str,
                  model_name: str = "pyannote/speaker-diarization-3.1"):
@@ -32,25 +29,15 @@ class VoiceSeparatorWithPyAnnote(IVoiceSeparator):
             raise RuntimeError(f"Failed to load PyAnnote pipeline: {e}")
 
     def separate_speakers(self,
-                          content: bytes,
+                          audio: np.ndarray,
                           max_speakers: int = None) -> list[dict]:
         """
         Perform speaker diarization on input audio.
 
-        :param content: Audio bytes (e.g., wav format).
+        :param audio: Audio bytes (e.g., wav format).
         :param max_speakers: Max number of speakers expected in the audio.
         :return: List of segments with speaker information and timestamps.
         """
-
-        audio_stream = BytesIO(content)
-        audio, sr = sf.read(audio_stream)
-
-        if sr != 16000:
-            number_of_samples = round(len(audio) * float(16000) / sr)
-            audio = scipy.signal.resample(audio, number_of_samples)
-
-        if len(audio.shape) > 1:
-            audio = np.mean(audio, axis=1)
 
         audio = audio.astype(np.float32)
 
