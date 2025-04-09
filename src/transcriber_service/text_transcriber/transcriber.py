@@ -2,8 +2,6 @@ from io import BytesIO
 import soundfile as sf
 import time
 
-# from multiprocessing import Pool
-
 from .models import VoiceSeparatorWithPyAnnote, NatashaStopwordsRemover, WhisperProcessor, FasterWhisperProcessor
 from .builders import TranscribeProcessorDirector, VoiceSeparatorDirector
 
@@ -25,10 +23,11 @@ class Transcriber(object):
 
     def transcribe(self,
                    content: bytes,
-                   language: str | None = None) -> str:
+                   language: str | None = None,
+                   max_speakers: str | None = None) -> str:
         start_time = time.time()
         try:
-            segments = self._voice_sep_director.separate_speakers(content)
+            segments = self._voice_sep_director.separate_speakers(content, max_speakers=max_speakers)
         except Exception as e:
             raise RuntimeError(f"Error while separating by voices: {e}")
         end_time = time.time()
@@ -99,7 +98,3 @@ class Transcriber(object):
         segment_stream = BytesIO()
         sf.write(segment_stream, segment, samplerate=sr, format='WAV')
         return segment_stream.getvalue()
-
-    # TODO: add asyncio or concurrent.futures import ThreadPoolExecutor (use threads)
-
-    # TODO: compare all ways

@@ -41,10 +41,14 @@ class VoiceSeparatorWithPyAnnote(ResamplingVoiceSeparator):
 
         audio = audio.astype(np.float32)
 
-        timeline = self._pipeline({
+        pipelane_args = {
             "waveform": torch.tensor(audio).unsqueeze(0),
             "sample_rate": 16000,
-        })
+        }
+        if max_speakers is not None:
+            pipelane_args["max_speakers"] = max_speakers
+
+        timeline = self._pipeline(pipelane_args)
 
         speaker_segments = []
         for speech_segment in timeline.itertracks(yield_label=True):
