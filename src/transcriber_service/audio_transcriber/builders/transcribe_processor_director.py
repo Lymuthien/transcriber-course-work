@@ -4,9 +4,10 @@ Module: transcribe_processor_director
 This module provides the `TranscribeProcessorDirector` class, which coordinates
 audio transcription tasks through a specified `WhisperTranscribeProcessor`.
 
-Classes:
---------
-    - TranscribeProcessorDirector: Responsible for processing audio transcription tasks.
+Classes
+-------
+TranscribeProcessorDirector:
+    Responsible for processing audio transcription tasks.
 """
 
 from ..interfaces import WhisperTranscribeProcessor
@@ -17,15 +18,15 @@ class TranscribeProcessorDirector(object):
     This class directs audio transcription tasks by delegating processing
     responsibilities to a provided `WhisperTranscribeProcessor`.
 
-    Methods:
-    --------
-        set_processor(processor):
-            Sets a new processor for transcription tasks.
-        transcribe_audio(content, language=None, main_theme=None):
-            Processes and transcribes the given audio content.
+    Methods
+    -------
+    set_processor(processor):
+        Sets a new processor for transcription tasks.
+    transcribe_audio(content, language=None, main_theme=None):
+        Processes and transcribes the given audio content.
 
-    Example Usage:
-    --------------
+    Example Usage
+    -------------
     processor = WhisperTranscribeProcessor(...)
     director = TranscribeProcessorDirector(processor)
     transcription, language = director.transcribe_audio(content=b"audio bytes")
@@ -35,23 +36,27 @@ class TranscribeProcessorDirector(object):
         """
         Represents a utility class for handling a processor instance.
 
-        Parameters:
-        -----------
-            processor (WhisperTranscribeProcessor): Internal processor instance
-            utilized for transcription-related tasks.
+        Parameters
+        ----------
+        processor : WhisperTranscribeProcessor
+            Internal processor instance utilized for transcription-related
+            tasks.
         """
         self._processor = processor
 
     def set_processor(self, processor: WhisperTranscribeProcessor) -> None:
         """
-        A method to set the processor instance for the current object. This method allows
-        the assignment or update of the `WhisperTranscribeProcessor` instance for handling
-        specific processing tasks.
+        A method to set the processor instance for the current object.
 
-        Parameters:
-        -----------
-            processor (WhisperTranscribeProcessor): The processor instance to be set.
+        This method allows the assignment or update of the `WhisperTranscribeProcessor`
+        instance for handling specific processing tasks.
+
+        Parameters
+        ----------
+        processor : WhisperTranscribeProcessor
+            The processor instance to be set.
         """
+
         self._processor = processor
 
     def transcribe_audio(self,
@@ -69,15 +74,20 @@ class TranscribeProcessorDirector(object):
 
         To set a new processor, use the `set_processor` method.
 
-        Parameters:
-        -----------
-            content (bytes): The raw audio content to be transcribed.
-            language (str, optional): Language of the audio. If not provided, it will be detected automatically.
-            main_theme (str, optional): A contextual theme or prompt to enhance transcription accuracy.
+        Parameters
+        ----------
+        content : bytes
+            The raw audio content to be transcribed.
+        language : str, optional
+            Language of the audio. If not provided, it will be detected
+            automatically.
+        main_theme : str, optional
+            A contextual theme or prompt to enhance transcription accuracy.
 
-        Returns:
-        --------
-            tuple[str, str]: A tuple containing the transcribed text and the detected language.
+        Returns
+        -------
+        tuple[str, str]:
+            A tuple containing the transcribed text and the detected language.
         """
 
         audio, sr = self._processor.get_audio_stream(content)

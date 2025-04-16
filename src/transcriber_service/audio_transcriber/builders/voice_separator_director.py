@@ -4,9 +4,10 @@ Module: voice_separator_director
 This module defines the `VoiceSeparatorDirector` class, which handles speaker separation
 and diarization tasks using a specified `ResamplingVoiceSeparator`.
 
-Classes:
---------
-    - VoiceSeparatorDirector: Responsible for managing speaker diarization tasks.
+Classes
+-------
+VoiceSeparatorDirector:
+    Responsible for managing speaker diarization tasks.
 """
 
 from ..interfaces import ResamplingVoiceSeparator
@@ -20,15 +21,15 @@ class VoiceSeparatorDirector(object):
     `ResamplingVoiceSeparator`. It is responsible for managing and delegating
     tasks related to processing audio content to isolate different speakers.
 
-    Methods:
-    --------
-        set_separator(separator):
-            Updates the separator instance for handling speaker separation tasks.
-        separate_speakers(content, max_speakers=None):
-            Performs speaker diarization to separate the provided audio content into segments.
+    Methods
+    -------
+    set_separator(separator):
+        Updates the separator instance for handling speaker separation tasks.
+    separate_speakers(content, max_speakers=None):
+        Performs speaker diarization to separate the provided audio content into segments.
 
-    Example Usage:
-    --------------
+    Example Usage
+    -------------
     segmenter = ResamplingVoiceSeparator(...)
     director = VoiceSeparatorDirector(processor)
     segments = director.separate_speakers(content, max_speakers=2)
@@ -38,10 +39,10 @@ class VoiceSeparatorDirector(object):
         """
         Initializes the `VoiceSeparatorDirector` with the specified separator.
 
-        Parameters:
-        -----------
-            separator (ResamplingVoiceSeparator): The separator instance used for handling
-            speaker separation tasks.
+        Parameters
+        ----------
+        separator : ResamplingVoiceSeparator
+            The separator instance used for handling speaker separation tasks.
         """
 
         self._separator = separator
@@ -50,10 +51,10 @@ class VoiceSeparatorDirector(object):
         """
         Updates the separator instance used for speaker separation tasks.
 
-        Parameters:
-        -----------
-            separator (ResamplingVoiceSeparator): The new separator instance to be used for
-            processing speaker isolation.
+        Parameters
+        ----------
+        separator : ResamplingVoiceSeparator
+            The new separator instance to be used for processing speaker isolation.
         """
 
         self._separator = separator
@@ -72,15 +73,19 @@ class VoiceSeparatorDirector(object):
 
         To update the separator instance, use the `set_separator` method.
 
-        Parameters:
-        -----------
-            content (bytes): The raw audio bytes to process.
-            max_speakers (int, optional): A limit for the maximum number of speakers to detect.
-            If not specified, the detection algorithm determines the number of speakers automatically.
+        Parameters
+        ----------
+        content : bytes
+            The raw audio bytes to process.
+        max_speakers : int, optional
+            A limit for the maximum number of speakers to detect. If not
+            specified, the detection algorithm determines the number of
+            speakers automatically.
 
-        Returns:
-        --------
-            list[dict]: A list of dictionaries, each describing a detected speaker segment
+        Returns
+        -------
+        list[dict]:
+            A list of dictionaries, each describing a detected speaker segment
             with data such as start and end times.
         """
 

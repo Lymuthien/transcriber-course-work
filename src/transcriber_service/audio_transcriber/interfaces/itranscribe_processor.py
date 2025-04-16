@@ -4,9 +4,11 @@ Module: itranscribe_processor
 This module defines interfaces and base implementations for audio transcription tasks.
 
 Classes:
-    - ITranscribeProcessor: Abstract interface for implementing audio transcription.
-    - WhisperTranscribeProcessor: Base implementation of the ITranscribeProcessor interface,
-      with additional support for audio preprocessing using `AudioProcessingMixin`.
+ITranscribeProcessor:
+    Abstract interface for implementing audio transcription.
+WhisperTranscribeProcessor:
+    Base implementation of the ITranscribeProcessor interface, with additional
+    support for audio preprocessing using `AudioProcessingMixin`.
 """
 
 import numpy as np
@@ -22,10 +24,10 @@ class ITranscribeProcessor(ABC):
     This interface defines the contract for classes that transcribe audio content
     into text. Implementing classes must provide a `transcribe_audio` method.
 
-    Methods:
-    --------
-        transcribe_audio(content, language, main_theme):
-            Transcribes audio content and optionally detects language.
+    Methods
+    -------
+    transcribe_audio(content, language, main_theme):
+        Transcribes audio content and optionally detects language.
     """
 
     @abstractmethod
@@ -36,18 +38,22 @@ class ITranscribeProcessor(ABC):
         """
         Transcribes the given audio content into text.
 
-        Parameters:
-        -----------
-            content (np.ndarray): Raw audio data.
-            language (str, optional): The language of the audio content. If not provided,
-                                      it should be detected automatically.
-            main_theme (str, optional): A contextual theme or prompt for better transcription accuracy.
+        Parameters
+        ----------
+        content : np.ndarray
+            Raw audio data.
+        language : str, optional
+            The language of the audio content. If not provided, it should
+            be detected automatically.
+        main_theme : str, optional
+            A contextual theme or prompt for better transcription accuracy.
 
-        Returns:
-        --------
-            tuple[str, str]: A tuple containing:
-                - str: The transcribed text.
-                - str: The detected or specified language.
+        Returns
+        -------
+        tuple[str, str]
+            A tuple containing:
+            - str: The transcribed text.
+            - str: The detected or specified language.
         """
         pass
 
@@ -60,10 +66,10 @@ class WhisperTranscribeProcessor(ITranscribeProcessor, AudioProcessingMixin):
     `AudioProcessingMixin` for audio preprocessing tasks, such as resampling or
     extracting audio streams.
 
-    Methods:
-    --------
-        transcribe_audio(content, language, main_theme):
-            Transcribes audio content into text (abstract implementation that must be overridden).
+    Methods
+    -------
+    transcribe_audio(content, language, main_theme):
+        Transcribes audio content into text (abstract implementation that must be overridden).
     """
 
     @abstractmethod

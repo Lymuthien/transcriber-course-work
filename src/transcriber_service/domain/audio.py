@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from ..text_transcriber.interfaces import ITranscribeProcessor
+from ..audio_transcriber.interfaces import ITranscribeProcessor
 from ..interfaces.iaudio_record import IAudioRecord
 
 

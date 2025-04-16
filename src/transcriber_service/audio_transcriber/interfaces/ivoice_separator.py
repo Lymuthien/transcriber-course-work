@@ -3,11 +3,13 @@ Module: ivoice_separator
 
 This module defines interfaces and base implementations for speaker separation tasks.
 
-Classes:
---------
-    - IVoiceSeparator: Abstract interface for separating speakers in audio content.
-    - ResamplingVoiceSeparator: A base implementation of the IVoiceSeparator interface,
-      which includes resampling utilities through `AudioProcessingMixin`.
+Classes
+-------
+IVoiceSeparator:
+    Abstract interface for separating speakers in audio content.
+ResamplingVoiceSeparator:
+    A base implementation of the IVoiceSeparator interface, which includes
+    resampling utilities through `AudioProcessingMixin`.
 """
 
 import numpy as np
@@ -24,10 +26,10 @@ class IVoiceSeparator(ABC):
     content to separate speakers. Implementing classes must provide a
     `separate_speakers` method.
 
-    Methods:
-    --------
-        separate_speakers(content, num_speakers):
-            Separates the audio content into segments for the specified maximum number of speakers.
+    Methods
+    -------
+    separate_speakers(content, num_speakers):
+        Separates the audio content into segments for the specified maximum number of speakers.
     """
 
     @abstractmethod
@@ -37,15 +39,18 @@ class IVoiceSeparator(ABC):
         """
         Separates the given audio content into speaker segments.
 
-        Parameters:
-        -----------
-            content (np.ndarray): The audio data as a numpy array, typically a waveform.
-            max_speakers (int): The maximum number of speakers to separate in the audio content.
+        Parameters
+        ----------
+        content: np.ndarray
+            The audio data as a numpy array, typically a waveform.
+        max_speakers: int
+            The maximum number of speakers to separate in the audio content.
 
-        Returns:
-        --------
-            list[dict]: A list of dictionaries, where each dictionary represents
-            a speaker segment with data such as start time, end time, and speaker ID.
+        Returns
+        -------
+        list[dict]:
+            A list of dictionaries, where each dictionary represents a speaker
+            segment with data such as start time, end time, and speaker ID.
         """
         pass
 
@@ -57,10 +62,10 @@ class ResamplingVoiceSeparator(IVoiceSeparator, AudioProcessingMixin):
     This class extends `IVoiceSeparator` and integrates functionality from
     `AudioProcessingMixin` for preprocessing tasks such as resampling audio.
 
-    Methods:
-    --------
-        separate_speakers(content, max_speakers):
-            Separates audio content into speaker segments (abstract implementation that must be overridden).
+    Methods
+    -------
+    separate_speakers(content, max_speakers):
+        Separates audio content into speaker segments (abstract implementation that must be overridden).
     """
 
     @abstractmethod

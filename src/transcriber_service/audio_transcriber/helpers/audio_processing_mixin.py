@@ -5,9 +5,9 @@ This module provides the `AudioProcessingMixin` class, which includes static met
 to handle common audio processing tasks. These tasks include audio stream extraction,
 conversion to mono channel, and audio resampling.
 
-Classes:
---------
-    - AudioProcessingMixin: A utility mixin for audio processing functions.
+Classes
+-------
+AudioProcessingMixin: A utility mixin for audio processing functions.
 """
 
 from io import BytesIO
@@ -23,16 +23,16 @@ class AudioProcessingMixin(object):
     This class serves as a utility mixin, supplying reusable audio processing
     functions that can be used in other components or classes.
 
-    Methods:
-    --------
-        get_audio_stream(content):
-            Extracts the audio stream and sample rate from raw audio bytes.
-        get_mono_audio(audio):
-            Converts audio signal to a mono channel if it is multi-channel.
-        resample_audio(audio, sr):
-            Resamples the audio to a fixed sample rate of 16 kHz.
+    Methods
+    -------
+    get_audio_stream(content):
+        Extracts the audio stream and sample rate from raw audio bytes.
+    get_mono_audio(audio):
+        Converts audio signal to a mono channel if it is multi-channel.
+    resample_audio(audio, sr):
+        Resamples the audio to a fixed sample rate of 16 kHz.
 
-    Example Usage:
+    Example Usage
     --------------
     # Use the mixin as part of another class or call its methods directly as static.
 
@@ -49,15 +49,17 @@ class AudioProcessingMixin(object):
         This method reads raw audio bytes, extracts the actual audio data,
         and determines its current sample rate.
 
-        Parameters:
-        -----------
-            content (bytes): Raw audio data in byte format.
+        Parameters
+        ----------
+        content : bytes
+            Raw audio data in byte format.
 
-        Returns:
-        --------
+        Returns
+        -------
+        tuple[np.ndarray, int]
             A tuple containing:
-                - audio (np.ndarray): The raw audio data as an array.
-                - sr (int): The sample rate of the audio.
+            - The raw audio data as an array.
+            - The sample rate of the audio.
         """
 
         audio_stream = BytesIO(content)
@@ -74,13 +76,15 @@ class AudioProcessingMixin(object):
         audio signals that are multi-channel (e.g., stereo). If the audio
         is already mono, it returns the input as is.
 
-        Parameters:
-        -----------
-            audio (np.ndarray): The audio data array, which may be single- or multi-channel.
+        Parameters
+        ----------
+        audio : np.ndarray
+            The audio data array, which may be single- or multi-channel.
 
-        Returns:
-        --------
-            np.ndarray: The audio data array converted to mono format.
+        Returns
+        -------
+        np.ndarray
+            The audio data array converted to mono format.
         """
 
         if len(audio.shape) > 1:
@@ -97,14 +101,17 @@ class AudioProcessingMixin(object):
         this method performs a resampling operation to adjust the sample rate.
         Audio signals that are already at 16 kHz are returned unchanged.
 
-        Parameters:
-        -----------
-            audio (np.ndarray): The raw audio data to be resampled.
-            sr (int): The current sample rate of the audio.
+        Parameters
+        ----------
+        audio : np.ndarray
+            The raw audio data to be resampled.
+        sr : int
+            The current sample rate of the audio.
 
-        Returns:
-        --------
-            np.ndarray: The resampled audio data.
+        Returns
+        -------
+        np.ndarray
+            The resampled audio data.
         """
 
         if sr != 16000:
