@@ -15,7 +15,7 @@ ResamplingVoiceSeparator:
 import numpy as np
 from abc import ABC, abstractmethod
 
-from ..helpers import AudioProcessingMixin
+from ..utils import AudioProcessingMixin
 
 
 class IVoiceSeparator(ABC):

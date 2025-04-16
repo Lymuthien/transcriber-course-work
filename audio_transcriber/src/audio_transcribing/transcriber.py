@@ -15,7 +15,7 @@ Transcriber :
 from .models import (VoiceSeparatorWithPyAnnote, WhisperProcessor,
                      FasterWhisperProcessor)
 from .builders import TranscribeProcessorDirector, VoiceSeparatorDirector
-from .helpers import AudioSegmenter
+from .utils import AudioSegmenter
 
 
 class Transcriber(object):
@@ -124,8 +124,9 @@ class Transcriber(object):
                 language=language
             )
 
-            speaker = segment["speaker"]
-            transcription_results.append(f"[{speaker}] {segment_text.strip()}")
+            transcription_results.append(
+                f"[{segment["speaker"]}: {segment["start"]}] {segment_text.strip()}"
+            )
         # end_time1 = time.time()
         # print(f"Time for transcription: {end_time1 - start_time1}")
 

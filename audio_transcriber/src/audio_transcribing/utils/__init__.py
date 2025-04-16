@@ -1,5 +1,5 @@
 """
-Package: helpers
+Package: utils
 ----------------
 
 This package provides utility tools and mixins for audio processing tasks.
