@@ -1,3 +1,15 @@
+"""
+Module: whisper_processor
+
+This module defines the `WhisperProcessor` class, which uses the Whisper
+library to perform speech-to-text transcription.
+
+Classes
+-------
+WhisperProcessor :
+    Provides methods for transcribing audio using Whisper.
+"""
+
 import whisper
 import numpy as np
 
@@ -5,11 +17,23 @@ from ..interfaces import WhisperTranscribeProcessor
 
 
 class WhisperProcessor(WhisperTranscribeProcessor):
+    """
+    A processor for audio-to-text transcription using Whisper.
+
+    Methods
+    -------
+    transcribe_audio(audio, language, main_theme):
+        Transcribes audio content and optionally detects language.
+    """
+
     def __init__(self, model_size: str = 'base'):
         """
-        Initialize Whisper model.
+        Initializes the WhisperProcessor.
 
-        :param model_size: Whisper model size (e.g., 'base', 'small', 'medium', 'large') (default 'base').
+        Parameters
+        ----------
+        model_size : str, optional
+            The size of the Whisper model to load. Defaults to 'base'.
         """
 
         self.model_size = model_size
@@ -20,12 +44,21 @@ class WhisperProcessor(WhisperTranscribeProcessor):
                          language: str = None,
                          main_theme: str = None) -> tuple[str, str]:
         """
-        Transcribe given audio bytes into text without saving content to a file.
+        Transcribe given audio into text and detects the language.
 
-        :param audio: Audio bytes to transcribe (e.g., mp3 format).
-        :param language: Language of the audio (optional).
-        :param main_theme: Main theme of the audio (optional).
-        :return: Transcribed text and detected language.
+        Parameters
+        ----------
+        audio: np.ndarray
+            Audio to transcribe (e.g., mp3 format).
+        language: str, optional
+            Language of the audio.
+        main_theme: str, optional
+            Main theme of the audio.
+
+        Returns
+        -------
+        tuple[str, str]
+            Transcribed text and detected language.
         """
 
         audio = audio.astype(np.float32)

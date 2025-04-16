@@ -12,8 +12,8 @@ class Transcriber(object):
                  whisper_model: str = "medium",
                  speaker_diarization_model: str = "pyannote/speaker-diarization-3.1",
                  use_faster_whisper: bool = False):
-        whisper_processor = WhisperProcessor(model_size=whisper_model) if not use_faster_whisper else \
-            FasterWhisperProcessor(model_size=whisper_model)
+        whisper_processor = WhisperProcessor(model_size=whisper_model) if not use_faster_whisper \
+            else FasterWhisperProcessor(model_size=whisper_model)
         self._whisper_director = TranscribeProcessorDirector(whisper_processor)
 
         voice_processor = VoiceSeparatorWithPyAnnote(token, model_name=speaker_diarization_model)

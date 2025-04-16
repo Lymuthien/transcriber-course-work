@@ -1,3 +1,15 @@
+"""
+Module: voice_separator
+
+This module defines the `VoiceSeparatorWithPyAnnote` class, which separates
+speakers in audio data using the PyAnnote speaker diarization library.
+
+Classes
+-------
+VoiceSeparatorWithPyAnnote :
+    Speaker diarization with PyAnnote library.
+"""
+
 from copy import deepcopy
 from typing import Any
 from pyannote.audio import Pipeline
@@ -8,19 +20,34 @@ from ..interfaces import ResamplingVoiceSeparator
 
 
 class VoiceSeparatorWithPyAnnote(ResamplingVoiceSeparator):
+    """
+    Implements speaker separation using PyAnnote.
+
+    Methods
+    -------
+    separate_speakers(audio, max_speakers):
+        Performs speaker diarization on input audio.
+    """
+
     def __init__(self,
                  token: str,
                  model_name: str = "pyannote/speaker-diarization-3.1"):
         """
-        Initialize PyAnnote pipeline for speaker diarization.
+        Initializes the VoiceSeparatorWithPyAnnote.
 
-        :param token: HuggingFace token for speaker diarization.
-        :param model_name: HuggingFace model name for speaker diarization.
+        Parameters
+        ----------
+        token : str
+            The HuggingFace token for loading the pretrained model.
+        model_name : str, optional
+            The name of the HuggingFace model. Defaults to 'pyannote/speaker-diarization-3.1'.
         """
 
         try:
-            self._pipeline = Pipeline.from_pretrained(model_name,
-                                                      use_auth_token=token)
+            self._pipeline = Pipeline.from_pretrained(
+                model_name,
+                use_auth_token=token
+            )
 
             self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             self._pipeline.to(self._device)
@@ -32,11 +59,23 @@ class VoiceSeparatorWithPyAnnote(ResamplingVoiceSeparator):
                           audio: np.ndarray,
                           max_speakers: int = None) -> list[dict]:
         """
-        Perform speaker diarization on input audio.
+        Performs speaker diarization on the given audio data.
 
-        :param audio: Audio bytes (e.g., wav format).
-        :param max_speakers: Max number of speakers expected in the audio.
-        :return: List of segments with speaker information and timestamps.
+        Parameters
+        ----------
+        audio : np.ndarray
+            The input audio data to process.
+        max_speakers : int, optional
+            The maximum number of speakers to detect. Defaults to None.
+
+        Returns
+        -------
+        list[dict]
+            A list of dictionaries representing speaker segments,
+            each containing keys:
+            - 'start': float, start time.
+            - 'end': float, end time.
+            - 'speaker': str, speaker ID.
         """
 
         audio = audio.astype(np.float32)

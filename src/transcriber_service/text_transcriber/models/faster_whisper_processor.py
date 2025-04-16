@@ -1,3 +1,15 @@
+"""
+Module: faster_whisper_processor
+
+This module defines the `FasterWhisperProcessor` class for fast
+speech-to-text transcription using the Faster Whisper library.
+
+Classes
+-------
+FasterWhisperProcessor :
+    Provides efficient transcription for audio data.
+"""
+
 import numpy as np
 from faster_whisper import WhisperModel
 
@@ -5,11 +17,28 @@ from ..interfaces import WhisperTranscribeProcessor
 
 
 class FasterWhisperProcessor(WhisperTranscribeProcessor):
+    """
+    A processor for faster audio-to-text transcription using Faster Whisper.
+    If using CPU, it is recommended to use 'WhisperProcessor' instead.
+
+    Methods
+    -------
+    transcribe_audio(audio, language, main_theme):
+        Transcribes audio content and optionally detects language.
+    """
+
     def __init__(self, model_size: str = 'base'):
         """
-        Initialize Faster Whisper model.
+        Initializes the FasterWhisperProcessor.
 
-        :param model_size: Whisper model size (e.g., 'base', 'small', 'medium', 'large') (default 'base').
+        Parameters
+        ----------
+        model_size : str, optional
+            The size of the Faster Whisper model to load. Defaults to 'base'.
+
+        Returns
+        -------
+        None
         """
 
         self.model_size = model_size
@@ -20,12 +49,21 @@ class FasterWhisperProcessor(WhisperTranscribeProcessor):
                          language: str = None,
                          main_theme: str = None) -> tuple[str, str]:
         """
-        Transcribe given audio bytes into text without saving content to a file.
+        Transcribes the given audio into text and detects the language.
 
-        :param audio: Audio bytes to transcribe (e.g., mp3 format).
-        :param language: Language of the audio (optional).
-        :param main_theme: Main theme of the audio (optional).
-        :return: Transcribed text and detected language.
+        Parameters
+        ----------
+        audio : np.ndarray
+            The input audio to transcribe.
+        language : str, optional
+            The language of the audio. Defaults to None (automatic detection).
+        main_theme : str, optional
+            A contextual prompt to enhance transcription accuracy.
+
+        Returns
+        -------
+        tuple[str, str]
+            A tuple containing the transcribed text, the detected language.
         """
 
         audio = audio.astype(np.float32)

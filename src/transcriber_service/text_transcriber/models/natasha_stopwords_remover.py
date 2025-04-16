@@ -1,3 +1,15 @@
+"""
+Module: natasha_stopwords_remover
+
+This module defines the `NatashaStopwordsRemover` class, which implements
+stopword removal and text processing using the Natasha NLP library.
+
+Classes
+-------
+NatashaStopwordsRemover:
+    Handles removal of stopwords, swear words, and specific user-defined words from a given text input.
+"""
+
 from natasha import (
     Segmenter,
     MorphVocab,
@@ -12,8 +24,32 @@ from ..interfaces import IStopwordsRemover
 
 class NatashaStopwordsRemover(IStopwordsRemover):
     """
-    Remover of stopwords with Natasha model.
-    Supports only russian language.
+    Implements stopword removal and text processing using Natasha tools.
+
+    This class provides methods to remove stopwords, optional swear words,
+    and custom user-defined words from text inputs. It uses the Natasha NLP
+    library components such as MorphTagger and Segmenter for preprocessing.
+
+    Note: This class is specific to the russian language.
+
+    Methods
+    -------
+        add_words_to_stopwords(words):
+            Add words to stopwords list.
+        add_words_to_swear_words(words):
+            Add words to swear words list.
+        remove_stopwords(text, remove_swear_words=True, go_few_times=False):
+            Remove parasite words from text.
+        remove_words(text, removing_words):
+            Remove given words from text.
+
+    Example usage:
+    --------------
+    text_remover = NatashaStopwordsRemover()
+
+    text_remover.add_words_to_stopwords({"ай", "эй"})
+    text_without_stopwords = text_remover.remove_stopwords(text, remove_swear_words=True, go_few_times=False)
+
     """
 
     def __init__(self):
@@ -26,17 +62,41 @@ class NatashaStopwordsRemover(IStopwordsRemover):
         self._morph_tagger = NewsMorphTagger(self._emb)
         self._syntax_parser = NewsSyntaxParser(self._emb)
 
+    def add_words_to_stopwords(self, words: list | tuple | set):
+        """
+        Add words to stopwords list.
+
+        Parameters
+        ----------
+        words : list or tuple or set
+            Words to add to stopwords list.
+        """
+
+        self.__stopwords.update(words)
+
+    def add_words_to_swear_words(self, words: list | tuple | set):
+        """
+        Add words to swear words list.
+
+        Parameters
+        ----------
+        words : list or tuple or set
+            Words to add to swear words list.
+        """
+
+        self.__swear_words.update(words)
+
     def remove_stopwords(self,
                          text: str,
                          remove_swear_words: bool = True,
                          go_few_times: bool = False) -> str:
         """
-        Remove parasite words from text.
+        Removes stopwords and optionally swear words from the given text.
 
-        Removing words:
+        Basic removing words:
         'типа', 'короче', 'ну', 'э', 'вообще', 'вообще-то', 'похоже', 'походу', 'вот', 'блин', 'эм', 'так'
 
-        Swear words:
+        Basic swear words:
         'бля', 'блять', 'пиздец', 'ахуеть'
 
         Words removed from text by the context.
@@ -44,10 +104,19 @@ class NatashaStopwordsRemover(IStopwordsRemover):
         it's a final result. This flag can delete important words. Be careful.
         Removing of swear words can work incorrect.
 
-        :param text: Target text.
-        :param remove_swear_words: True to remove swear words.
-        :param go_few_times: True to remove stopwords one more time if text have changed.
-        :return: Target text without swear words.
+        Parameters
+        ----------
+        text : str
+            Input text to clean.
+        remove_swear_words : bool, optional
+            Whether to remove swear words along with stopwords.
+        go_few_times : (bool, optional)
+            Whether to remove stopwords one more time if text have changed.
+
+        Returns
+        -------
+        str
+            The cleaned text after removing stopwords and optionally swear words.
         """
 
         paragraphs = text.split('\n')
@@ -79,12 +148,21 @@ class NatashaStopwordsRemover(IStopwordsRemover):
                      text: str,
                      removing_words: tuple | list) -> str:
         """
-        Remove given words from text.
+        Removes specific words from the given text.
 
-        :param text: Target text.
-        :param removing_words: List or tuple of words to remove.
-        :return: Target text without words.
+        Parameters
+        ----------
+        text : str
+            Input text to clean.
+        removing_words : list of str
+            List of words to remove from the text.
+
+        Returns
+        -------
+        str
+            Cleaned text with specified words removed.
         """
+
 
         removing_words = set(map(lambda s: s.lower().strip(), removing_words))
         paragraphs = text.split('\n')
@@ -113,10 +191,19 @@ class NatashaStopwordsRemover(IStopwordsRemover):
         If token does not contain dependent tokens return True.
         If all token dependent tokens are 'discourse', 'punct', 'ccomp' return True.
 
-        :param all_tokens: Token list of paragraph.
-        :param target_token: Target token.
-        :param remove_swear_words: True to remove swear words.
-        :return: True if token is stopword else False.
+        Parameters
+        ----------
+        all_tokens:
+            Token list of paragraph.
+        target_token:
+            Target token.
+        remove_swear_words:
+            True to remove swear words.
+
+        Returns
+        -------
+        bool
+            True if token is stopword else False.
         """
 
         lower_text = target_token.text.lower()
@@ -136,8 +223,15 @@ class NatashaStopwordsRemover(IStopwordsRemover):
 
         Delete spaces before punctuators. Delete extra punctuators.
 
-        :param token_list: Token list of paragraph.
-        :return: The restored text.
+        Parameters
+        ----------
+        token_list: list
+            Token list of paragraph.
+
+        Returns
+        -------
+        str
+            The restored text.
         """
         restored_text = ''
 
