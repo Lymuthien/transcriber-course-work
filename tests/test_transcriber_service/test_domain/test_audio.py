@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from transcriber_service.domain import AudioRecord
-from audio_transcriber.src.audio_transcribing.interfaces.itranscribe_processor import ITranscribeProcessor
+from interfaces import ITranscribeProcessor
 
 
 class TestAudioRecord(unittest.TestCase):

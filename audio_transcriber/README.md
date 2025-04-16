@@ -37,18 +37,18 @@ pip install torch --index-url https://download.pytorch.org/whl/cu117
 ### Transcription of Audio with Speaker Diarization and Cleaned Output
 
 ```python
-from audio_transcribing import Transcriber, NatashaStopwordsRemover
+from audio_transcriber.audio_transcribing import Transcriber, NatashaStopwordsRemover
 
 # Initialize the transcriber
 transcriber = Transcriber(
-    token="your-huggingface-token",  # Token for PyAnnote diarization
-    whisper_model="medium",  # Size of Whisper model
-    use_faster_whisper=True  # Use Faster Whisper if performance is a priority
+  token="your-huggingface-token",  # Token for PyAnnote diarization
+  whisper_model="medium",  # Size of Whisper model
+  use_faster_whisper=True  # Use Faster Whisper if performance is a priority
 )
 
 # Load the audio file
 with open("your_file.mp3", "rb") as f:
-    audio_content = f.read()
+  audio_content = f.read()
 
 # Transcribe audio
 result = transcriber.transcribe(audio_content, language="ru")
@@ -70,7 +70,7 @@ print(cleaned_result)
 Natasha can be used only with russian language.
 
 ```python
-from audio_transcribing import NatashaStopwordsRemover
+from audio_transcriber.audio_transcribing import NatashaStopwordsRemover
 
 # Initialize Natasha processor
 stopwords_remover = NatashaStopwordsRemover()

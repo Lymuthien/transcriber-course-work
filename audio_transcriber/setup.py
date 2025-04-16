@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="audio_transcribing",
-    version="0.1.11",
+    version="0.2.1",
     description="A toolkit for audio transcription, speaker diarization, and text processing",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
