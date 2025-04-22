@@ -12,7 +12,7 @@ class PasswordManager(object):
         :return: Hash result.
         """
 
-        return hashlib.sha512(password.encode('utf-8')).hexdigest()
+        return hashlib.sha512(password.encode("utf-8")).hexdigest()
 
     @staticmethod
     def create_password() -> str:
@@ -24,3 +24,6 @@ class PasswordManager(object):
         password = secrets.token_urlsafe(12)
         return password
 
+    @staticmethod
+    def verify_password(hashed_password: str, other: str) -> bool:
+        return hashed_password == PasswordManager.hash_password(other)

@@ -6,15 +6,11 @@ class TextExporter(object):
     """Exporter of text (string) to different formats."""
 
     def __init__(self):
-        self.__exporters: dict[str, IExporter] = {
-            'docx': DocxExporter()
-        }
+        self.__exporters: dict[str, IExporter] = {"docx": DocxExporter()}
 
-    def export_text(self,
-                    content: str,
-                    output_dir: str,
-                    filename: str,
-                    file_format: str) -> None:
+    def export_text(
+        self, content: str, output_dir: str, filename: str, file_format: str
+    ) -> None:
         """
         Export text (string) to format.
 

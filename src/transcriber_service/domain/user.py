@@ -15,9 +15,7 @@ class User(object):
     Should not be instantiated directly - use AuthUser or Admin subclasses.
     """
 
-    def __init__(self,
-                 email: str,
-                 password: str):
+    def __init__(self, email: str, password: str):
         """
         Create User instance with validated credentials.
 
@@ -78,23 +76,20 @@ class User(object):
 
         return self.__last_updated
 
-    def verify_password(self,
-                        password: str) -> bool:
+    def verify_password(self, password: str) -> bool:
         """
         Verify if provided password matches stored hash.
 
         :param password: Plain-text password to be verified.
         :return: True if password matches stored hash, False otherwise.
         """
-        if self.__temp_password_hash == PasswordManager.hash_password(password):
+        if PasswordManager.verify_password(self.__temp_password_hash, password):
             self.__password_hash = self.__temp_password_hash
             self.__temp_password_hash = None
 
-        return self.__password_hash == PasswordManager.hash_password(password)
+        return PasswordManager.verify_password(self.__password_hash, password)
 
-    def change_password(self,
-                        current_password: str,
-                        new_password: str) -> None:
+    def change_password(self, current_password: str, new_password: str) -> None:
         """
         Change user password.
 
@@ -104,7 +99,7 @@ class User(object):
         :raise AuthException: if current password does not match.
         """
         if not self.verify_password(current_password):
-            raise AuthException('Invalid current password')
+            raise AuthException("Invalid current password")
 
         self.__password_hash = PasswordManager.hash_password(new_password)
         self.__last_updated = datetime.now()
@@ -130,9 +125,7 @@ class AuthUser(User):
     Should be used for all registered non-admin users.
     """
 
-    def __init__(self,
-                 email: str,
-                 password: str):
+    def __init__(self, email: str, password: str):
         super().__init__(email, password)
         self._role = "user"
 
@@ -145,8 +138,6 @@ class Admin(AuthUser):
     Should be instantiated only through proper admin creation process.
     """
 
-    def __init__(self,
-                 email: str,
-                 password: str):
+    def __init__(self, email: str, password: str):
         super().__init__(email, password)
         self._role = "admin"

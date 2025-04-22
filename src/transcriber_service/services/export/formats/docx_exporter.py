@@ -8,7 +8,7 @@ class DocxExporter(IExporter):
 
     @property
     def file_extension(self) -> str:
-        return 'docx'
+        return "docx"
 
     def export(self, content: str, output_path: str) -> None:
         """

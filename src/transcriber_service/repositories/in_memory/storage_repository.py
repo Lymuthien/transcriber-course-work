@@ -1,5 +1,4 @@
 from copy import copy
-from os.path import exists
 
 from .local_file_manager import LocalPickleFileManager
 from ...interfaces.ifile_manager import IFileManager
@@ -8,7 +7,9 @@ from ...domain import Storage
 
 
 class LocalStorageRepository(IStorageRepository):
-    def __init__(self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager):
+    def __init__(
+        self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager
+    ):
         """
         Create local storage repository.
 
@@ -21,7 +22,9 @@ class LocalStorageRepository(IStorageRepository):
         self.__dir = data_dir
 
         try:
-            self.__storages, self.__user_storage_map = self.__file_manager.load(data_dir)
+            self.__storages, self.__user_storage_map = self.__file_manager.load(
+                data_dir
+            )
         except:
             pass
 
@@ -45,7 +48,7 @@ class LocalStorageRepository(IStorageRepository):
         """
 
         if storage.id in self.__storages:
-            raise ValueError('Storage already exists')
+            raise ValueError("Storage already exists")
 
         self.__storages[storage.id] = storage
         self.__user_storage_map[storage.user_id] = storage.id
@@ -60,7 +63,7 @@ class LocalStorageRepository(IStorageRepository):
         """
 
         if storage.id not in self.__storages:
-            raise ValueError('Storage not found')
+            raise ValueError("Storage not found")
         self.__storages[storage.id] = storage
         self.__file_manager.save((self.__storages, self.__user_storage_map), self.__dir)
 

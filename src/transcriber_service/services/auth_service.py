@@ -17,7 +17,9 @@ class AuthService(object):
         self.__users = {}
         self.__user_repo: IUserRepository = repo
         self.__storage_service = storage_service
-        self.__policy = PasswordPolicy.from_names(length=8, uppercase=1, numbers=1, special=1)
+        self.__policy = PasswordPolicy.from_names(
+            length=8, uppercase=1, numbers=1, special=1
+        )
 
         self.__email_service = EmailService(
             smtp_server=Config.SMTP_SERVER,
@@ -39,10 +41,10 @@ class AuthService(object):
         """
 
         if self.__user_repo.get_by_email(email):
-            raise AuthException('User already exists')
+            raise AuthException("User already exists")
 
         if self.__policy.test(password):
-            raise AuthException('Password is weak')
+            raise AuthException("Password is weak")
 
         user = AuthUser(email, password)
         self.__user_repo.add(user)
@@ -62,11 +64,11 @@ class AuthService(object):
         """
 
         if not isinstance(initiator, Admin):
-            raise PermissionError('Only admins can block users')
+            raise PermissionError("Only admins can block users")
 
         user = self.__user_repo.get_by_email(target_email)
         if user is None:
-            raise AuthException('User not found')
+            raise AuthException("User not found")
 
         user.is_blocked = True
 
@@ -81,11 +83,11 @@ class AuthService(object):
         """
 
         if not isinstance(initiator, Admin):
-            raise PermissionError('Only admins can unblock users')
+            raise PermissionError("Only admins can unblock users")
 
         user = self.__user_repo.get_by_email(target_email)
         if user is None:
-            raise AuthException('User not found')
+            raise AuthException("User not found")
         user.is_blocked = False
 
     def delete_user(self, initiator: User, target_email: str):
@@ -99,11 +101,11 @@ class AuthService(object):
         """
 
         if not isinstance(initiator, Admin):
-            raise PermissionError('Only admins can delete users')
+            raise PermissionError("Only admins can delete users")
 
         user = self.__user_repo.get_by_email(target_email)
         if user is None:
-            raise AuthException('User not found')
+            raise AuthException("User not found")
         self.__user_repo.delete(user)
 
     def create_admin(self, email: str, password: str) -> Admin:
@@ -119,10 +121,10 @@ class AuthService(object):
         """
 
         if self.__user_repo.get_by_email(email):
-            raise AuthException('User already exists')
+            raise AuthException("User already exists")
 
         if self.__policy.test(password):
-            raise AuthException('Password is weak')
+            raise AuthException("Password is weak")
 
         user = Admin(email, password)
         self.__user_repo.add(user)
@@ -145,13 +147,15 @@ class AuthService(object):
 
         user = self.__user_repo.get_by_email(email)
         if not user or not user.verify_password(password):
-            raise AuthException('Invalid credentials')
+            raise AuthException("Invalid credentials")
 
         if user.is_blocked:
-            raise AuthException('User is blocked')
+            raise AuthException("User is blocked")
         return user
 
-    def change_password(self, email: str, current_password: str, new_password: str) -> None:
+    def change_password(
+        self, email: str, current_password: str, new_password: str
+    ) -> None:
         """
         Change password of user.
 
@@ -165,11 +169,11 @@ class AuthService(object):
 
         user = self.__user_repo.get_by_email(email)
         if not user:
-            raise AuthException('User not found')
+            raise AuthException("User not found")
 
         errors = self.__policy.test(new_password)
         if errors:
-            raise AuthException(f'Password is weak: {errors}')
+            raise AuthException(f"Password is weak: {errors}")
 
         user.change_password(current_password, new_password)
         self.__user_repo.update(user)
@@ -185,7 +189,9 @@ class AuthService(object):
         """
         user = self.__user_repo.get_by_email(email)
         if not user:
-            raise AuthException('User not found')
+            raise AuthException("User not found")
 
-        self.__email_service.send_recovery_email(user.email, user.generate_temp_password())
+        self.__email_service.send_recovery_email(
+            user.email, user.generate_temp_password()
+        )
         self.__user_repo.update(user)

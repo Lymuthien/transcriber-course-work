@@ -5,12 +5,14 @@ from ..interfaces.iaudio_record import IAudioRecord
 
 
 class AudioRecord(IAudioRecord):
-    def __init__(self,
-                 file_name: str,
-                 file_path: str,
-                 storage_id: str,
-                 text: str,
-                 language: str,):
+    def __init__(
+        self,
+        file_name: str,
+        file_path: str,
+        storage_id: str,
+        text: str,
+        language: str,
+    ):
         """
         Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
 
@@ -85,8 +87,7 @@ class AudioRecord(IAudioRecord):
         return self.__record_name
 
     @record_name.setter
-    def record_name(self,
-                    note_name: str):
+    def record_name(self, note_name: str):
         """Sets the display name for the audio record."""
 
         self.__record_name = note_name

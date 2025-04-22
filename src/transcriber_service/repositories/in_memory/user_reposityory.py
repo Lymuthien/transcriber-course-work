@@ -7,7 +7,9 @@ from ...domain import User
 
 
 class LocalUserRepository(IUserRepository):
-    def __init__(self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager):
+    def __init__(
+        self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager
+    ):
         """
         Create local user repository.
 

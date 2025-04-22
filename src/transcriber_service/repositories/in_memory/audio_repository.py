@@ -8,8 +8,12 @@ from ...interfaces.istorage_repository import IStorageRepository
 
 
 class LocalAudioRepository(IAudioRepository):
-    def __init__(self, storage_repository: IStorageRepository, data_dir: str,
-                 file_manager: IFileManager = LocalPickleFileManager) -> None:
+    def __init__(
+        self,
+        storage_repository: IStorageRepository,
+        data_dir: str,
+        file_manager: IFileManager = LocalPickleFileManager,
+    ) -> None:
         """
         Create local audio repository.
 
@@ -35,7 +39,9 @@ class LocalAudioRepository(IAudioRepository):
 
         return self.__records.get(record_id)
 
-    def search_by_tags(self, storage_id: str, tags: list[str], match_all: bool = False) -> tuple[IAudioRecord, ...]:
+    def search_by_tags(
+        self, storage_id: str, tags: list[str], match_all: bool = False
+    ) -> tuple[IAudioRecord, ...]:
         """
         Search audio records from storage by tags.
 
@@ -78,7 +84,7 @@ class LocalAudioRepository(IAudioRepository):
         """
 
         if record.id in self.__records:
-            raise ValueError('Record already exists.')
+            raise ValueError("Record already exists.")
 
         storage = self.__storage_repository.get_by_id(record.storage_id)
         if storage:
@@ -86,7 +92,6 @@ class LocalAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
             self.__records[record.id] = record
             self.__manager.save(self.__records, self.__dir)
-
 
     def update(self, record: IAudioRecord) -> None:
         """
@@ -97,7 +102,7 @@ class LocalAudioRepository(IAudioRepository):
         """
 
         if record.id not in self.__records:
-            raise ValueError('Record not found.')
+            raise ValueError("Record not found.")
         self.__records[record.id] = record
         self.__manager.save(self.__records, self.__dir)
 
@@ -111,7 +116,7 @@ class LocalAudioRepository(IAudioRepository):
 
         record = self.__records.get(record_id)
         if not record:
-            raise ValueError('Record not found.')
+            raise ValueError("Record not found.")
 
         storage = self.__storage_repository.get_by_id(record.storage_id)
         if storage:

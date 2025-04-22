@@ -3,7 +3,9 @@ from email.message import EmailMessage
 
 
 class EmailService(object):
-    def __init__(self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str):
+    def __init__(
+        self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str
+    ):
         """
         Initializes the email service for sending recovery emails using an SMTP server.
 
@@ -30,7 +32,8 @@ class EmailService(object):
         message["From"] = self.sender_email
         message["To"] = target_email
 
-        message.set_content(f"""
+        message.set_content(
+            f"""
         You have requested to recover your account password.
         Your temporary password is: {temp_password}
 
@@ -51,7 +54,8 @@ class EmailService(object):
         --
         С уважением,
         Служба поддержки проекта Text Transcriber
-        """)
+        """
+        )
 
         with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
             server.ehlo()

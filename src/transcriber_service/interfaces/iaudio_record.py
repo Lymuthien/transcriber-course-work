@@ -35,8 +35,7 @@ class IAudioRecord(ABC):
 
     @record_name.setter
     @abstractmethod
-    def record_name(self,
-                    note_name: str): ...
+    def record_name(self, note_name: str): ...
 
     @property
     @abstractmethod
