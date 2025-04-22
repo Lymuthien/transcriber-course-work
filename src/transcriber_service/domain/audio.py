@@ -1,29 +1,24 @@
 from datetime import datetime
 from uuid import uuid4
 
-from audio_transcriber.src import ITranscribeProcessor
 from ..interfaces.iaudio_record import IAudioRecord
 
 
 class AudioRecord(IAudioRecord):
     def __init__(self,
                  file_name: str,
-                 content: bytes,
                  file_path: str,
                  storage_id: str,
-                 transcribe_processor: ITranscribeProcessor,
-                 language: str = None,
-                 main_theme: str = None):
+                 text: str,
+                 language: str,):
         """
         Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
 
         :param file_name: Name of audio file.
-        :param content: Content of audio file (mp3).
         :param file_path: Full path to audio file in some storage directory (not user storage).
         :param storage_id: Storage id of audio file.
-        :param transcribe_processor: Instance of transcribe_processor.
-        :param language: Language of audio file (defaults None).
-        :param main_theme: Main theme of audio file (defaults None).
+        :param text: Text of audio file.
+        :param language: Language of audio file.
         """
 
         self.__id = uuid4().hex
@@ -31,7 +26,8 @@ class AudioRecord(IAudioRecord):
         self.__file_path = file_path
         self.__storage_id = storage_id
         self.__last_updated = datetime.now()
-        self.__text, self.__language  = transcribe_processor.transcribe_audio(content, language, main_theme)
+        self.__text = text
+        self.__language = language
         self.__tags = []
 
     @property

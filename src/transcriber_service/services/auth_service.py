@@ -2,6 +2,7 @@ from password_strength import PasswordPolicy
 
 from .email_service import EmailService
 from ..interfaces.istorage_service import IStorageService
+from ..utils import Config
 from ..domain import AuthUser, AuthException, Admin, User
 from ..interfaces.iuser_repository import IUserRepository
 
@@ -17,6 +18,13 @@ class AuthService(object):
         self.__user_repo: IUserRepository = repo
         self.__storage_service = storage_service
         self.__policy = PasswordPolicy.from_names(length=8, uppercase=1, numbers=1, special=1)
+
+        self.__email_service = EmailService(
+            smtp_server=Config.SMTP_SERVER,
+            smtp_port=Config.SMTP_PORT,
+            sender_email=Config.SENDER_EMAIL,
+            sender_password=Config.SENDER_PASSWORD,
+        )
 
     def register_user(self, email: str, password: str) -> AuthUser:
         """
@@ -179,4 +187,5 @@ class AuthService(object):
         if not user:
             raise AuthException('User not found')
 
-        EmailService().send_recovery_email(user.email, user.generate_temp_password())
+        self.__email_service.send_recovery_email(user.email, user.generate_temp_password())
+        self.__user_repo.update(user)

@@ -88,6 +88,7 @@ class User(object):
         """
         if self.__temp_password_hash == PasswordManager.hash_password(password):
             self.__password_hash = self.__temp_password_hash
+            self.__temp_password_hash = None
 
         return self.__password_hash == PasswordManager.hash_password(password)
 
@@ -117,6 +118,7 @@ class User(object):
         """
         temp_password = PasswordManager.create_password()
         self.__temp_password_hash = PasswordManager.hash_password(temp_password)
+
         return temp_password
 
 

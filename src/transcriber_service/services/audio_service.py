@@ -1,7 +1,8 @@
 from .export.text_exporter import TextExporter
 from ..domain import AudioRecord
+from ..utils import Config
 from ..interfaces.iaudio_repository import IAudioRepository
-from audio_transcriber.src import ITranscribeProcessor, IStopwordsRemover
+from audio_transcribing import NatashaStopwordsRemover, Transcriber
 
 
 class AudioService(object):
@@ -14,13 +15,11 @@ class AudioService(object):
 
     def __init__(self,
                  repo: IAudioRepository,
-                 stopwords_remover: IStopwordsRemover,
-                 transcribe_processor: ITranscribeProcessor,
                  exporter: TextExporter = TextExporter()):
         self.__audio_repo = repo
         self.__exporter = exporter
-        self.__stopwords_remover = stopwords_remover
-        self.__transcribe_processor = transcribe_processor
+        self.__stopwords_remover = NatashaStopwordsRemover()
+        self.__transcriber = Transcriber(Config.PYANNOTE_TOKEN)
 
     def create_audio(self,
                      file_name: str,
@@ -42,8 +41,8 @@ class AudioService(object):
         :return: Created Audio Record.
         """
 
-        audio = AudioRecord(file_name, content, file_path, storage_id, self.__transcribe_processor, language,
-                            main_theme)
+        text, language = self.__transcriber.transcribe(content, language)
+        audio = AudioRecord(file_name, file_path, storage_id, text, language)
         self.__audio_repo.add(audio)
         return audio
 
