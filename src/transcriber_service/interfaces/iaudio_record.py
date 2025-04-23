@@ -39,12 +39,4 @@ class IAudioRecord(ABC):
 
     @property
     @abstractmethod
-    def file_path(self) -> str: ...
-
-    @property
-    @abstractmethod
     def storage_id(self) -> str: ...
-
-    @property
-    @abstractmethod
-    def last_updated(self) -> datetime: ...

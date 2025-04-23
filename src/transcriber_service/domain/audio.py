@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from uuid import uuid4
 
 from ..interfaces.iaudio_record import IAudioRecord
@@ -23,52 +24,52 @@ class AudioRecord(IAudioRecord):
         :param language: Language of audio file.
         """
 
-        self.__id = uuid4().hex
-        self.__record_name = file_name
-        self.__file_path = file_path
-        self.__storage_id = storage_id
-        self.__last_updated = datetime.now()
-        self.__text = text
-        self.__language = language
-        self.__tags = []
+        self._id = uuid4().hex
+        self._record_name = file_name
+        self._file_path = file_path
+        self._storage_id = storage_id
+        self._last_updated = datetime.now()
+        self._text = text
+        self._language = language
+        self._tags = []
 
     @property
     def id(self) -> str:
         """Return ID of audio record."""
 
-        return self.__id
+        return self._id
 
     @property
     def text(self) -> str:
         """Return text of audio record."""
 
-        return self.__text
+        return self._text
 
     @text.setter
     def text(self, value: str) -> None:
         """Set text for audio record."""
 
-        self.__text = value
-        self.__last_updated = datetime.now()
+        self._text = value
+        self._last_updated = datetime.now()
 
     @property
     def language(self) -> str:
         """Return language of audio file."""
 
-        return self.__language
+        return self._language
 
     @property
     def tags(self) -> list:
         """Return tags of audio record."""
 
-        return self.__tags.copy()
+        return self._tags.copy()
 
     def add_tag(self, tag_name: str) -> None:
         """Add tag to audio record. Saved in lower case."""
 
-        if tag_name.lower() not in self.__tags:
-            self.__tags.append(tag_name.lower())
-            self.__last_updated = datetime.now()
+        if tag_name.lower() not in self._tags:
+            self._tags.append(tag_name.lower())
+            self._last_updated = datetime.now()
 
     def remove_tag(self, tag_name: str) -> None:
         """
@@ -77,36 +78,46 @@ class AudioRecord(IAudioRecord):
         :raise ValueError: If tag does not exist.
         """
 
-        self.__tags.remove(tag_name.lower())
-        self.__last_updated = datetime.now()
+        self._tags.remove(tag_name.lower())
+        self._last_updated = datetime.now()
 
     @property
     def record_name(self) -> str:
         """Return name for the audio record."""
 
-        return self.__record_name
+        return self._record_name
 
     @record_name.setter
     def record_name(self, note_name: str):
         """Sets the display name for the audio record."""
 
-        self.__record_name = note_name
-        self.__last_updated = datetime.now()
+        self._record_name = note_name
+        self._last_updated = datetime.now()
 
     @property
     def file_path(self) -> str:
         """Absolute filesystem path to the audio file."""
 
-        return self.__file_path
+        return self._file_path
 
     @property
     def storage_id(self) -> str:
         """Identifier of associated storage container."""
 
-        return self.__storage_id
+        return self._storage_id
 
     @property
     def last_updated(self) -> datetime:
         """Timestamp of last modification in UTC."""
 
-        return self.__last_updated
+        return self._last_updated
+
+    def restore_state(self, data: dict[str, Any]):
+        self._id = data["id"]
+        self._record_name = data["record_name"]
+        self._file_path = data["file_path"]
+        self._storage_id = data["storage_id"]
+        self._text = data["text"]
+        self._language = data["language"]
+        self._tags = data["tags"]
+        self._last_updated = datetime.fromisoformat(data["last_updated"])

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from uuid import uuid4
 
 from email_validator import validate_email
@@ -24,57 +25,58 @@ class User(object):
         :raises: If email is not valid.
         """
 
-        self.__email: str = validate_email(email).normalized
-        self.__id: str = uuid4().hex
-        self.__password_hash: str = PasswordManager.hash_password(password)
-        self.__temp_password_hash: str | None = None
-        self.__registration_date: datetime = datetime.now()
-        self.__last_updated: datetime = self.__registration_date
-        self.__is_blocked: bool = False
-        self._role = "guest"
+        self._email: str = validate_email(email).normalized
+        self._id: str = uuid4().hex
+        self._password_hash: str = PasswordManager.hash_password(password)
+        self._temp_password_hash: str | None = None
+        self._registration_date: datetime = datetime.now()
+        self._last_updated: datetime = self._registration_date
+        self._is_blocked: bool = False
 
     @property
     def is_blocked(self) -> bool:
         """Returns True if the user is blocked else False."""
 
-        return self.__is_blocked
+        return self._is_blocked
 
     @is_blocked.setter
     def is_blocked(self, is_blocked: bool):
         """Sets the blocked state of the user."""
 
-        self.__is_blocked = is_blocked
-        self.__last_updated = datetime.now()
+        self._is_blocked = is_blocked
+        self._last_updated = datetime.now()
+
+    @property
+    def password_hash(self) -> str:
+        return self._password_hash
+
+    @property
+    def temp_password_hash(self) -> str | None:
+        return self._temp_password_hash
 
     @property
     def id(self) -> str:
         """Returns user ID."""
 
-        return self.__id
+        return self._id
 
     @property
     def email(self) -> str:
         """Returns user email."""
 
-        return self.__email
-
-    @property
-    def role(self) -> str:
-        """Returns user role."""
-
-        return self._role
+        return self._email
 
     @property
     def registration_date(self) -> datetime:
         """Returns user registration date."""
 
-        return self.__registration_date
+        return self._registration_date
 
     @property
     def last_updated(self) -> datetime:
         """Returns user last updated date."""
 
-        return self.__last_updated
+        return self._last_updated
 
     def verify_password(self, password: str) -> bool:
         """
@@ -83,11 +85,11 @@ class User(object):
         :param password: Plain-text password to be verified.
         :return: True if password matches stored hash, False otherwise.
         """
-        if PasswordManager.verify_password(self.__temp_password_hash, password):
-            self.__password_hash = self.__temp_password_hash
-            self.__temp_password_hash = None
+        if PasswordManager.verify_password(self._temp_password_hash, password):
+            self._password_hash = self._temp_password_hash
+            self._temp_password_hash = None
 
-        return PasswordManager.verify_password(self.__password_hash, password)
+        return PasswordManager.verify_password(self._password_hash, password)
 
     def change_password(self, current_password: str, new_password: str) -> None:
         """
@@ -101,8 +103,8 @@ class User(object):
         if not self.verify_password(current_password):
             raise AuthException("Invalid current password")
 
-        self.__password_hash = PasswordManager.hash_password(new_password)
-        self.__last_updated = datetime.now()
+        self._password_hash = PasswordManager.hash_password(new_password)
+        self._last_updated = datetime.now()
 
     def generate_temp_password(self) -> str:
         """
@@ -112,9 +114,18 @@ class User(object):
         :return: Not hashed temporary password.
         """
         temp_password = PasswordManager.create_password()
-        self.__temp_password_hash = PasswordManager.hash_password(temp_password)
+        self._temp_password_hash = PasswordManager.hash_password(temp_password)
 
         return temp_password
+
+    def restore_state(self, data: dict[str, Any]):
+        self._id = data["id"]
+        self._email = data["email"]
+        self._registration_date = datetime.fromisoformat(data["registration_date"])
+        self._last_updated = datetime.fromisoformat(data["last_updated"])
+        self._is_blocked = data["is_blocked"]
+        self._password_hash = data["password_hash"]
+        self._temp_password_hash = data["temp_password_hash"]
 
 
 class AuthUser(User):
@@ -127,7 +138,6 @@ class AuthUser(User):
 
     def __init__(self, email: str, password: str):
         super().__init__(email, password)
-        self._role = "user"
 
 
 class Admin(AuthUser):
@@ -140,4 +150,3 @@ class Admin(AuthUser):
 
     def __init__(self, email: str, password: str):
         super().__init__(email, password)
-        self._role = "admin"

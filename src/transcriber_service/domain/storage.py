@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import uuid4
 from ..interfaces.istorage import IStorage
 
@@ -10,24 +11,24 @@ class Storage(IStorage):
         :param user_id: The user's ID (only one user for storage).
         """
 
-        self.__id = uuid4().hex
-        self.__user_id = user_id
-        self.__audio_record_ids: list[str] = []
+        self._id = uuid4().hex
+        self._user_id = user_id
+        self._audio_record_ids: list[str] = []
 
     @property
     def id(self) -> str:
         """Return ID of the storage container."""
-        return self.__id
+        return self._id
 
     @property
     def user_id(self) -> str:
         """Return the ID of owner user."""
-        return self.__user_id
+        return self._user_id
 
     @property
     def audio_record_ids(self) -> list[str]:
         """Return a list of audio record IDs."""
-        return self.__audio_record_ids.copy()
+        return self._audio_record_ids.copy()
 
     def add_audio_record(self, record_id: str) -> None:
         """
@@ -36,8 +37,8 @@ class Storage(IStorage):
         :param record_id: The audio record ID to add.
         :return: None
         """
-        if record_id not in self.__audio_record_ids:
-            self.__audio_record_ids.append(record_id)
+        if record_id not in self._audio_record_ids:
+            self._audio_record_ids.append(record_id)
 
     def remove_audio_record(self, record_id: str) -> None:
         """
@@ -47,4 +48,10 @@ class Storage(IStorage):
         :return: None
         :raise ValueError: If record_id is not in the list of audio record IDs.
         """
-        self.__audio_record_ids.remove(record_id)
+        self._audio_record_ids.remove(record_id)
+
+    def restore_state(self, data: dict[str, Any]):
+        self._id = data["id"]
+        self._user_id = data["user_id"]
+        self._audio_record_ids = data["audio_record_ids"]
+
