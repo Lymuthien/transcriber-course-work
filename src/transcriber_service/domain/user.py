@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from email_validator import validate_email
-
 from .exceptions import AuthException
 from .password_manager import PasswordManager
 from ..interfaces.iuser import IUser
@@ -25,7 +23,7 @@ class User(IUser):
         :raises: If email is not valid.
         """
 
-        self._email: str = validate_email(email).normalized
+        self._email: str = email
         self._id: str = uuid4().hex
         self._password_hash: str = PasswordManager.hash_password(password)
         self._temp_password_hash: str | None = None

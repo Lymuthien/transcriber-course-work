@@ -1,0 +1,37 @@
+from abc import ABC, abstractmethod
+from ..domain import AudioRecord
+from ..interfaces.iaudio_record import IAudioRecord
+
+
+class IAudioRecordFactory(ABC):
+
+    @abstractmethod
+    def create_audio(
+        self,
+        file_name: str,
+        file_path: str,
+        storage_id: str,
+        text: str,
+        language: str,
+    ) -> IAudioRecord:
+        pass
+
+    @abstractmethod
+    def create_object(self) -> IAudioRecord:
+        pass
+
+
+class AudioRecordFactory(IAudioRecordFactory):
+
+    def create_audio(
+        self,
+        file_name: str,
+        file_path: str,
+        storage_id: str,
+        text: str,
+        language: str,
+    ) -> IAudioRecord:
+        return AudioRecord(file_name, file_path, storage_id, text, language)
+
+    def create_object(self) -> IAudioRecord:
+        return AudioRecord("", "", "", "", "")

@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from datetime import datetime
+from .irestorable import IRestorable
 
 
-class IAudioRecord(ABC):
+class IAudioRecord(IRestorable):
     @property
     @abstractmethod
     def id(self) -> str: ...
@@ -40,3 +41,11 @@ class IAudioRecord(ABC):
     @property
     @abstractmethod
     def storage_id(self) -> str: ...
+
+    @property
+    @abstractmethod
+    def file_path(self) -> str: ...
+
+    @property
+    @abstractmethod
+    def last_updated(self) -> datetime: ...

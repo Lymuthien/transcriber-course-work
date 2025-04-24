@@ -1,11 +1,28 @@
 from typing import Dict, Any
 
-from ...domain import Storage, AudioRecord
 from ...interfaces.iserializer import ISerializer, IDictable
 from ...interfaces.iuser import IUser
+from ...interfaces.istorage import IStorage
+from ...interfaces.iaudio_record import IAudioRecord
+from ...factories import (
+    AdminFactory,
+    AuthUserFactory,
+    IUserFactory,
+    AudioRecordFactory,
+    StorageFactory,
+    IAudioRecordFactory,
+    IStorageFactory,
+)
 
 
 class UserSerializer(IDictable):
+    def __init__(self):
+        self.__factories = {
+            "AuthUser": AuthUserFactory(),
+            "Admin": AdminFactory(),
+        }
+        self.__user_factory: IUserFactory = self.__factories.get("AuthUser")
+
     def to_dict(self, user: IUser) -> Dict[str, Any]:
         return {
             "type": user.__class__.__name__,
@@ -19,15 +36,18 @@ class UserSerializer(IDictable):
         }
 
     def from_dict(self, data: Dict[str, Any]) -> IUser:
-        cls = globals()[data["type"]]
-        user = cls.__new__(cls)
+        self.__user_factory = self.__factories.get(data["type"])
+        user = self.__user_factory.create_object()
         user.restore_state(data)
 
         return user
 
 
 class StorageSerializer(IDictable):
-    def to_dict(self, storage: Storage) -> dict[str, Any]:
+    def __init__(self):
+        self.__storage_factory: IStorageFactory = StorageFactory()
+
+    def to_dict(self, storage: IStorage) -> dict[str, Any]:
         return {
             "type": storage.__class__.__name__,
             "id": storage.id,
@@ -35,15 +55,18 @@ class StorageSerializer(IDictable):
             "audio_record_ids": storage.audio_record_ids,
         }
 
-    def from_dict(self, data: dict[str, Any]) -> Storage:
-        storage = Storage.__new__(Storage)
+    def from_dict(self, data: dict[str, Any]) -> IStorage:
+        storage = self.__storage_factory.create_object()
         storage.restore_state(data)
 
         return storage
 
 
 class AudioRecordSerializer(IDictable):
-    def to_dict(self, audio: AudioRecord) -> dict[str, Any]:
+    def __init__(self):
+        self.__audio_factory: IAudioRecordFactory = AudioRecordFactory()
+
+    def to_dict(self, audio: IAudioRecord) -> dict[str, Any]:
         return {
             "type": audio.__class__.__name__,
             "id": audio.id,
@@ -56,8 +79,8 @@ class AudioRecordSerializer(IDictable):
             "last_updated": audio.last_updated.isoformat(),
         }
 
-    def from_dict(self, data: Dict[str, Any]) -> AudioRecord:
-        audio = AudioRecord.__new__(AudioRecord)
+    def from_dict(self, data: Dict[str, Any]) -> IAudioRecord:
+        audio = self.__audio_factory.create_object()
         audio.restore_state(data)
 
         return audio
@@ -119,8 +142,10 @@ class SerializerProxy(ISerializer):
         else:
             return data
 
+    @property
     def extension(self) -> str:
         return self.__base_serializer.extension
 
+    @property
     def binary(self) -> bool:
         return self.__base_serializer.binary

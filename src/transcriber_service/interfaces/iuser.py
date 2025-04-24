@@ -1,9 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from datetime import datetime
-from typing import Any
+
+from .irestorable import IRestorable
 
 
-class IUser(ABC):
+class IUser(IRestorable):
     @property
     @abstractmethod
     def is_blocked(self) -> bool:
@@ -66,8 +67,4 @@ class IUser(ABC):
 
     @abstractmethod
     def generate_temp_password(self) -> str:
-        pass
-
-    @abstractmethod
-    def restore_state(self, data: dict[str, Any]):
         pass

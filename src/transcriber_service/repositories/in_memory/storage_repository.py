@@ -3,7 +3,7 @@ from copy import copy
 from ...interfaces.ifile_manager import IFileManager
 from ...interfaces.iserializer import ISerializer
 from ...interfaces.istorage_repository import IStorageRepository
-from ...domain import Storage
+from ...interfaces.istorage import IStorage
 
 
 class LocalStorageRepository(IStorageRepository):
@@ -17,7 +17,7 @@ class LocalStorageRepository(IStorageRepository):
         """
 
         self.__serializer: ISerializer = serializer
-        self.__storages: dict[str, Storage] = {}
+        self.__storages: dict[str, IStorage] = {}
         self.__file_manager: IFileManager = file_manager
         self.__user_storage_map: dict[str, str] = {}  # user_id -> storage_id
         self.__dir: str = data_dir
@@ -31,18 +31,18 @@ class LocalStorageRepository(IStorageRepository):
         except:
             pass
 
-    def get_by_id(self, storage_id: str) -> Storage | None:
+    def get_by_id(self, storage_id: str) -> IStorage | None:
         """Return storage object copy if it exists by ID else None."""
 
         return copy(self.__storages.get(storage_id))
 
-    def get_by_user(self, user_id: str) -> Storage | None:
+    def get_by_user(self, user_id: str) -> IStorage | None:
         """Return storage object copy if it exists by user_id else None."""
 
         storage_id = self.__user_storage_map.get(user_id)
         return self.__storages.get(storage_id) if storage_id else None
 
-    def add(self, storage: Storage) -> None:
+    def add(self, storage: IStorage) -> None:
         """
         Add storage object to storage repository.
 
@@ -62,7 +62,7 @@ class LocalStorageRepository(IStorageRepository):
             serializer=self.__serializer,
         )
 
-    def update(self, storage: Storage) -> None:
+    def update(self, storage: IStorage) -> None:
         """
         Update storage object in storage repository.
 

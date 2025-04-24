@@ -1,4 +1,5 @@
 from password_strength import PasswordPolicy
+from email_validator import validate_email
 
 from .email_service import EmailService
 from ..interfaces.istorage_service import IStorageService
@@ -6,7 +7,7 @@ from ..utils import Config
 from ..domain import AuthException, Admin
 from ..interfaces.iuser_repository import IUserRepository
 from ..interfaces.iuser import IUser
-from ..factories import AuthUserFactory, AdminFactory, UserFactory
+from ..factories import AuthUserFactory, AdminFactory, IUserFactory
 
 
 class AuthService(object):
@@ -19,7 +20,7 @@ class AuthService(object):
         self.__users = {}
         self.__user_repo: IUserRepository = repo
         self.__storage_service = storage_service
-        self.__user_factory: UserFactory = AdminFactory()
+        self.__user_factory: IUserFactory = AdminFactory()
         self.__policy = PasswordPolicy.from_names(
             length=8, uppercase=1, numbers=1, special=1
         )
@@ -48,6 +49,8 @@ class AuthService(object):
 
         if self.__policy.test(password):
             raise AuthException("Password is weak")
+
+        email = validate_email(email).normalized
 
         self.__user_factory = AuthUserFactory()
         user = self.__user_factory.create_user(email, password)

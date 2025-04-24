@@ -1,7 +1,8 @@
-from abc import abstractmethod, ABC
+from abc import abstractmethod
+from .irestorable import IRestorable
 
 
-class IStorage(ABC):
+class IStorage(IRestorable):
     @property
     @abstractmethod
     def id(self) -> str: ...
