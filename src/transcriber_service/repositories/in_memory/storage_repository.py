@@ -1,9 +1,6 @@
 from copy import copy
 
-from ...interfaces.ifile_manager import IFileManager
-from ...interfaces.iserializer import ISerializer
-from ...interfaces.istorage_repository import IStorageRepository
-from ...interfaces.istorage import IStorage
+from ...interfaces import IFileManager, ISerializer, IStorageRepository, IStorage
 
 
 class LocalStorageRepository(IStorageRepository):

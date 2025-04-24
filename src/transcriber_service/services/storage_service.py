@@ -1,7 +1,6 @@
-from ..interfaces.istorage_repository import IStorageRepository
-from ..interfaces.istorage_service import IStorageService
-from ..interfaces.istorage import IStorage
+
 from ..factories import IStorageFactory, StorageFactory
+from ..interfaces import IStorage, IStorageRepository, IStorageService
 
 
 class StorageService(IStorageService):

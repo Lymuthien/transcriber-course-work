@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from ...interfaces.ifile_manager import IFileManager
-from ...interfaces.iserializer import ISerializer
+from ...interfaces import IFileManager, ISerializer
 
 
 class LocalFileManager(IFileManager):
@@ -12,7 +11,7 @@ class LocalFileManager(IFileManager):
         """Save data to file."""
 
         if serializer:
-            filename = f'{filename}.{serializer.extension}'
+            filename = f"{filename}.{serializer.extension}"
             data = serializer.serialize(data)
             binary = serializer.binary
 
@@ -25,7 +24,7 @@ class LocalFileManager(IFileManager):
     def load(filename: str, binary: bool = True, serializer: ISerializer = None):
         """Load data from file."""
         if serializer:
-            filename = f'{filename}.{serializer.extension}'
+            filename = f"{filename}.{serializer.extension}"
             binary = serializer.binary
 
         with open(filename, "rb" if binary else "r") as f:

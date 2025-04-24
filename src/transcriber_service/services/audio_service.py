@@ -2,8 +2,7 @@ from audio_transcribing import NatashaStopwordsRemover, Transcriber
 
 from .export.text_exporter import TextExporter
 from ..factories import IAudioRecordFactory, AudioRecordFactory
-from ..interfaces.iaudio_record import IAudioRecord
-from ..interfaces.iaudio_repository import IAudioRepository
+from ..interfaces import IAudioRepository, IAudioRecord
 from ..utils import Config
 
 

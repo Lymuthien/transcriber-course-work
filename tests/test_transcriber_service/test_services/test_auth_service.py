@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.interfaces.iuser import IUser
+from transcriber_service.interfaces.domain_interfaces import IUser
 from transcriber_service.domain import AuthException, Admin
-from transcriber_service.interfaces.iuser_repository import IUserRepository
+from transcriber_service.interfaces.repositories_interfaces import IUserRepository
 from transcriber_service.services import StorageService, AuthService
 
 

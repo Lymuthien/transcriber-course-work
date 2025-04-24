@@ -1,7 +1,4 @@
-from ...interfaces.ifile_manager import IFileManager
-from ...interfaces.iserializer import ISerializer
-from ...interfaces.iuser_repository import IUserRepository
-from ...interfaces.iuser import IUser
+from ...interfaces import IUser, IFileManager, ISerializer, IUserRepository
 
 
 class LocalUserRepository(IUserRepository):

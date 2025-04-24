@@ -1,9 +1,5 @@
 from typing import Dict, Any
 
-from ...interfaces.iserializer import ISerializer, IDictable
-from ...interfaces.iuser import IUser
-from ...interfaces.istorage import IStorage
-from ...interfaces.iaudio_record import IAudioRecord
 from ...factories import (
     AdminFactory,
     AuthUserFactory,
@@ -13,6 +9,7 @@ from ...factories import (
     IAudioRecordFactory,
     IStorageFactory,
 )
+from ...interfaces import IAudioRecord, IStorage, IUser, ISerializer, IDictable
 
 
 class UserSerializer(IDictable):

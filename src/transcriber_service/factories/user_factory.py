@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..domain import AuthUser, Admin
-from ..interfaces.iuser import IUser
+from ..interfaces import IUser
 
 
 class IUserFactory(ABC):

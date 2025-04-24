@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..domain import Storage
-from ..interfaces.istorage import IStorage
+from ..interfaces import IStorage
 
 
 class IStorageFactory(ABC):

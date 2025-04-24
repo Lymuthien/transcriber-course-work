@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from ..interfaces.iaudio_record import IAudioRecord
+from ..interfaces import IAudioRecord
 
 
 class AudioRecord(IAudioRecord):

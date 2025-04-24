@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from .exceptions import AuthException
 from .password_manager import PasswordManager
-from ..interfaces.iuser import IUser
+from ..interfaces import IUser
 
 class User(IUser):
     """

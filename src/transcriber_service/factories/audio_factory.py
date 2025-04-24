@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..domain import AudioRecord
-from ..interfaces.iaudio_record import IAudioRecord
+from ..interfaces import IAudioRecord
 
 
 class IAudioRecordFactory(ABC):

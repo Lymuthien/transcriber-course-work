@@ -1,10 +1,12 @@
 from typing import Dict
 
-from ...interfaces.iaudio_record import IAudioRecord
-from ...interfaces.iaudio_repository import IAudioRepository
-from ...interfaces.ifile_manager import IFileManager
-from ...interfaces.iserializer import ISerializer
-from ...interfaces.istorage_repository import IStorageRepository
+from ...interfaces import (
+    IAudioRecord,
+    IFileManager,
+    ISerializer,
+    IStorageRepository,
+    IAudioRepository,
+)
 
 
 class LocalAudioRepository(IAudioRepository):
