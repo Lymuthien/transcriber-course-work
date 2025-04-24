@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.domain import AuthException, Admin, User
+from transcriber_service.interfaces.iuser import IUser
+from transcriber_service.domain import AuthException, Admin
 from transcriber_service.interfaces.iuser_repository import IUserRepository
 from transcriber_service.services import StorageService, AuthService
 
@@ -32,14 +33,14 @@ class TestAuthService(unittest.TestCase):
 
     def test_block_user(self):
         mock_admin = MagicMock(spec=Admin)
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         self.mock_user_repository.get_by_email.return_value = mock_user
 
         self.auth_service.block_user(mock_admin, '<EMAIL>')
         self.mock_user_repository.get_by_email.assert_called_once_with('<EMAIL>')
 
     def test_block_user_initiator_not_admin_raises_error(self):
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         with self.assertRaises(PermissionError):
             self.auth_service.block_user(mock_user, '<EMAIL>')
 
@@ -52,14 +53,14 @@ class TestAuthService(unittest.TestCase):
 
     def test_unblock_user(self):
         mock_admin = MagicMock(spec=Admin)
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         self.mock_user_repository.get_by_email.return_value = mock_user
 
         self.auth_service.unblock_user(mock_admin, '<EMAIL>')
         self.mock_user_repository.get_by_email.assert_called_once_with('<EMAIL>')
 
     def test_unblock_user_initiator_not_admin_raises_error(self):
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         with self.assertRaises(PermissionError):
             self.auth_service.unblock_user(mock_user, '<EMAIL>')
 
@@ -72,7 +73,7 @@ class TestAuthService(unittest.TestCase):
 
     def test_delete_user(self):
         mock_admin = MagicMock(spec=Admin)
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         self.mock_user_repository.get_by_email.return_value = mock_user
 
         self.auth_service.delete_user(mock_admin, '<EMAIL>')
@@ -80,7 +81,7 @@ class TestAuthService(unittest.TestCase):
         self.mock_user_repository.delete.assert_called_once_with(mock_user)
 
     def test_delete_user_initiator_not_admin_raises_error(self):
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         with self.assertRaises(PermissionError):
             self.auth_service.delete_user(mock_user, '<EMAIL>')
 
@@ -109,7 +110,7 @@ class TestAuthService(unittest.TestCase):
             self.auth_service.create_admin(email='<EMAIL>', password='<PASSWORD>')
 
     def test_change_password(self):
-        mock_user = MagicMock(spec=User)
+        mock_user = MagicMock(spec=IUser)
         self.mock_user_repository.get_by_email.return_value = mock_user
 
         self.auth_service.change_password('<EMAIL>', 'pass', ';ldf;lSDL54-*')

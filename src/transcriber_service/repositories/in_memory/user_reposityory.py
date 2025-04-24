@@ -1,7 +1,7 @@
 from ...interfaces.ifile_manager import IFileManager
 from ...interfaces.iserializer import ISerializer
 from ...interfaces.iuser_repository import IUserRepository
-from ...domain import User
+from ...interfaces.iuser import IUser
 
 
 class LocalUserRepository(IUserRepository):
@@ -16,7 +16,7 @@ class LocalUserRepository(IUserRepository):
 
         self.__serializer = serializer
         self.__file_manager = file_manager
-        self._users: dict[str, User] = {}
+        self._users: dict[str, IUser] = {}
         self.__dir: str = data_dir
 
         try:
@@ -24,19 +24,19 @@ class LocalUserRepository(IUserRepository):
                 data_dir, binary=False, serializer=self.__serializer
             )
         except Exception as e:
-            print(e)
+            pass
 
-    def get_by_id(self, user_id: str) -> User | None:
+    def get_by_id(self, user_id: str) -> IUser | None:
         """Return user by its ID if it exists else None."""
 
         return self._users.get(user_id)
 
-    def get_by_email(self, email: str) -> User | None:
+    def get_by_email(self, email: str) -> IUser | None:
         """Return user by email if it exists else None."""
 
         return next((u for u in self._users.values() if u.email == email), None)
 
-    def add(self, user: User) -> None:
+    def add(self, user: IUser) -> None:
         """
         Add user to repository.
 
@@ -51,7 +51,7 @@ class LocalUserRepository(IUserRepository):
             self._users, self.__dir, binary=False, serializer=self.__serializer
         )
 
-    def update(self, user: User) -> None:
+    def update(self, user: IUser) -> None:
         """
         Update user in repository.
 
@@ -66,7 +66,7 @@ class LocalUserRepository(IUserRepository):
             self._users, self.__dir, binary=False, serializer=self.__serializer
         )
 
-    def delete(self, user: User) -> None:
+    def delete(self, user: IUser) -> None:
         """
         Delete user from repository.
 

@@ -1,11 +1,12 @@
 from typing import Dict, Any
 
-from ...domain import User, Storage, AudioRecord, Admin, AuthUser, password_manager
+from ...domain import Storage, AudioRecord
 from ...interfaces.iserializer import ISerializer, IDictable
+from ...interfaces.iuser import IUser
 
 
 class UserSerializer(IDictable):
-    def to_dict(self, user: User) -> Dict[str, Any]:
+    def to_dict(self, user: IUser) -> Dict[str, Any]:
         return {
             "type": user.__class__.__name__,
             "id": user.id,
@@ -17,7 +18,7 @@ class UserSerializer(IDictable):
             "temp_password_hash": user.temp_password_hash,
         }
 
-    def from_dict(self, data: Dict[str, Any]) -> User:
+    def from_dict(self, data: Dict[str, Any]) -> IUser:
         cls = globals()[data["type"]]
         user = cls.__new__(cls)
         user.restore_state(data)

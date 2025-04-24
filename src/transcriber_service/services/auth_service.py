@@ -3,8 +3,10 @@ from password_strength import PasswordPolicy
 from .email_service import EmailService
 from ..interfaces.istorage_service import IStorageService
 from ..utils import Config
-from ..domain import AuthUser, AuthException, Admin, User
+from ..domain import AuthException, Admin
 from ..interfaces.iuser_repository import IUserRepository
+from ..interfaces.iuser import IUser
+from ..factories import AuthUserFactory, AdminFactory, UserFactory
 
 
 class AuthService(object):
@@ -17,6 +19,7 @@ class AuthService(object):
         self.__users = {}
         self.__user_repo: IUserRepository = repo
         self.__storage_service = storage_service
+        self.__user_factory: UserFactory = AdminFactory()
         self.__policy = PasswordPolicy.from_names(
             length=8, uppercase=1, numbers=1, special=1
         )
@@ -28,7 +31,7 @@ class AuthService(object):
             sender_password=Config.SENDER_PASSWORD,
         )
 
-    def register_user(self, email: str, password: str) -> AuthUser:
+    def register_user(self, email: str, password: str) -> IUser:
         """
         Register a new user.
 
@@ -46,14 +49,15 @@ class AuthService(object):
         if self.__policy.test(password):
             raise AuthException("Password is weak")
 
-        user = AuthUser(email, password)
+        self.__user_factory = AuthUserFactory()
+        user = self.__user_factory.create_user(email, password)
         self.__user_repo.add(user)
 
         self.__storage_service.create_storage(user.id)
 
         return user
 
-    def block_user(self, initiator: User, target_email: str) -> None:
+    def block_user(self, initiator: IUser, target_email: str) -> None:
         """
         Block user. Can be unblocked. Use unblock_user().
 
@@ -72,7 +76,7 @@ class AuthService(object):
 
         user.is_blocked = True
 
-    def unblock_user(self, initiator: User, target_email: str):
+    def unblock_user(self, initiator: IUser, target_email: str):
         """
         Unblock user. Can be blocked again. Use block_user().
 
@@ -90,7 +94,7 @@ class AuthService(object):
             raise AuthException("User not found")
         user.is_blocked = False
 
-    def delete_user(self, initiator: User, target_email: str):
+    def delete_user(self, initiator: IUser, target_email: str):
         """
         Delete user. Can not be restored. Use careful.
 
@@ -108,7 +112,7 @@ class AuthService(object):
             raise AuthException("User not found")
         self.__user_repo.delete(user)
 
-    def create_admin(self, email: str, password: str) -> Admin:
+    def create_admin(self, email: str, password: str) -> IUser:
         """
         Create new admin user.
 
@@ -126,13 +130,14 @@ class AuthService(object):
         if self.__policy.test(password):
             raise AuthException("Password is weak")
 
-        user = Admin(email, password)
+        self.__user_factory = AdminFactory()
+        user = self.__user_factory.create_user(email, password)
         self.__user_repo.add(user)
         self.__storage_service.create_storage(user.id)
 
         return user
 
-    def login(self, email: str, password: str) -> User:
+    def login(self, email: str, password: str) -> IUser:
         """
         Login with email and password.
 

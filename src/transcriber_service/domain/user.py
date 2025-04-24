@@ -6,9 +6,9 @@ from email_validator import validate_email
 
 from .exceptions import AuthException
 from .password_manager import PasswordManager
+from ..interfaces.iuser import IUser
 
-
-class User(object):
+class User(IUser):
     """
     Represents a base user in the system.
 
