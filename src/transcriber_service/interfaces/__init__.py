@@ -1,8 +1,8 @@
-from domain_interfaces import *
-from ifile_manager import *
-from iserializer import *
-from istorage_service import *
-from repositories_interfaces import *
+from .domain_interfaces import *
+from .ifile_manager import *
+from .iserializer import *
+from .istorage_service import *
+from .repositories_interfaces import *
 
 
 __all__ = [

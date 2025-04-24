@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from ..domain import AuthUser, Admin
 from ..interfaces import IUser
 

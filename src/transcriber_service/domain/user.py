@@ -6,6 +6,7 @@ from .exceptions import AuthException
 from .password_manager import PasswordManager
 from ..interfaces import IUser
 
+
 class User(IUser):
     """
     Represents a base user in the system.

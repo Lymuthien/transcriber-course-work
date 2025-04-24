@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from .domain_interfaces import IAudioRecord, IStorage, IUser
 
+from .domain_interfaces import IAudioRecord, IStorage, IUser
 
 
 class IUserRepository(ABC):
