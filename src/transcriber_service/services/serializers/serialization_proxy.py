@@ -1,10 +1,10 @@
 from typing import Dict, Any
 
-from ...domain import User, Storage, AudioRecord, Admin, AuthUser
+from ...domain import User, Storage, AudioRecord, Admin, AuthUser, password_manager
 from ...interfaces.iserializer import ISerializer, IDictable
 
 
-class DictUser(IDictable):
+class UserSerializer(IDictable):
     def to_dict(self, user: User) -> Dict[str, Any]:
         return {
             "type": user.__class__.__name__,
@@ -25,7 +25,7 @@ class DictUser(IDictable):
         return user
 
 
-class DictStorage(IDictable):
+class StorageSerializer(IDictable):
     def to_dict(self, storage: Storage) -> dict[str, Any]:
         return {
             "type": storage.__class__.__name__,
@@ -41,7 +41,7 @@ class DictStorage(IDictable):
         return storage
 
 
-class DictAudioRecord(IDictable):
+class AudioRecordSerializer(IDictable):
     def to_dict(self, audio: AudioRecord) -> dict[str, Any]:
         return {
             "type": audio.__class__.__name__,
@@ -62,16 +62,34 @@ class DictAudioRecord(IDictable):
         return audio
 
 
-class SerializerProxy(ISerializer):
-    def __init__(self, serializer: ISerializer):
-        self._serializer = serializer
-        self._adapters: dict[str, IDictable] = {
-            User.__name__: DictUser(),
-            Admin.__name__: DictUser(),
-            AuthUser.__name__: DictUser(),
-            Storage.__name__: DictStorage(),
-            AudioRecord.__name__: DictAudioRecord(),
+class EntitySerializerFactory(object):
+    def __init__(self):
+        us = UserSerializer()
+        self.__serializers: Dict[str, IDictable] = {
+            "User": us,
+            "AuthUser": us,
+            "Admin": us,
+            "Storage": StorageSerializer(),
+            "AudioRecord": AudioRecordSerializer(),
         }
+
+    def get_serializer(self, entity_type: str) -> IDictable | None:
+        serializer = self.__serializers.get(entity_type)
+        return serializer
+
+    def register_serializer(self, entity_type: str, serializer: IDictable) -> None:
+        """Register a new serializer for an entity type."""
+        self.__serializers[entity_type] = serializer
+
+
+class SerializerProxy(ISerializer):
+    def __init__(
+        self,
+        serializer: ISerializer,
+        entity_serializer_factory: EntitySerializerFactory,
+    ):
+        self.__base_serializer = serializer
+        self.__serializer_factory = entity_serializer_factory
 
     def serialize(self, obj: Any) -> str:
         if isinstance(obj, (list, tuple, set)):
@@ -79,21 +97,29 @@ class SerializerProxy(ISerializer):
         elif isinstance(obj, dict):
             data = {key: self.serialize(val) for key, val in obj.items()}
         else:
-            adapter = self._adapters.get(obj.__class__.__name__)
-            data = adapter.to_dict(obj) if adapter else obj
+            serializer = self.__serializer_factory.get_serializer(
+                obj.__class__.__name__
+            )
+            data = serializer.to_dict(obj) if serializer else obj
 
-        return self._serializer.serialize(data)
+        return self.__base_serializer.serialize(data)
 
     def deserialize(self, data: str) -> Any:
-        data = self._serializer.deserialize(data)
+        data = self.__base_serializer.deserialize(data)
 
         if isinstance(data, (list, tuple, set)):
             return list(self.deserialize(el) for el in data)
         elif isinstance(data, dict):
             if data.get("type"):
-                adapter = self._adapters.get(data.get("type"))
-                return adapter.from_dict(data) if adapter else data
+                serializer = self.__serializer_factory.get_serializer(data["type"])
+                return serializer.from_dict(data) if serializer else data
             else:
                 return {key: self.deserialize(val) for key, val in data.items()}
         else:
             return data
+
+    def extension(self) -> str:
+        return self.__base_serializer.extension
+
+    def binary(self) -> bool:
+        return self.__base_serializer.binary

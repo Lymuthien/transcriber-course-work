@@ -16,3 +16,11 @@ class ISerializer(ABC):
 
     @abstractmethod
     def deserialize(self, data: str): ...
+
+    @property
+    @abstractmethod
+    def binary(self) -> bool: ...
+
+    @property
+    @abstractmethod
+    def extension(self) -> str: ...

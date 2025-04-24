@@ -11,10 +11,12 @@ class LocalFileManager(IFileManager):
     ) -> None:
         """Save data to file."""
 
-        file_path = Path(filename)
-
         if serializer:
+            filename = f'{filename}.{serializer.extension}'
             data = serializer.serialize(data)
+            binary = serializer.binary
+
+        file_path = Path(filename)
 
         with open(file_path, "wb" if binary else "w") as f:
             f.write(data)
@@ -22,10 +24,11 @@ class LocalFileManager(IFileManager):
     @staticmethod
     def load(filename: str, binary: bool = True, serializer: ISerializer = None):
         """Load data from file."""
+        if serializer:
+            filename = f'{filename}.{serializer.extension}'
+            binary = serializer.binary
 
         with open(filename, "rb" if binary else "r") as f:
             data = f.read()
-            if serializer:
-                data = serializer.deserialize(data)
 
-            return data
+            return serializer.deserialize(data) if serializer else data

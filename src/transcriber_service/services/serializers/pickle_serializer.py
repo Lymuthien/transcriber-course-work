@@ -13,3 +13,7 @@ class PickleSerializer(ISerializer):
     @property
     def extension(self) -> str:
         return 'pickle'
+
+    @property
+    def binary(self) -> bool:
+        return True
