@@ -1,17 +1,10 @@
 from typing import Dict, Any
 
-from ...domain import User, Storage, AudioRecord
+from ...domain import User, Storage, AudioRecord, Admin, AuthUser
+from ...interfaces.iserializer import ISerializer, IDictable
 
 
-class SerializationAdapter(object):
-    def to_dict(self, obj: Any) -> dict[str, Any]:
-        raise NotImplementedError
-
-    def from_dict(self, data: dict[str, Any]) -> Any:
-        raise NotImplementedError
-
-
-class UserAdapter(SerializationAdapter):
+class DictUser(IDictable):
     def to_dict(self, user: User) -> Dict[str, Any]:
         return {
             "type": user.__class__.__name__,
@@ -32,7 +25,7 @@ class UserAdapter(SerializationAdapter):
         return user
 
 
-class StorageAdapter(SerializationAdapter):
+class DictStorage(IDictable):
     def to_dict(self, storage: Storage) -> dict[str, Any]:
         return {
             "type": storage.__class__.__name__,
@@ -48,7 +41,7 @@ class StorageAdapter(SerializationAdapter):
         return storage
 
 
-class AudioRecordAdapter(SerializationAdapter):
+class DictAudioRecord(IDictable):
     def to_dict(self, audio: AudioRecord) -> dict[str, Any]:
         return {
             "type": audio.__class__.__name__,
@@ -69,23 +62,38 @@ class AudioRecordAdapter(SerializationAdapter):
         return audio
 
 
-class SerializerFacade(object):
-    def __init__(self, serializer):
+class SerializerProxy(ISerializer):
+    def __init__(self, serializer: ISerializer):
         self._serializer = serializer
-        self._adapters: dict[str, SerializationAdapter] = {
-            "User": UserAdapter(),
-            "Storage": StorageAdapter(),
-            "AudioRecord": AudioRecordAdapter(),
+        self._adapters: dict[str, IDictable] = {
+            User.__name__: DictUser(),
+            Admin.__name__: DictUser(),
+            AuthUser.__name__: DictUser(),
+            Storage.__name__: DictStorage(),
+            AudioRecord.__name__: DictAudioRecord(),
         }
 
     def serialize(self, obj: Any) -> str:
-        adapter = self._adapters[obj.__class__.__name__]
-        data_dict = adapter.to_dict(obj)
+        if isinstance(obj, (list, tuple, set)):
+            data = tuple(self.serialize(el) for el in obj)
+        elif isinstance(obj, dict):
+            data = {key: self.serialize(val) for key, val in obj.items()}
+        else:
+            adapter = self._adapters.get(obj.__class__.__name__)
+            data = adapter.to_dict(obj) if adapter else obj
 
-        return self._serializer.serialize(data_dict)
+        return self._serializer.serialize(data)
 
     def deserialize(self, data: str) -> Any:
-        data_dict = self._serializer.deserialize(data)
-        adapter = self._adapters[data_dict["type"]]
+        data = self._serializer.deserialize(data)
 
-        return adapter.from_dict(data_dict)
+        if isinstance(data, (list, tuple, set)):
+            return list(self.deserialize(el) for el in data)
+        elif isinstance(data, dict):
+            if data.get("type"):
+                adapter = self._adapters.get(data.get("type"))
+                return adapter.from_dict(data) if adapter else data
+            else:
+                return {key: self.deserialize(val) for key, val in data.items()}
+        else:
+            return data

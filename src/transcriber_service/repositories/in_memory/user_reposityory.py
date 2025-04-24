@@ -1,14 +1,12 @@
-from os.path import exists
-
-from .local_file_manager import LocalPickleFileManager
 from ...interfaces.ifile_manager import IFileManager
+from ...interfaces.iserializer import ISerializer
 from ...interfaces.iuser_repository import IUserRepository
 from ...domain import User
 
 
 class LocalUserRepository(IUserRepository):
     def __init__(
-        self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager
+        self, data_dir: str, file_manager: IFileManager, serializer: ISerializer
     ):
         """
         Create local user repository.
@@ -16,14 +14,17 @@ class LocalUserRepository(IUserRepository):
         :param data_dir: Directory to store local user data.
         """
 
+        self.__serializer = serializer
         self.__file_manager = file_manager
         self._users: dict[str, User] = {}
         self.__dir: str = data_dir
 
         try:
-            self._users = self.__file_manager.load(data_dir)
-        except:
-            pass
+            self._users = self.__file_manager.load(
+                data_dir, binary=False, serializer=self.__serializer
+            )
+        except Exception as e:
+            print(e)
 
     def get_by_id(self, user_id: str) -> User | None:
         """Return user by its ID if it exists else None."""
@@ -46,7 +47,9 @@ class LocalUserRepository(IUserRepository):
         if user.id in self._users:
             raise ValueError("User already exists")
         self._users[user.id] = user
-        self.__file_manager.save(self._users, self.__dir)
+        self.__file_manager.save(
+            self._users, self.__dir, binary=False, serializer=self.__serializer
+        )
 
     def update(self, user: User) -> None:
         """
@@ -59,7 +62,9 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users[user.id] = user
-        self.__file_manager.save(self._users, self.__dir)
+        self.__file_manager.save(
+            self._users, self.__dir, binary=False, serializer=self.__serializer
+        )
 
     def delete(self, user: User) -> None:
         """
@@ -72,4 +77,6 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users.pop(user.id)
-        self.__file_manager.save(self._users, self.__dir)
+        self.__file_manager.save(
+            self._users, self.__dir, binary=False, serializer=self.__serializer
+        )

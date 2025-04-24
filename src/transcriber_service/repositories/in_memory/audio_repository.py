@@ -1,9 +1,9 @@
 from typing import Dict
 
-from .local_file_manager import LocalPickleFileManager
 from ...interfaces.iaudio_record import IAudioRecord
 from ...interfaces.iaudio_repository import IAudioRepository
 from ...interfaces.ifile_manager import IFileManager
+from ...interfaces.iserializer import ISerializer
 from ...interfaces.istorage_repository import IStorageRepository
 
 
@@ -12,7 +12,8 @@ class LocalAudioRepository(IAudioRepository):
         self,
         storage_repository: IStorageRepository,
         data_dir: str,
-        file_manager: IFileManager = LocalPickleFileManager,
+        file_manager: IFileManager,
+        serializer: ISerializer,
     ) -> None:
         """
         Create local audio repository.
@@ -20,13 +21,16 @@ class LocalAudioRepository(IAudioRepository):
         :type storage_repository: IStorageRepository.
         :param data_dir: Directory to store local audio data.
         """
-        self.__manager = file_manager
+        self.__serializer = serializer
+        self.__file_manager = file_manager
         self.__records: Dict[str, IAudioRecord] = {}
         self.__storage_repository = storage_repository
         self.__dir = data_dir
 
         try:
-            self.__records = file_manager.load(self.__dir)
+            self.__records = file_manager.load(
+                self.__dir, binary=False, serializer=serializer
+            )
         except:
             pass
 
@@ -91,7 +95,9 @@ class LocalAudioRepository(IAudioRepository):
             storage.add_audio_record(record.id)
             self.__storage_repository.update(storage)
             self.__records[record.id] = record
-            self.__manager.save(self.__records, self.__dir)
+            self.__file_manager.save(
+                self.__records, self.__dir, binary=False, serializer=self.__serializer
+            )
 
     def update(self, record: IAudioRecord) -> None:
         """
@@ -104,7 +110,9 @@ class LocalAudioRepository(IAudioRepository):
         if record.id not in self.__records:
             raise ValueError("Record not found.")
         self.__records[record.id] = record
-        self.__manager.save(self.__records, self.__dir)
+        self.__file_manager.save(
+            self.__records, self.__dir, binary=False, serializer=self.__serializer
+        )
 
     def delete(self, record_id: str) -> None:
         """
@@ -124,4 +132,6 @@ class LocalAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         del self.__records[record_id]
-        self.__manager.save(self.__records, self.__dir)
+        self.__file_manager.save(
+            self.__records, self.__dir, binary=False, serializer=self.__serializer
+        )

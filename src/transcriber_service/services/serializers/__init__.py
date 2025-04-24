@@ -1,4 +1,4 @@
-from .serialization_adapter import *
+from .serialization_proxy import *
 from .json_serializer import *
 from .pickle_serializer import *
 

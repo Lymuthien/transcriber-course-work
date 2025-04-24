@@ -1,14 +1,14 @@
 from copy import copy
 
-from .local_file_manager import LocalPickleFileManager
 from ...interfaces.ifile_manager import IFileManager
+from ...interfaces.iserializer import ISerializer
 from ...interfaces.istorage_repository import IStorageRepository
 from ...domain import Storage
 
 
 class LocalStorageRepository(IStorageRepository):
     def __init__(
-        self, data_dir: str, file_manager: IFileManager = LocalPickleFileManager
+        self, data_dir: str, file_manager: IFileManager, serializer: ISerializer
     ):
         """
         Create local storage repository.
@@ -16,14 +16,17 @@ class LocalStorageRepository(IStorageRepository):
         :param data_dir: Directory to store local storage data.
         """
 
+        self.__serializer: ISerializer = serializer
         self.__storages: dict[str, Storage] = {}
         self.__file_manager: IFileManager = file_manager
         self.__user_storage_map: dict[str, str] = {}  # user_id -> storage_id
-        self.__dir = data_dir
+        self.__dir: str = data_dir
 
         try:
             self.__storages, self.__user_storage_map = self.__file_manager.load(
-                data_dir
+                data_dir,
+                binary=False,
+                serializer=self.__serializer,
             )
         except:
             pass
@@ -52,7 +55,12 @@ class LocalStorageRepository(IStorageRepository):
 
         self.__storages[storage.id] = storage
         self.__user_storage_map[storage.user_id] = storage.id
-        self.__file_manager.save((self.__storages, self.__user_storage_map), self.__dir)
+        self.__file_manager.save(
+            (self.__storages, self.__user_storage_map),
+            self.__dir,
+            binary=False,
+            serializer=self.__serializer,
+        )
 
     def update(self, storage: Storage) -> None:
         """
@@ -65,7 +73,12 @@ class LocalStorageRepository(IStorageRepository):
         if storage.id not in self.__storages:
             raise ValueError("Storage not found")
         self.__storages[storage.id] = storage
-        self.__file_manager.save((self.__storages, self.__user_storage_map), self.__dir)
+        self.__file_manager.save(
+            (self.__storages, self.__user_storage_map),
+            self.__dir,
+            binary=False,
+            serializer=self.__serializer,
+        )
 
     def get_all_records(self, storage_id: str) -> list[str]:
         """Return list of audio records for storage by its ID."""
