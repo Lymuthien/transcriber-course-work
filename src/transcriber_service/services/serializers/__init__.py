@@ -6,5 +6,5 @@ __all__ = [
     "SerializerProxy",
     "JsonSerializer",
     "PickleSerializer",
-    "EntitySerializerFactory"
+    "EntitySerializerFactory",
 ]
