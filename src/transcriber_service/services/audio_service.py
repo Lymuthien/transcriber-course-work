@@ -15,6 +15,7 @@ class AudioService(object):
     """
 
     def __init__(self, repo: IAudioRepository, exporter: TextExporter = TextExporter()):
+        self._MAX_SIZE = 1024 * 1024 * 10
         self.__audio_repo = repo
         self.__exporter = exporter
         self.__stopwords_remover = NatashaStopwordsRemover()
@@ -44,6 +45,8 @@ class AudioService(object):
         :return: Created Audio Record.
         """
 
+        if len(content) > self._MAX_SIZE:
+            raise Exception("Audio file too large.")
         text, language = self.__transcriber.transcribe(content, language, main_theme)
         audio = self.__audio_factory.create_audio(
             file_name, file_path, storage_id, text, language

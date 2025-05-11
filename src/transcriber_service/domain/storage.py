@@ -55,4 +55,3 @@ class Storage(IStorage):
         self._id = data["id"]
         self._user_id = data["user_id"]
         self._audio_record_ids = data["audio_record_ids"]
-

@@ -13,7 +13,7 @@ class JsonSerializer(ISerializer):
 
     @property
     def extension(self) -> str:
-        return 'json'
+        return "json"
 
     @property
     def binary(self) -> bool:
