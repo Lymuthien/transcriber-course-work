@@ -1,3 +1,5 @@
+import os
+
 from .formats.docx_exporter import DocxExporter
 from .formats.iexporter import IExporter
 from ...domain.interfaces import ITextExporter
@@ -22,6 +24,14 @@ class TextExporter(ITextExporter):
         :raise ValueError: If format is not supported.
         """
 
+        if not content:
+            raise ValueError("Content cannot be empty")
+        if not output_dir:
+            raise ValueError("Output directory cannot be empty")
+        if not filename:
+            raise ValueError("Filename cannot be empty")
+        if not os.path.exists(output_dir):
+            raise ValueError(f"Output directory does not exist: {output_dir}")
         if file_format not in self.__exporters:
             raise ValueError(f"Unsupported format: {file_format}")
 

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from transcriber_service.domain import AudioRecord
 from transcriber_service.domain.interfaces import IAudioRepository, IAudioRecord
-from transcriber_service.services import AudioService
+from transcriber_service.services import AudioRecordService
 from transcriber_service.infrastructure.export.text_exporter import TextExporter
 
 
@@ -18,10 +18,10 @@ class TestAudioService(unittest.TestCase):
         self.mock_transcribe_processor = MagicMock(spec=ITranscribeProcessor)
         self.mock_transcribe_processor.transcribe_audio.return_value = 'Какой-то текст на русском языке.', 'ru'
 
-        self.audio_service = AudioService(repo=self.mock_audio_repository,
-                                          stopwords_remover=self.mock_stopwords_remover,
-                                          transcribe_processor=self.mock_transcribe_processor,
-                                          exporter=self.mock_exporter)
+        self.audio_service = AudioRecordService(repo=self.mock_audio_repository,
+                                                stopwords_remover=self.mock_stopwords_remover,
+                                                transcribe_processor=self.mock_transcribe_processor,
+                                                exporter=self.mock_exporter)
 
     def test_create_audio(self):
         audio = self.audio_service.create_audio('name', b'bytes', 'path', 'id')
