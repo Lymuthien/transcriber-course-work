@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from transcriber_service.interfaces.ifile_manager import IFileManager
-from transcriber_service.interfaces.domain_interfaces import IStorage
+from transcriber_service.domain.interfaces import IStorage
 from transcriber_service.repositories.in_memory.storage_repository import LocalStorageRepository
 
 

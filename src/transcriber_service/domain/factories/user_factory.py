@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from ..domain import AuthUser, Admin
 from ..interfaces import IUser
+from ..user import AuthUser, Admin
 
 
 class IUserFactory(ABC):

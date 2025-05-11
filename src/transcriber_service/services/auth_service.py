@@ -3,8 +3,8 @@ from password_strength import PasswordPolicy
 
 from .email_service import EmailService
 from ..domain import AuthException, Admin
-from ..factories import AuthUserFactory, AdminFactory, IUserFactory
-from ..interfaces import IUser, IUserRepository
+from ..domain.interfaces import IUser, IUserRepository
+from ..domain.factories import AuthUserFactory, AdminFactory, IUserFactory
 from ..interfaces.istorage_service import IStorageService
 from ..utils import Config
 

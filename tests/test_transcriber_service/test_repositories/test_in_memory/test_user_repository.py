@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.interfaces.domain_interfaces import IUser
+from transcriber_service.domain.interfaces import IUser
 from transcriber_service.interfaces.ifile_manager import IFileManager
 from transcriber_service.repositories.in_memory.user_reposityory import LocalUserRepository
 

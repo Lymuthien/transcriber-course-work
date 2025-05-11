@@ -1,4 +1,5 @@
-from ...interfaces import IUser, IFileManager, ISerializer, IUserRepository
+from ...domain.interfaces import IUser, IUserRepository
+from ...interfaces import IFileManager, ISerializer
 
 
 class LocalUserRepository(IUserRepository):

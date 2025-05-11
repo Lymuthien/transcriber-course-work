@@ -1,7 +1,7 @@
 from typing import Any
 from uuid import uuid4
 
-from ..interfaces import IStorage
+from .interfaces import IStorage
 
 
 class Storage(IStorage):

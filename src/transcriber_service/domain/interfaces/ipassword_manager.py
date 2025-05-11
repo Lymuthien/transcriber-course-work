@@ -1,9 +1,8 @@
-import hashlib
-import secrets
-from .interfaces import IPasswordManager
+from abc import ABC, abstractmethod
 
 
-class PasswordManager(IPasswordManager):
+class IPasswordManager(ABC):
+    @abstractmethod
     def hash_password(self, password: str) -> str:
         """
         Hash a password.
@@ -11,17 +10,17 @@ class PasswordManager(IPasswordManager):
         :param password: Password to hash.
         :return: Hash result.
         """
+        pass
 
-        return hashlib.sha512(password.encode("utf-8")).hexdigest()
-
+    @abstractmethod
     def create_password(self) -> str:
         """
         Create password.
 
         :return: Not hashed password."""
 
-        password = secrets.token_urlsafe(12)
-        return password
+        pass
 
+    @abstractmethod
     def verify_password(self, hashed_password: str, other: str) -> bool:
-        return hashed_password == self.hash_password(other)
+        pass

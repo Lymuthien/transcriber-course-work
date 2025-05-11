@@ -1,12 +1,11 @@
 from typing import Dict
 
 from ...interfaces import (
-    IAudioRecord,
     IFileManager,
     ISerializer,
-    IStorageRepository,
-    IAudioRepository,
 )
+
+from ...domain.interfaces import IAudioRepository, IStorageRepository, IAudioRecord
 
 
 class LocalAudioRepository(IAudioRepository):

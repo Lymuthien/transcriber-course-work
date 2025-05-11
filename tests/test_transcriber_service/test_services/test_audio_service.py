@@ -2,8 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from transcriber_service.domain import AudioRecord
-from transcriber_service.interfaces.domain_interfaces import IAudioRecord
-from transcriber_service.interfaces.repositories_interfaces import IAudioRepository
+from transcriber_service.domain.interfaces import IAudioRepository, IAudioRecord
 from transcriber_service.services import AudioService
 from transcriber_service.services.export.text_exporter import TextExporter
 

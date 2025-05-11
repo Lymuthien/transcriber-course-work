@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from ...factories import (
+from transcriber_service.domain.factories import (
     AdminFactory,
     AuthUserFactory,
     IUserFactory,
@@ -9,7 +9,8 @@ from ...factories import (
     IAudioRecordFactory,
     IStorageFactory,
 )
-from ...interfaces import IAudioRecord, IStorage, IUser, ISerializer, IDictable
+from ...interfaces import ISerializer, IDictable
+from ...domain.interfaces import IAudioRecord, IStorage, IUser
 
 
 class UserSerializer(IDictable):

@@ -12,3 +12,5 @@ class Config:
     SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
     PYANNOTE_TOKEN = os.getenv("PYANNOTE_TOKEN")
+
+

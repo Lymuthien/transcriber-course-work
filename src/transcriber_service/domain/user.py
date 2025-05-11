@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
+from .password_manager import PasswordManager
 
 from .exceptions import AuthException
-from .password_manager import PasswordManager
-from ..interfaces import IUser
+from .interfaces import IUser
 
 
 class User(IUser):
@@ -26,7 +26,7 @@ class User(IUser):
 
         self._email: str = email
         self._id: str = uuid4().hex
-        self._password_hash: str = PasswordManager.hash_password(password)
+        self._password_hash: str = PasswordManager().hash_password(password)
         self._temp_password_hash: str | None = None
         self._registration_date: datetime = datetime.now()
         self._last_updated: datetime = self._registration_date
@@ -84,11 +84,11 @@ class User(IUser):
         :param password: Plain-text password to be verified.
         :return: True if password matches stored hash, False otherwise.
         """
-        if PasswordManager.verify_password(self._temp_password_hash, password):
+        if PasswordManager().verify_password(self._temp_password_hash, password):
             self._password_hash = self._temp_password_hash
             self._temp_password_hash = None
 
-        return PasswordManager.verify_password(self._password_hash, password)
+        return PasswordManager().verify_password(self._password_hash, password)
 
     def change_password(self, current_password: str, new_password: str) -> None:
         """
@@ -102,7 +102,7 @@ class User(IUser):
         if not self.verify_password(current_password):
             raise AuthException("Invalid current password")
 
-        self._password_hash = PasswordManager.hash_password(new_password)
+        self._password_hash = PasswordManager().hash_password(new_password)
         self._last_updated = datetime.now()
 
     def generate_temp_password(self) -> str:
@@ -112,8 +112,8 @@ class User(IUser):
         When creating a new once the old one will be invalid.
         :return: Not hashed temporary password.
         """
-        temp_password = PasswordManager.create_password()
-        self._temp_password_hash = PasswordManager.hash_password(temp_password)
+        temp_password = PasswordManager().create_password()
+        self._temp_password_hash = PasswordManager().hash_password(temp_password)
 
         return temp_password
 

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from ..domain import Storage
 from ..interfaces import IStorage
+from ..storage import Storage
 
 
 class IStorageFactory(ABC):
