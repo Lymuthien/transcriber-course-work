@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.domain.interfaces.repository_interfaces import IStorageRepository
+from transcriber_service.domain.interfaces.repositories.repository_interfaces import IStorageRepository
 from transcriber_service.services import StorageService
 
 

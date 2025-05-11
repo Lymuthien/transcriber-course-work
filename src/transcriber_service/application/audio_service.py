@@ -1,8 +1,11 @@
-from audio_transcribing import NatashaStopwordsRemover, Transcriber
-
 from transcriber_service.domain.factories import IAudioRecordFactory, AudioRecordFactory
-from transcriber_service.domain.interfaces import IAudioRepository, IAudioRecord, ITextExporter
-from transcriber_service.utils import Config
+from transcriber_service.domain.interfaces import (
+    IAudioRepository,
+    IAudioRecord,
+    ITextExporter,
+    IStopwordsRemover,
+    ITranscriber,
+)
 
 
 class AudioService(object):
@@ -13,12 +16,18 @@ class AudioService(object):
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository, exporter: ITextExporter):
+    def __init__(
+        self,
+        repo: IAudioRepository,
+        exporter: ITextExporter,
+        stopwords_remover: IStopwordsRemover,
+        transcriber: ITranscriber,
+    ):
         self._MAX_SIZE = 1024 * 1024 * 10
         self.__audio_repo = repo
         self.__exporter = exporter
-        self.__stopwords_remover = NatashaStopwordsRemover()
-        self.__transcriber = Transcriber(Config.PYANNOTE_TOKEN)
+        self.__stopwords_remover = stopwords_remover
+        self.__transcriber = transcriber
         self.__audio_factory: IAudioRecordFactory = AudioRecordFactory()
 
     def create_audio(

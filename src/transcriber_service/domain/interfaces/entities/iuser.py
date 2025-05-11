@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from datetime import datetime
 
-from .irestorable import IRestorable
+from transcriber_service.domain.interfaces.entities.irestorable import IRestorable
 
 
 class IUser(IRestorable):

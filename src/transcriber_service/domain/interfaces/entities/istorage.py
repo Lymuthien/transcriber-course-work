@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from .irestorable import IRestorable
+from transcriber_service.domain.interfaces.entities.irestorable import IRestorable
 
 
 class IStorage(IRestorable):

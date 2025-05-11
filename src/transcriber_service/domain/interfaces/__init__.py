@@ -1,9 +1,11 @@
-from .iaudio import *
-from .istorage import *
-from .iuser import *
-from .repository_interfaces import *
-from .ipassword_manager import *
-from .itext_exporter import *
+from transcriber_service.domain.interfaces.entities.iaudio import *
+from transcriber_service.domain.interfaces.entities.istorage import *
+from transcriber_service.domain.interfaces.entities.iuser import *
+from transcriber_service.domain.interfaces.repositories.repository_interfaces import *
+from transcriber_service.domain.interfaces.services.ipassword_manager import *
+from transcriber_service.domain.interfaces.services.itext_exporter import *
+from .services.itranscriber import *
+from .services.istopwords_remover import *
 
 __all__ = [
     "IAudioRecord",
@@ -14,4 +16,6 @@ __all__ = [
     "IAudioRepository",
     "IPasswordManager",
     "ITextExporter",
+    "IStopwordsRemover",
+    "ITranscriber",
 ]
