@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.interfaces.ifile_manager import IFileManager
+from transcriber_service.infrastructure.repositories import IFileManager
 from transcriber_service.domain.interfaces import IStorage
-from transcriber_service.repositories.in_memory.storage_repository import LocalStorageRepository
+from transcriber_service.infrastructure.repositories.in_memory.storage_repository import LocalStorageRepository
 
 
 class TestLocalStorageRepository(unittest.TestCase):

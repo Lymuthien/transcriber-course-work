@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.interfaces.ifile_manager import IFileManager
+from transcriber_service.infrastructure.repositories import IFileManager
 from transcriber_service.domain.interfaces import IStorageRepository, IAudioRecord, IStorage
-from transcriber_service.repositories.in_memory.audio_repository import LocalAudioRepository
+from transcriber_service.infrastructure.repositories import LocalAudioRepository
 
 
 class TestLocalAudioRepository(unittest.TestCase):

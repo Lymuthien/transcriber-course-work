@@ -1,5 +1,5 @@
-from ...domain.interfaces import IUser, IUserRepository, ISerializer
-from ...interfaces import IFileManager
+from transcriber_service.domain.interfaces import IUser, IUserRepository, ISerializer
+from transcriber_service.interfaces import IFileManager
 
 
 class LocalUserRepository(IUserRepository):

@@ -4,7 +4,7 @@ from typing import Optional
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from transcriber_service.domain.entities.user import User
-from ...domain.interfaces import IUserRepository
+from transcriber_service.domain.interfaces import IUserRepository
 
 load_dotenv()
 

@@ -1,7 +1,7 @@
 from copy import copy
 
-from ...domain.interfaces import IStorageRepository, IStorage, ISerializer
-from ...interfaces import IFileManager
+from transcriber_service.domain.interfaces import IStorageRepository, IStorage, ISerializer
+from transcriber_service.interfaces import IFileManager
 
 
 class LocalStorageRepository(IStorageRepository):
