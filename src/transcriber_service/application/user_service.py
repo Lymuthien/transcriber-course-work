@@ -3,7 +3,7 @@ from password_strength import PasswordPolicy
 
 from ..domain.factories import AuthUserFactory, AdminFactory
 from ..domain.interfaces import IUserRepository, IUser, IPasswordManager
-from ..interfaces.istorage_service import IStorageService
+from transcriber_service.application.istorage_service import IStorageService
 
 
 class UserService(object):

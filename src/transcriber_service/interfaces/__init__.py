@@ -1,6 +1,6 @@
 from .ifile_manager import *
 from .iserializer import *
-from .istorage_service import *
+from transcriber_service.application.istorage_service import *
 
 
 __all__ = [

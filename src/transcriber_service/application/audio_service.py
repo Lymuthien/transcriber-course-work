@@ -1,9 +1,8 @@
 from audio_transcribing import NatashaStopwordsRemover, Transcriber
 
-from .export.text_exporter import TextExporter
-from ..domain.factories import IAudioRecordFactory, AudioRecordFactory
-from ..domain.interfaces import IAudioRepository, IAudioRecord
-from ..utils import Config
+from transcriber_service.domain.factories import IAudioRecordFactory, AudioRecordFactory
+from transcriber_service.domain.interfaces import IAudioRepository, IAudioRecord, ITextExporter
+from transcriber_service.utils import Config
 
 
 class AudioService(object):
@@ -14,7 +13,7 @@ class AudioService(object):
     transcription processing.
     """
 
-    def __init__(self, repo: IAudioRepository, exporter: TextExporter = TextExporter()):
+    def __init__(self, repo: IAudioRepository, exporter: ITextExporter):
         self._MAX_SIZE = 1024 * 1024 * 10
         self.__audio_repo = repo
         self.__exporter = exporter

@@ -1,7 +1,7 @@
 from password_strength import PasswordPolicy
 
 from transcriber_service.application.user_service import UserService
-from transcriber_service.services.email_service import EmailService
+from transcriber_service.application.email_service import EmailService
 from transcriber_service.domain import AuthException
 from transcriber_service.domain.interfaces import (
     IUser,

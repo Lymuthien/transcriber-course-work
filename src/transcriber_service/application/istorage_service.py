@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ..domain.interfaces import IStorage
+from transcriber_service.domain.interfaces import IStorage
 
 
 class IStorageService(ABC):

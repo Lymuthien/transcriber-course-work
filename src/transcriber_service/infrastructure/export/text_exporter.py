@@ -1,8 +1,9 @@
 from .formats.docx_exporter import DocxExporter
 from .formats.iexporter import IExporter
+from ...domain.interfaces import ITextExporter
 
 
-class TextExporter(object):
+class TextExporter(ITextExporter):
     """Exporter of text (string) to different formats."""
 
     def __init__(self):

@@ -1,6 +1,6 @@
 import unittest
 
-from transcriber_service.services.export.text_exporter import TextExporter
+from transcriber_service.infrastructure.export.text_exporter import TextExporter
 
 
 class TestTextExporter(unittest.TestCase):

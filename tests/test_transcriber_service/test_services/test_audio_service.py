@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from transcriber_service.domain import AudioRecord
 from transcriber_service.domain.interfaces import IAudioRepository, IAudioRecord
 from transcriber_service.services import AudioService
-from transcriber_service.services.export.text_exporter import TextExporter
+from transcriber_service.infrastructure.export.text_exporter import TextExporter
 
 
 class TestAudioService(unittest.TestCase):
