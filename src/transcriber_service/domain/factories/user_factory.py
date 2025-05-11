@@ -8,8 +8,8 @@ class IUserFactory(ABC):
     """Abstract base class for user factories."""
 
     @abstractmethod
-    def create_user(self, email: str, password: str) -> IUser:
-        """Create a user with the given email and password."""
+    def create_user(self, email: str, password_hash: str) -> IUser:
+        """Create a user with the given email and password hash."""
         pass
 
     @abstractmethod
@@ -20,8 +20,8 @@ class IUserFactory(ABC):
 class AuthUserFactory(IUserFactory):
     """Factory for creating AuthUser instances."""
 
-    def create_user(self, email: str, password: str) -> IUser:
-        return AuthUser(email, password)
+    def create_user(self, email: str, password_hash: str) -> IUser:
+        return AuthUser(email, password_hash)
 
     def create_object(self) -> IUser:
         return AuthUser.__new__(AuthUser)
@@ -30,8 +30,8 @@ class AuthUserFactory(IUserFactory):
 class AdminFactory(IUserFactory):
     """Factory for creating Admin instances."""
 
-    def create_user(self, email: str, password: str) -> IUser:
-        return Admin(email, password)
+    def create_user(self, email: str, password_hash: str) -> IUser:
+        return Admin(email, password_hash)
 
     def create_object(self) -> IUser:
         return Admin.__new__(Admin)

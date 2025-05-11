@@ -1,6 +1,6 @@
 import hashlib
 import secrets
-from .interfaces import IPasswordManager
+from transcriber_service.domain.interfaces import IPasswordManager
 
 
 class PasswordManager(IPasswordManager):

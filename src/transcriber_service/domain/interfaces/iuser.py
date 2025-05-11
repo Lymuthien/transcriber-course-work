@@ -22,9 +22,19 @@ class IUser(IRestorable):
     def password_hash(self) -> str:
         pass
 
+    @password_hash.setter
+    @abstractmethod
+    def password_hash(self, password_hash: str):
+        pass
+
     @property
     @abstractmethod
     def temp_password_hash(self) -> str | None:
+        pass
+
+    @temp_password_hash.setter
+    @abstractmethod
+    def temp_password_hash(self, temp_password_hash: str):
         pass
 
     @property
@@ -52,19 +62,5 @@ class IUser(IRestorable):
         pass
 
     @abstractmethod
-    def verify_password(self, password: str) -> bool:
-        """
-        Verify if provided password matches stored hash.
-
-        :param password: Plain-text password to be verified.
-        :return: True if password matches stored hash, False otherwise.
-        """
-        pass
-
-    @abstractmethod
-    def change_password(self, current_password: str, new_password: str) -> None:
-        pass
-
-    @abstractmethod
-    def generate_temp_password(self) -> str:
+    def can_block(self) -> bool:
         pass

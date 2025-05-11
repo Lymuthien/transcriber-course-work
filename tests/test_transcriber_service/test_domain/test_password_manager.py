@@ -1,6 +1,6 @@
 import unittest
 
-from transcriber_service.domain.password_manager import PasswordManager
+from transcriber_service.infrastructure.password_manager import PasswordManager
 
 
 class TestPasswordManager(unittest.TestCase):

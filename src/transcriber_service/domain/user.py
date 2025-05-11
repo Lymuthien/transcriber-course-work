@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
-from .password_manager import PasswordManager
 
 from .exceptions import AuthException
 from .interfaces import IUser
@@ -15,18 +14,18 @@ class User(IUser):
     Should not be instantiated directly - use AuthUser or Admin subclasses.
     """
 
-    def __init__(self, email: str, password: str):
+    def __init__(self, email: str, password_hash: str):
         """
         Create User instance with validated credentials.
 
         :param email: User's email address.
-        :param password: Plain-text password to be hashed.
+        :param password_hash: Plain-text password to be hashed.
         :raises: If email is not valid.
         """
 
         self._email: str = email
         self._id: str = uuid4().hex
-        self._password_hash: str = PasswordManager().hash_password(password)
+        self._password_hash: str = password_hash
         self._temp_password_hash: str | None = None
         self._registration_date: datetime = datetime.now()
         self._last_updated: datetime = self._registration_date
@@ -49,9 +48,28 @@ class User(IUser):
     def password_hash(self) -> str:
         return self._password_hash
 
+    @password_hash.setter
+    def password_hash(self, password_hash: str):
+        if not password_hash:
+            raise AuthException("Password hash cannot be empty.")
+        self._password_hash = password_hash
+        self._last_updated = datetime.now()
+
     @property
     def temp_password_hash(self) -> str | None:
         return self._temp_password_hash
+
+    @temp_password_hash.setter
+    def temp_password_hash(self, temp_password_hash: str):
+        if not temp_password_hash:
+            raise AuthException("Temp password hash cannot be empty.")
+        self._temp_password_hash = temp_password_hash
+        self._last_updated = datetime.now()
+
+    def clear_temp_password_hash(self):
+        if self._temp_password_hash:
+            self._password_hash = self._temp_password_hash
+            self._temp_password_hash = None
 
     @property
     def id(self) -> str:
@@ -77,46 +95,6 @@ class User(IUser):
 
         return self._last_updated
 
-    def verify_password(self, password: str) -> bool:
-        """
-        Verify if provided password matches stored hash.
-
-        :param password: Plain-text password to be verified.
-        :return: True if password matches stored hash, False otherwise.
-        """
-        if PasswordManager().verify_password(self._temp_password_hash, password):
-            self._password_hash = self._temp_password_hash
-            self._temp_password_hash = None
-
-        return PasswordManager().verify_password(self._password_hash, password)
-
-    def change_password(self, current_password: str, new_password: str) -> None:
-        """
-        Change user password.
-
-        :param current_password: Current user password.
-        :param new_password: New password.
-        :return: None
-        :raise AuthException: if current password does not match.
-        """
-        if not self.verify_password(current_password):
-            raise AuthException("Invalid current password")
-
-        self._password_hash = PasswordManager().hash_password(new_password)
-        self._last_updated = datetime.now()
-
-    def generate_temp_password(self) -> str:
-        """
-        Generate temporary password.
-
-        When creating a new once the old one will be invalid.
-        :return: Not hashed temporary password.
-        """
-        temp_password = PasswordManager().create_password()
-        self._temp_password_hash = PasswordManager().hash_password(temp_password)
-
-        return temp_password
-
     def restore_state(self, data: dict[str, Any]):
         self._id = data["id"]
         self._email = data["email"]
@@ -125,6 +103,9 @@ class User(IUser):
         self._is_blocked = data["is_blocked"]
         self._password_hash = data["password_hash"]
         self._temp_password_hash = data["temp_password_hash"]
+
+    def can_block(self) -> bool:
+        raise NotImplementedError()
 
 
 class AuthUser(User):
@@ -135,8 +116,11 @@ class AuthUser(User):
     Should be used for all registered non-admin users.
     """
 
-    def __init__(self, email: str, password: str):
-        super().__init__(email, password)
+    def __init__(self, email: str, password_hash: str):
+        super().__init__(email, password_hash)
+
+    def can_block(self) -> bool:
+        return False
 
 
 class Admin(AuthUser):
@@ -147,5 +131,8 @@ class Admin(AuthUser):
     Should be instantiated only through proper admin creation process.
     """
 
-    def __init__(self, email: str, password: str):
-        super().__init__(email, password)
+    def __init__(self, email: str, password_hash: str):
+        super().__init__(email, password_hash)
+
+    def can_block(self) -> bool:
+        return True
