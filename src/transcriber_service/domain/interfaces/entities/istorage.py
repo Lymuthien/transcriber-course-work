@@ -1,12 +1,14 @@
-from abc import abstractmethod
-
-from transcriber_service.domain.interfaces.entities.irestorable import IRestorable
+from abc import ABC, abstractmethod
 
 
-class IStorage(IRestorable):
+class IStorage(ABC):
     @property
     @abstractmethod
     def id(self) -> str: ...
+
+    @id.setter
+    @abstractmethod
+    def id(self, id_: str): ...
 
     @property
     @abstractmethod

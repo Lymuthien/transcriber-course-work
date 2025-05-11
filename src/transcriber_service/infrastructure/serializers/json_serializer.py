@@ -1,10 +1,14 @@
 import json
 
+from pydantic import BaseModel
+
 from transcriber_service.domain.interfaces.services.iserializer import ISerializer
 
 
 class JsonSerializer(ISerializer):
     def serialize(self, data) -> str:
+        if isinstance(data, BaseModel):
+            return data.model_dump_json()
         return json.dumps(data)
 
     def deserialize(self, data: str):

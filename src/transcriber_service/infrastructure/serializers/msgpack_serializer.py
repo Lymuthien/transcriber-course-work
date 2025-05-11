@@ -1,11 +1,14 @@
-import pickle
+import msgpack
+from ...domain.interfaces import ISerializer
+from pydantic import BaseModel
 
-from transcriber_service.domain.interfaces.services.iserializer import ISerializer
 
-
-class PickleSerializer(ISerializer):
+class MsgpackSerializer(ISerializer):
     def serialize(self, data) -> bytes:
-        return pickle.dumps(data)
+        if isinstance(data, BaseModel):
+            data = data.model_dump()
+
+        return msgpack.packb(data, use_bin_type=True)
 
     def deserialize(self, data: bytes):
         if not isinstance(data, bytes):
@@ -13,11 +16,11 @@ class PickleSerializer(ISerializer):
         if not data:
             raise ValueError("Data cannot be empty")
 
-        return pickle.loads(data)
+        return msgpack.unpackb(data, raw=False)
 
     @property
     def extension(self) -> str:
-        return "pickle"
+        return "msgpack"
 
     @property
     def binary(self) -> bool:

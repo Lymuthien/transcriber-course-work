@@ -1,4 +1,3 @@
-from typing import Any
 from uuid import uuid4
 
 from transcriber_service.domain.interfaces import IStorage
@@ -20,6 +19,10 @@ class Storage(IStorage):
     def id(self) -> str:
         """Return ID of the storage container."""
         return self._id
+
+    @id.setter
+    def id(self, value: str) -> None:
+        self._id = value
 
     @property
     def user_id(self) -> str:
@@ -50,8 +53,3 @@ class Storage(IStorage):
         :raise ValueError: If record_id is not in the list of audio record IDs.
         """
         self._audio_record_ids.remove(record_id)
-
-    def restore_state(self, data: dict[str, Any]):
-        self._id = data["id"]
-        self._user_id = data["user_id"]
-        self._audio_record_ids = data["audio_record_ids"]

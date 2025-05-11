@@ -1,10 +1,8 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 
-from transcriber_service.domain.interfaces.entities.irestorable import IRestorable
 
-
-class IUser(IRestorable):
+class IUser(ABC):
     @property
     @abstractmethod
     def is_blocked(self) -> bool:
@@ -43,6 +41,10 @@ class IUser(IRestorable):
         """Returns user ID."""
         pass
 
+    @id.setter
+    @abstractmethod
+    def id(self, id_: str): ...
+
     @property
     @abstractmethod
     def email(self) -> str:
@@ -60,6 +62,10 @@ class IUser(IRestorable):
     def last_updated(self) -> datetime:
         """Returns user last updated date."""
         pass
+
+    @last_updated.setter
+    @abstractmethod
+    def last_updated(self, last_updated: datetime): ...
 
     @abstractmethod
     def can_block(self) -> bool:

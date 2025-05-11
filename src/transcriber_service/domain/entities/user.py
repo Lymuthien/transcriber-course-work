@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any
 from uuid import uuid4
 
 from transcriber_service.domain.exceptions import AuthException
@@ -77,6 +76,11 @@ class User(IUser):
 
         return self._id
 
+    @id.setter
+    def id(self, id_: str):
+        """Sets the user ID."""
+        self._id = id_
+
     @property
     def email(self) -> str:
         """Returns user email."""
@@ -95,14 +99,10 @@ class User(IUser):
 
         return self._last_updated
 
-    def restore_state(self, data: dict[str, Any]):
-        self._id = data["id"]
-        self._email = data["email"]
-        self._registration_date = datetime.fromisoformat(data["registration_date"])
-        self._last_updated = datetime.fromisoformat(data["last_updated"])
-        self._is_blocked = data["is_blocked"]
-        self._password_hash = data["password_hash"]
-        self._temp_password_hash = data["temp_password_hash"]
+    @last_updated.setter
+    def last_updated(self, value: datetime):
+        """Sets the user last updated date."""
+        self._last_updated = value
 
     def can_block(self) -> bool:
         raise NotImplementedError()

@@ -1,13 +1,15 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 
-from transcriber_service.domain.interfaces.entities.irestorable import IRestorable
 
-
-class IAudioRecord(IRestorable):
+class IAudioRecord(ABC):
     @property
     @abstractmethod
     def id(self) -> str: ...
+
+    @id.setter
+    @abstractmethod
+    def id(self, id_: str): ...
 
     @property
     @abstractmethod
@@ -50,3 +52,7 @@ class IAudioRecord(IRestorable):
     @property
     @abstractmethod
     def last_updated(self) -> datetime: ...
+
+    @last_updated.setter
+    @abstractmethod
+    def last_updated(self, value: datetime): ...

@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any
 from uuid import uuid4
 
 from transcriber_service.domain.interfaces import IAudioRecord
@@ -38,6 +37,11 @@ class AudioRecord(IAudioRecord):
         """Return ID of audio record."""
 
         return self._id
+
+    @id.setter
+    def id(self, value: str):
+        """Set ID of audio record."""
+        self._id = value
 
     @property
     def text(self) -> str:
@@ -112,12 +116,6 @@ class AudioRecord(IAudioRecord):
 
         return self._last_updated
 
-    def restore_state(self, data: dict[str, Any]):
-        self._id = data["id"]
-        self._record_name = data["record_name"]
-        self._file_path = data["file_path"]
-        self._storage_id = data["storage_id"]
-        self._text = data["text"]
-        self._language = data["language"]
-        self._tags = data["tags"]
-        self._last_updated = datetime.fromisoformat(data["last_updated"])
+    @last_updated.setter
+    def last_updated(self, value: datetime):
+        self._last_updated = value

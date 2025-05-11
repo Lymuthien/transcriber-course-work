@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class ISerializer(ABC):
     @abstractmethod
-    def serialize(self, data) -> str: ...
+    def serialize(self, data: Any) -> str | bytes: ...
 
     @abstractmethod
-    def deserialize(self, data: str): ...
+    def deserialize(self, data: str | bytes) -> Any: ...
 
     @property
     @abstractmethod
