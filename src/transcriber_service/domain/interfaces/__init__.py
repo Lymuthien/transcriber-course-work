@@ -5,7 +5,9 @@ from transcriber_service.domain.interfaces.repositories.repository_interfaces im
 from transcriber_service.domain.interfaces.services.ipassword_manager import *
 from transcriber_service.domain.interfaces.services.itext_exporter import *
 from .services.itranscriber import *
+from .entities.idictable import *
 from .services.istopwords_remover import *
+from .services.iserializer import *
 
 __all__ = [
     "IAudioRecord",
@@ -18,4 +20,6 @@ __all__ = [
     "ITextExporter",
     "IStopwordsRemover",
     "ITranscriber",
+    "IDictable",
+    "ISerializer",
 ]

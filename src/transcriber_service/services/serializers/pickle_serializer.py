@@ -1,6 +1,6 @@
 import pickle
 
-from ...interfaces.iserializer import ISerializer
+from transcriber_service.domain.interfaces.services.iserializer import ISerializer
 
 
 class PickleSerializer(ISerializer):
@@ -8,6 +8,11 @@ class PickleSerializer(ISerializer):
         return pickle.dumps(data)
 
     def deserialize(self, data: bytes):
+        if not isinstance(data, bytes):
+            raise TypeError("Data must be bytes")
+        if not data:
+            raise ValueError("Data cannot be empty")
+
         return pickle.loads(data)
 
     @property

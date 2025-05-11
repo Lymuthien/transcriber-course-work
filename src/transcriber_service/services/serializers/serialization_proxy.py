@@ -9,8 +9,7 @@ from transcriber_service.domain.factories import (
     IAudioRecordFactory,
     IStorageFactory,
 )
-from ...interfaces import ISerializer, IDictable
-from ...domain.interfaces import IAudioRecord, IStorage, IUser
+from ...domain.interfaces import IAudioRecord, IStorage, IUser, IDictable, ISerializer
 
 
 class UserSerializer(IDictable):

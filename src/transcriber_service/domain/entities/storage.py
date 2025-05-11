@@ -1,7 +1,7 @@
 from typing import Any
 from uuid import uuid4
 
-from .interfaces import IStorage
+from transcriber_service.domain.interfaces import IStorage
 
 
 class Storage(IStorage):

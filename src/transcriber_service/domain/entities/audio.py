@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from .interfaces import IAudioRecord
+from transcriber_service.domain.interfaces import IAudioRecord
 
 
 class AudioRecord(IAudioRecord):

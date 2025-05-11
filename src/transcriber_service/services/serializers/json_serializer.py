@@ -1,6 +1,6 @@
 import json
 
-from ...interfaces.iserializer import ISerializer
+from transcriber_service.domain.interfaces.services.iserializer import ISerializer
 
 
 class JsonSerializer(ISerializer):
@@ -8,6 +8,11 @@ class JsonSerializer(ISerializer):
         return json.dumps(data)
 
     def deserialize(self, data: str):
+        if not isinstance(data, str):
+            raise TypeError("Data must be a string")
+        if not data.strip():
+            raise ValueError("Data cannot be empty")
+
         data_dict = json.loads(data)
         return data_dict
 

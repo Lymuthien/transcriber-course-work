@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from ..interfaces import IStorage
-from ..storage import Storage
+from transcriber_service.domain.entities.storage import Storage
 
 
 class IStorageFactory(ABC):

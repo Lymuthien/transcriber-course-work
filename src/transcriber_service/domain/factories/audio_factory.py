@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ..audio import AudioRecord
+from transcriber_service.domain.entities.audio import AudioRecord
 from ..interfaces import IAudioRecord
 
 

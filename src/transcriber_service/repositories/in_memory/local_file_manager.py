@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from ...interfaces import IFileManager, ISerializer
+from ...interfaces import IFileManager
+from ...domain.interfaces import ISerializer
 
 
 class LocalFileManager(IFileManager):

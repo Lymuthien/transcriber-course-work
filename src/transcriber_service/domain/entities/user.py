@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from .exceptions import AuthException
-from .interfaces import IUser
+from transcriber_service.domain.exceptions import AuthException
+from transcriber_service.domain.interfaces import IUser
 
 
 class User(IUser):
