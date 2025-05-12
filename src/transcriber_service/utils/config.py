@@ -13,4 +13,5 @@ class Config:
 
     PYANNOTE_TOKEN = os.getenv("PYANNOTE_TOKEN")
 
-
+    MONGO_URI = os.getenv("MONGO_URI")
+    MONGO_DATABASE = os.getenv("MONGO_DATABASE")

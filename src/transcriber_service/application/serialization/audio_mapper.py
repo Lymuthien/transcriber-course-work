@@ -14,7 +14,7 @@ class AudioRecordMapper(IMapper):
             raise TypeError("Object must be an IAudioRecord instance")
 
         return AudioRecordDTO(
-            entity_type="audio_record",
+            entity_type="audiorecord",
             id=audio.id,
             record_name=audio.record_name,
             file_path=audio.file_path,

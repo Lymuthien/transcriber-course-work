@@ -28,7 +28,7 @@ class TestAudioRecordMapper(unittest.TestCase):
         )
 
         self.test_dto = AudioRecordDTO(
-            entity_type="audio_record",
+            entity_type="audiorecord",
             id="audio123",
             record_name="test_recording",
             file_path="/path/to/audio",
