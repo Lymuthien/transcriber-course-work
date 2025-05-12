@@ -1,0 +1,38 @@
+from abc import ABC, abstractmethod
+
+from transcriber_service.domain.entities.audio import AudioRecord
+from ..interfaces import IAudioRecord
+
+
+class IAudioRecordFactory(ABC):
+
+    @abstractmethod
+    def create_audio(
+        self,
+        file_name: str,
+        file_path: str,
+        storage_id: str,
+        text: str,
+        language: str,
+    ) -> IAudioRecord:
+        pass
+
+    @abstractmethod
+    def create_object(self) -> IAudioRecord:
+        pass
+
+
+class AudioRecordFactory(IAudioRecordFactory):
+
+    def create_audio(
+        self,
+        file_name: str,
+        file_path: str,
+        storage_id: str,
+        text: str,
+        language: str,
+    ) -> IAudioRecord:
+        return AudioRecord(file_name, file_path, storage_id, text, language)
+
+    def create_object(self) -> IAudioRecord:
+        return AudioRecord("", "", "", "", "")
