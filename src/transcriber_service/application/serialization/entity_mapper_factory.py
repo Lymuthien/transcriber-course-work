@@ -8,17 +8,17 @@ from .audio_mapper import AudioRecordMapper
 class EntityMapperFactory(object):
     def __init__(self):
         self._serializers: Dict[str, IMapper] = {
-            "auth_user": UserMapper(),
+            "authuser": UserMapper(),
             "admin": UserMapper(),
             "storage": StorageMapper(),
-            "audio_record": AudioRecordMapper(),
+            "audiorecord": AudioRecordMapper(),
         }
 
     def get_serializer(self, entity_type: str) -> IMapper:
         """
         Get serializer for an entity type.
 
-        :param entity_type: Type of the entity (e.g., 'auth_user', 'storage').
+        :param entity_type: Type of the entity (e.g., 'authuser', 'storage').
         :return: IDictable serializer.
         :raises ValueError: If serializer is not found.
         """

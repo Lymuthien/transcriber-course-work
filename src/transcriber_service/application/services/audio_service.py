@@ -7,7 +7,10 @@ from transcriber_service.domain.interfaces import (
     ITranscriber,
 )
 from transcriber_service.domain.services.audio_search_service import AudioSearchService
-from transcriber_service.application.serialization.audio_mapper import AudioRecordDTO, AudioRecordMapper
+from transcriber_service.application.serialization.audio_mapper import (
+    AudioRecordDTO,
+    AudioRecordMapper,
+)
 
 
 class AudioRecordService(object):
@@ -21,14 +24,10 @@ class AudioRecordService(object):
     def __init__(
         self,
         repo: IAudioRepository,
-        exporter: ITextExporter,
-        stopwords_remover: IStopwordsRemover,
         transcriber: ITranscriber,
     ):
         self._MAX_SIZE = 1024 * 1024 * 10
         self._repository = repo
-        self._exporter = exporter
-        self._stopwords_remover = stopwords_remover
         self._transcriber = transcriber
         self._audio_factory: IAudioRecordFactory = AudioRecordFactory()
         self._search_service = AudioSearchService()

@@ -107,6 +107,11 @@ class User(IUser):
     def can_block(self) -> bool:
         raise NotImplementedError()
 
+    @registration_date.setter
+    def registration_date(self, value: datetime):
+        """Sets the user registration date."""
+        self._registration_date = value
+
 
 class AuthUser(User):
     """

@@ -1,4 +1,7 @@
-from typing import Any, Union
+from typing import Any
+
+from pydantic import BaseModel
+
 from ...domain.interfaces import ISerializer
 from .entity_mapper_factory import EntityMapperFactory
 from .dto import UserDTO, StorageDTO, AudioRecordDTO
@@ -8,15 +11,15 @@ class SerializerAdapter(ISerializer):
     def __init__(
         self,
         base_serializer: ISerializer,
-        entity_serializer_factory: EntityMapperFactory,
+        entity_mapper_factory: EntityMapperFactory,
     ):
         self._base_serializer = base_serializer
-        self._entity_mapper_factory = entity_serializer_factory
+        self._entity_mapper_factory = entity_mapper_factory
         self._dto_mapping = {
-            "auth_user": UserDTO,
+            "authuser": UserDTO,
             "admin": UserDTO,
             "storage": StorageDTO,
-            "audio_record": AudioRecordDTO,
+            "audiorecord": AudioRecordDTO,
         }
 
     def serialize(self, obj) -> str | bytes:
@@ -28,6 +31,8 @@ class SerializerAdapter(ISerializer):
         """
 
         data = self._to_dto(obj)
+        if isinstance(data, BaseModel):
+            return data.model_dump()
         return self._base_serializer.serialize(data)
 
     def deserialize(self, data: str | bytes):
@@ -44,6 +49,8 @@ class SerializerAdapter(ISerializer):
     def _to_dto(self, obj):
         """Convert an entity to a DTO if applicable."""
 
+        if isinstance(obj, BaseModel):
+            return obj.model_dump()
         if isinstance(obj, (list, tuple, set)):
             return [self._to_dto(item) for item in obj]
         elif isinstance(obj, dict):
@@ -55,7 +62,7 @@ class SerializerAdapter(ISerializer):
             serializer = self._entity_mapper_factory.get_serializer(
                 obj.__class__.__name__.lower()
             )
-            return serializer.to_dto(obj)
+            return serializer.to_dto(obj).model_dump()
         return obj
 
     def _from_dto(self, data: Any) -> Any:

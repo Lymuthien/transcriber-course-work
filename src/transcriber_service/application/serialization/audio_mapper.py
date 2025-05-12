@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ...domain.interfaces import IMapper, IAudioRecord
 from ...domain.factories import AudioRecordFactory, IAudioRecordFactory
 from .dto.audio_record_dto import AudioRecordDTO
@@ -20,7 +22,7 @@ class AudioRecordMapper(IMapper):
             text=audio.text,
             language=audio.language,
             tags=audio.tags,
-            last_updated=audio.last_updated,
+            last_updated=audio.last_updated.isoformat(),
         )
 
     def from_dto(self, dto: AudioRecordDTO) -> IAudioRecord:
@@ -32,7 +34,7 @@ class AudioRecordMapper(IMapper):
             language=dto.language or "",
         )
         audio.id = dto.id
-        audio.last_updated = dto.last_updated
+        audio.last_updated = datetime.fromisoformat(dto.last_updated)
         for tag in dto.tags:
             audio.add_tag(tag)
 

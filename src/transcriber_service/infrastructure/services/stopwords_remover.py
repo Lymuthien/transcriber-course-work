@@ -1,5 +1,5 @@
 from audio_transcribing import NatashaStopwordsRemover as BaseStopwordsRemover
-from ..domain.interfaces import IStopwordsRemover
+from transcriber_service.domain.interfaces import IStopwordsRemover
 
 
 class StopwordsRemover(IStopwordsRemover):

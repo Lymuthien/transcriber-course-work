@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ...domain.interfaces import IMapper, IUser
 from ...domain.entities.user import Admin
 from ...domain.factories import AuthUserFactory, AdminFactory, IUserFactory
@@ -7,7 +9,7 @@ from .dto.user_dto import UserDTO
 class UserMapper(IMapper):
     def __init__(self):
         self._factories: dict[str, IUserFactory] = {
-            "auth_user": AuthUserFactory(),
+            "authuser": AuthUserFactory(),
             "admin": AdminFactory(),
         }
 
@@ -15,15 +17,15 @@ class UserMapper(IMapper):
         if not isinstance(user, IUser):
             raise TypeError("Object must be a IUser instance")
 
-        entity_type = "admin" if isinstance(user, Admin) else "auth_user"
+        entity_type = "admin" if isinstance(user, Admin) else "authuser"
 
         return UserDTO(
             entity_type=entity_type,
             id=user.id,
             email=user.email,
             password_hash=user.password_hash,
-            registration_date=user.registration_date,
-            last_updated=user.last_updated,
+            registration_date=user.registration_date.isoformat(),
+            last_updated=user.last_updated.isoformat(),
             is_blocked=user.is_blocked,
             temp_password_hash=user.temp_password_hash,
         )
@@ -37,7 +39,8 @@ class UserMapper(IMapper):
 
         user.is_blocked = dto.is_blocked
         user.id = dto.id
-        user.last_updated = dto.last_updated
+        user.last_updated = datetime.fromisoformat(dto.last_updated)
+        user.registration_date = datetime.fromisoformat(dto.registration_date)
 
         if dto.temp_password_hash:
             user.temp_password_hash = dto.temp_password_hash

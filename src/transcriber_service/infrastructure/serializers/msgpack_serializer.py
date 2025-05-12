@@ -1,13 +1,9 @@
 import msgpack
 from ...domain.interfaces import ISerializer
-from pydantic import BaseModel
 
 
 class MsgpackSerializer(ISerializer):
     def serialize(self, data) -> bytes:
-        if isinstance(data, BaseModel):
-            data = data.model_dump()
-
         return msgpack.packb(data, use_bin_type=True)
 
     def deserialize(self, data: bytes):

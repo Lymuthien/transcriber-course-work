@@ -70,3 +70,8 @@ class IUser(ABC):
     @abstractmethod
     def can_block(self) -> bool:
         pass
+
+    @registration_date.setter
+    @abstractmethod
+    def registration_date(self, value):
+        pass

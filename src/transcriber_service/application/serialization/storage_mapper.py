@@ -20,7 +20,7 @@ class StorageMapper(IMapper):
 
     def from_dto(self, dto: StorageDTO) -> IStorage:
         storage = self._factory.create_storage(dto.user_id)
-        storage.id = dto.user_id
+        storage.id = dto.id
         for record_id in dto.audio_record_ids:
             storage.add_audio_record(record_id)
 

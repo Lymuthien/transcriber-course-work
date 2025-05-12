@@ -1,14 +1,13 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
 
 
 class UserDTO(BaseModel):
-    entity_type: str = Field(..., pattern="^(auth_user|admin)$")
+    entity_type: str = Field(..., pattern="^(authuser|admin)$")
     id: str
     email: str
     password_hash: str
-    registration_date: datetime
-    last_updated: datetime
+    registration_date: str
+    last_updated: str
     is_blocked: bool
     temp_password_hash: str | None = None
 

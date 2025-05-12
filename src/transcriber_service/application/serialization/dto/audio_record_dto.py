@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
 
 
 class AudioRecordDTO(BaseModel):
@@ -11,7 +10,7 @@ class AudioRecordDTO(BaseModel):
     text: str | None = None
     language: str | None = None
     tags: list[str]
-    last_updated: datetime
+    last_updated: str
 
     class Config:
         from_attributes = True

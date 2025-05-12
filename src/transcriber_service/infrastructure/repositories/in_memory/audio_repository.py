@@ -41,7 +41,6 @@ class LocalAudioRepository(IAudioRepository):
 
         return self.__records.get(record_id)
 
-
     def add(self, record: IAudioRecord) -> None:
         """
         Add audio record to repository.
