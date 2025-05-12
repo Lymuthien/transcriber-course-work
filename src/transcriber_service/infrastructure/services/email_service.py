@@ -1,8 +1,9 @@
 import smtplib
 from email.message import EmailMessage
+from transcriber_service.domain.interfaces import IEmailService
 
 
-class EmailService(object):
+class EmailService(IEmailService):
     def __init__(
         self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str
     ):

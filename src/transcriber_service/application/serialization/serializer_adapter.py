@@ -31,8 +31,6 @@ class SerializerAdapter(ISerializer):
         """
 
         data = self._to_dto(obj)
-        if isinstance(data, BaseModel):
-            return data.model_dump()
         return self._base_serializer.serialize(data)
 
     def deserialize(self, data: str | bytes):

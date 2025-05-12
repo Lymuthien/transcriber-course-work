@@ -36,6 +36,8 @@ class EntityMapperFactory(object):
         :param serializer: Serializer implementing IDictable.
         :raises ValueError: If entity_type is invalid.
         """
+        if not entity_type:
+            raise ValueError(f"Entity type is invalid: {entity_type}")
         if not isinstance(serializer, IMapper):
             raise TypeError("Serializer must implement IMapper.")
 

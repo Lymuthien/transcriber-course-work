@@ -1,12 +1,8 @@
 from password_strength import PasswordPolicy
 
 from transcriber_service.application.services.user_service import UserService
-from transcriber_service.application.services.email_service import EmailService
 from transcriber_service.domain import AuthException
-from transcriber_service.domain.interfaces import (
-    IUser,
-)
-from transcriber_service.utils import Config
+from transcriber_service.domain.interfaces import IUser, IEmailService
 
 
 class AuthService(object):
@@ -18,6 +14,7 @@ class AuthService(object):
     def __init__(
         self,
         user_service: UserService,
+        email_service: IEmailService,
     ):
         self._user_service = user_service
         self._password_hasher = user_service.password_hasher
@@ -25,12 +22,7 @@ class AuthService(object):
             length=8, uppercase=1, numbers=1, special=1
         )
 
-        self.__email_service = EmailService(
-            smtp_server=Config.SMTP_SERVER,
-            smtp_port=Config.SMTP_PORT,
-            sender_email=Config.SENDER_EMAIL,
-            sender_password=Config.SENDER_PASSWORD,
-        )
+        self.__email_service = email_service
 
     def register_user(self, email: str, password: str) -> IUser:
         """

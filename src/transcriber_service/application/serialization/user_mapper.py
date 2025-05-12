@@ -37,12 +37,12 @@ class UserMapper(IMapper):
 
         user = factory.create_user(dto.email, dto.password_hash)
 
+        if dto.temp_password_hash:
+            user.temp_password_hash = dto.temp_password_hash
+
         user.is_blocked = dto.is_blocked
         user.id = dto.id
         user.last_updated = datetime.fromisoformat(dto.last_updated)
         user.registration_date = datetime.fromisoformat(dto.registration_date)
-
-        if dto.temp_password_hash:
-            user.temp_password_hash = dto.temp_password_hash
 
         return user
