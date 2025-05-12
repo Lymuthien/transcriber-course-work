@@ -1,6 +1,6 @@
 from transcriber_service.domain.factories import IStorageFactory, StorageFactory
 from transcriber_service.domain.interfaces import IStorage, IStorageRepository
-from .istorage_service import IStorageService
+from transcriber_service.application.services.istorage_service import IStorageService
 
 
 class StorageService(IStorageService):

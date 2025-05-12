@@ -7,7 +7,7 @@ class EmailService(object):
         self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str
     ):
         """
-        Initializes the email service for sending recovery emails using an SMTP server.
+        Initializes the email services for sending recovery emails using an SMTP server.
 
         :param smtp_server: The SMTP server address (e.g., smtp.gmail.com).
         :param smtp_port: Port number for the SMTP server (commonly 465 for SSL or 587 for TLS).

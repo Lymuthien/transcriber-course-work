@@ -6,6 +6,8 @@ from transcriber_service.domain.interfaces import (
     IStopwordsRemover,
     ITranscriber,
 )
+from transcriber_service.domain.services.audio_search_service import AudioSearchService
+from transcriber_service.application.serialization.audio_mapper import AudioRecordDTO, AudioRecordMapper
 
 
 class AudioRecordService(object):
@@ -24,11 +26,13 @@ class AudioRecordService(object):
         transcriber: ITranscriber,
     ):
         self._MAX_SIZE = 1024 * 1024 * 10
-        self.__audio_repo = repo
-        self.__exporter = exporter
-        self.__stopwords_remover = stopwords_remover
-        self.__transcriber = transcriber
-        self.__audio_factory: IAudioRecordFactory = AudioRecordFactory()
+        self._repository = repo
+        self._exporter = exporter
+        self._stopwords_remover = stopwords_remover
+        self._transcriber = transcriber
+        self._audio_factory: IAudioRecordFactory = AudioRecordFactory()
+        self._search_service = AudioSearchService()
+        self._mapper = AudioRecordMapper()
 
     def create_audio(
         self,
@@ -42,7 +46,7 @@ class AudioRecordService(object):
     ) -> IAudioRecord:
         """
         Create AudioRecord instance with basic metadata and do transcription
-        into text with given transcribe service.
+        into text with given transcribe services.
 
         :param file_name: Name of audio file.
         :param content: Content of audio file (mp3).
@@ -57,13 +61,13 @@ class AudioRecordService(object):
 
         if len(content) > self._MAX_SIZE:
             raise Exception("Audio file too large.")
-        text, language = self.__transcriber.transcribe(
+        text, language = self._transcriber.transcribe(
             content, language, max_speakers, main_theme
         )
-        audio = self.__audio_factory.create_audio(
+        audio = self._audio_factory.create_audio(
             file_name, file_path, storage_id, text, language
         )
-        self.__audio_repo.add(audio)
+        self._repository.add(audio)
         return audio
 
     def get_records(self, storage_id: str) -> tuple | None:
@@ -74,10 +78,24 @@ class AudioRecordService(object):
         :return: Tuple of audio records if it is found else None.
         """
 
-        return self.__audio_repo.get_by_storage(storage_id)
+        return self._repository.get_by_storage(storage_id)
 
     def get_by_id(self, record_id: str) -> IAudioRecord | None:
-        return self.__audio_repo.get_by_id(record_id)
+        return self._repository.get_by_id(record_id)
+
+    def search_by_tags(
+        self, storage_id: str, tags: list[str], match_all: bool = False
+    ) -> list[AudioRecordDTO]:
+
+        records = self._repository.get_by_storage(storage_id)
+        matching_records = self._search_service.search_by_tags(records, tags, match_all)
+        return [self._mapper.to_dto(record) for record in matching_records]
+
+    def search_by_name(self, storage_id: str, name: str) -> list[AudioRecordDTO]:
+
+        records = self._repository.get_by_storage(storage_id)
+        matching_records = self._search_service.search_by_name(records, name)
+        return [self._mapper.to_dto(record) for record in matching_records]
 
 
 class AudioTagService(object):

@@ -1,7 +1,11 @@
 from copy import copy
 
-from transcriber_service.domain.interfaces import IStorageRepository, IStorage, ISerializer
-from transcriber_service.interfaces import IFileManager
+from transcriber_service.domain.interfaces import (
+    IStorageRepository,
+    IStorage,
+    ISerializer,
+    IFileManager,
+)
 
 
 class LocalStorageRepository(IStorageRepository):
@@ -17,14 +21,13 @@ class LocalStorageRepository(IStorageRepository):
         self.__serializer: ISerializer = serializer
         self.__storages: dict[str, IStorage] = {}
         self.__file_manager: IFileManager = file_manager
-        self.__user_storage_map: dict[str, str] = {}  # user_id -> storage_id
+        self.__user_storage_map: dict[str, str] = {}
         self.__dir: str = data_dir
 
         try:
             self.__storages, self.__user_storage_map = self.__file_manager.load(
                 data_dir,
-                binary=False,
-                serializer=self.__serializer,
+                self.__serializer,
             )
         except:
             pass
@@ -53,12 +56,7 @@ class LocalStorageRepository(IStorageRepository):
 
         self.__storages[storage.id] = storage
         self.__user_storage_map[storage.user_id] = storage.id
-        self.__file_manager.save(
-            (self.__storages, self.__user_storage_map),
-            self.__dir,
-            binary=False,
-            serializer=self.__serializer,
-        )
+        self.__save()
 
     def update(self, storage: IStorage) -> None:
         """
@@ -71,15 +69,24 @@ class LocalStorageRepository(IStorageRepository):
         if storage.id not in self.__storages:
             raise ValueError("Storage not found")
         self.__storages[storage.id] = storage
-        self.__file_manager.save(
-            (self.__storages, self.__user_storage_map),
-            self.__dir,
-            binary=False,
-            serializer=self.__serializer,
-        )
+        self.__save()
+
+    def delete(self, storage_id: str) -> None:
+        if storage_id not in self.__storages:
+            raise ValueError("Storage not found")
+
+        del self.__storages[storage_id]
+        self.__save()
 
     def get_all_records(self, storage_id: str) -> list[str]:
         """Return list of audio records for storage by its ID."""
 
         storage = self.get_by_id(storage_id)
         return storage.audio_record_ids if storage else []
+
+    def __save(self):
+        self.__file_manager.save(
+            (self.__storages, self.__user_storage_map),
+            self.__dir,
+            self.__serializer,
+        )

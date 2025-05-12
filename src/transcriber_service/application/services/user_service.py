@@ -1,9 +1,9 @@
 from email_validator import validate_email
 from password_strength import PasswordPolicy
 
-from ..domain.factories import AuthUserFactory, AdminFactory
-from ..domain.interfaces import IUserRepository, IUser, IPasswordManager
-from transcriber_service.application.istorage_service import IStorageService
+from transcriber_service.domain.factories import AuthUserFactory, AdminFactory
+from transcriber_service.domain.interfaces import IUserRepository, IUser, IPasswordManager
+from transcriber_service.application.services.istorage_service import IStorageService
 
 
 class UserService(object):

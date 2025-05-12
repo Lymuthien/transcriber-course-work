@@ -1,7 +1,7 @@
 from password_strength import PasswordPolicy
 
-from transcriber_service.application.user_service import UserService
-from transcriber_service.application.email_service import EmailService
+from transcriber_service.application.services.user_service import UserService
+from transcriber_service.application.services.email_service import EmailService
 from transcriber_service.domain import AuthException
 from transcriber_service.domain.interfaces import (
     IUser,
@@ -11,7 +11,7 @@ from transcriber_service.utils import Config
 
 class AuthService(object):
     """
-    Represents an authentication service.
+    Represents an authentication services.
     Supports login, register, changing and recovering password, blocking and unblocking of users.
     """
 
@@ -128,7 +128,5 @@ class AuthService(object):
         temp_password_hash = self._password_hasher.hash_password(temp_password)
         user.temp_password_hash = temp_password_hash
 
-        self.__email_service.send_recovery_email(
-            user.email, temp_password
-        )
+        self.__email_service.send_recovery_email(user.email, temp_password)
         self._user_service.update_user(user)

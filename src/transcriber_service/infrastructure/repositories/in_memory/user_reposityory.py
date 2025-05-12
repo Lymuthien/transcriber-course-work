@@ -1,5 +1,9 @@
-from transcriber_service.domain.interfaces import IUser, IUserRepository, ISerializer
-from transcriber_service.interfaces import IFileManager
+from transcriber_service.domain.interfaces import (
+    IUser,
+    IUserRepository,
+    ISerializer,
+    IFileManager,
+)
 
 
 class LocalUserRepository(IUserRepository):
@@ -18,9 +22,7 @@ class LocalUserRepository(IUserRepository):
         self.__dir: str = data_dir
 
         try:
-            self._users = self.__file_manager.load(
-                data_dir, binary=False, serializer=self.__serializer
-            )
+            self._users = self.__file_manager.load(data_dir, self.__serializer)
         except Exception as e:
             pass
 
@@ -45,9 +47,7 @@ class LocalUserRepository(IUserRepository):
         if user.id in self._users:
             raise ValueError("User already exists")
         self._users[user.id] = user
-        self.__file_manager.save(
-            self._users, self.__dir, binary=False, serializer=self.__serializer
-        )
+        self.__save()
 
     def update(self, user: IUser) -> None:
         """
@@ -60,9 +60,7 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users[user.id] = user
-        self.__file_manager.save(
-            self._users, self.__dir, binary=False, serializer=self.__serializer
-        )
+        self.__save()
 
     def delete(self, user: IUser) -> None:
         """
@@ -75,6 +73,7 @@ class LocalUserRepository(IUserRepository):
         if user.id not in self._users:
             raise ValueError("User not found")
         self._users.pop(user.id)
-        self.__file_manager.save(
-            self._users, self.__dir, binary=False, serializer=self.__serializer
-        )
+        self.__save()
+
+    def __save(self):
+        self.__file_manager.save(self._users, self.__dir, self.__serializer)

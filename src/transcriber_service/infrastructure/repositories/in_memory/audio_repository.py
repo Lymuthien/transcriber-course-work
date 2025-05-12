@@ -1,11 +1,10 @@
-from typing import Dict
-
-from transcriber_service.interfaces import (
+from transcriber_service.domain.interfaces import (
+    IAudioRepository,
+    IStorageRepository,
+    IAudioRecord,
     IFileManager,
     ISerializer,
 )
-
-from transcriber_service.domain.interfaces import IAudioRepository, IStorageRepository, IAudioRecord
 
 
 class LocalAudioRepository(IAudioRepository):
@@ -24,16 +23,14 @@ class LocalAudioRepository(IAudioRepository):
         """
         self.__serializer = serializer
         self.__file_manager = file_manager
-        self.__records: Dict[str, IAudioRecord] = {}
+        self.__records: dict[str, IAudioRecord] = {}
         self.__storage_repository = storage_repository
         self.__dir = data_dir
 
         try:
-            self.__records = file_manager.load(
-                self.__dir, binary=False, serializer=serializer
-            )
+            self.__records = file_manager.load(self.__dir, serializer)
         except:
-            pass
+            self.__records = {}
 
     def get_by_storage(self, storage_id: str) -> tuple[IAudioRecord, ...]:
         """Return list of audio records by storage id."""
@@ -44,42 +41,6 @@ class LocalAudioRepository(IAudioRepository):
 
         return self.__records.get(record_id)
 
-    def search_by_tags(
-        self, storage_id: str, tags: list[str], match_all: bool = False
-    ) -> tuple[IAudioRecord, ...]:
-        """
-        Search audio records from storage by tags.
-
-        :param storage_id: ID of target storage.
-        :param tags: List of tags to search for.
-        :param match_all: True if audio record must contain all tags.
-        :return: Tuple of audio records.
-        """
-
-        tags = list(map(lambda s: s.lower(), tags))
-        records = self.get_by_storage(storage_id)
-
-        def matches(record: IAudioRecord):
-            if match_all:
-                return all(tag in record.tags for tag in tags)
-            else:
-                return any(tag in record.tags for tag in tags)
-
-        return tuple(record for record in records if matches(record))
-
-    def search_by_name(self, storage_id: str, name: str) -> tuple[IAudioRecord, ...]:
-        """
-        Search audio records from storage by record name.
-
-        :param storage_id: ID of target storage.
-        :param name: Record name.
-        :return: Tuple of audio records.
-        """
-
-        records = self.get_by_storage(storage_id)
-        name = name.lower()
-
-        return tuple(record for record in records if record.record_name.lower() == name)
 
     def add(self, record: IAudioRecord) -> None:
         """
@@ -96,9 +57,7 @@ class LocalAudioRepository(IAudioRepository):
             storage.add_audio_record(record.id)
             self.__storage_repository.update(storage)
             self.__records[record.id] = record
-            self.__file_manager.save(
-                self.__records, self.__dir, binary=False, serializer=self.__serializer
-            )
+            self.__save()
 
     def update(self, record: IAudioRecord) -> None:
         """
@@ -111,9 +70,7 @@ class LocalAudioRepository(IAudioRepository):
         if record.id not in self.__records:
             raise ValueError("Record not found.")
         self.__records[record.id] = record
-        self.__file_manager.save(
-            self.__records, self.__dir, binary=False, serializer=self.__serializer
-        )
+        self.__save()
 
     def delete(self, record_id: str) -> None:
         """
@@ -133,6 +90,7 @@ class LocalAudioRepository(IAudioRepository):
             self.__storage_repository.update(storage)
 
         del self.__records[record_id]
-        self.__file_manager.save(
-            self.__records, self.__dir, binary=False, serializer=self.__serializer
-        )
+        self.__save()
+
+    def __save(self) -> None:
+        self.__file_manager.save(self.__records, self.__dir, self.__serializer)

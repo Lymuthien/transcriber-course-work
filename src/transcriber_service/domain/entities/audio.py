@@ -14,7 +14,7 @@ class AudioRecord(IAudioRecord):
         language: str,
     ):
         """
-        Create AudioRecord instance with basic metadata and do transcription into text with given transcribe service.
+        Create AudioRecord instance with basic metadata and do transcription into text with given transcribe services.
 
         :param file_name: Name of audio file.
         :param file_path: Full path to audio file in some storage directory (not user storage).

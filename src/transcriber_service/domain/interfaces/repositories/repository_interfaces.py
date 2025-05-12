@@ -36,6 +36,9 @@ class IStorageRepository(ABC):
     def update(self, storage: IStorage) -> None: ...
 
     @abstractmethod
+    def delete(self, storage_id: str) -> None: ...
+
+    @abstractmethod
     def get_all_records(self, storage_id: str) -> list[str]: ...
 
 
@@ -45,16 +48,6 @@ class IAudioRepository(ABC):
 
     @abstractmethod
     def get_by_id(self, record_id: str) -> IAudioRecord | None: ...
-
-    @abstractmethod
-    def search_by_tags(
-        self, storage_id: str, tags: list[str], match_all: bool = False
-    ) -> tuple[IAudioRecord, ...]: ...
-
-    @abstractmethod
-    def search_by_name(
-        self, storage_id: str, name: str
-    ) -> tuple[IAudioRecord, ...]: ...
 
     @abstractmethod
     def add(self, record: IAudioRecord) -> None: ...
