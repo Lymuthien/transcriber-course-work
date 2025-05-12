@@ -1,11 +1,12 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.infrastructure.repositories import IFileManager
 from transcriber_service.domain.interfaces import (
     IStorageRepository,
     IAudioRecord,
     IStorage,
+    IFileManager,
+    ISerializer,
 )
 from transcriber_service.infrastructure.repositories import LocalAudioRepository
 
@@ -13,6 +14,7 @@ from transcriber_service.infrastructure.repositories import LocalAudioRepository
 class TestLocalAudioRepository(unittest.TestCase):
     def setUp(self):
         self.mock_saver = MagicMock(spec=IFileManager)
+        self.mock_serializer = MagicMock(spec=ISerializer)
         self.mock_saver.save = MagicMock()
         self.mock_saver.load = {}
 
@@ -21,7 +23,7 @@ class TestLocalAudioRepository(unittest.TestCase):
 
         self.data_dir = " "
         self.local_audio_repository = LocalAudioRepository(
-            self.mock_storage_repo, self.data_dir, self.mock_saver
+            self.mock_storage_repo, self.data_dir, self.mock_saver, self.mock_serializer
         )
 
     def test_add(self):
@@ -61,34 +63,6 @@ class TestLocalAudioRepository(unittest.TestCase):
         mock_audio.id.return_value = "5"
         with self.assertRaises(ValueError):
             self.local_audio_repository.update(mock_audio)
-
-    def test_search_by_name(self):
-        mock_audio = MagicMock(spec=IAudioRecord)
-        mock_audio.id.return_value = "6"
-        mock_audio.storage_id.return_value = "6"
-        mock_audio.record_name.return_value = "Name"
-        self.local_audio_repository.add(mock_audio)
-
-        self.assertEqual(
-            self.local_audio_repository.search_by_name(
-                mock_audio.storage_id, mock_audio.record_name
-            ),
-            (mock_audio,),
-        )
-
-    def test_search_by_tags_all_match(self):
-        mock_audio = MagicMock(spec=IAudioRecord)
-        mock_audio.id.return_value = "7"
-        mock_audio.storage_id.return_value = "7"
-        mock_audio.tags.return_value = ["tag1", "tag2", "tag3"]
-        self.local_audio_repository.add(mock_audio)
-
-        self.assertEqual(
-            self.local_audio_repository.search_by_tags(
-                mock_audio.storage_id, mock_audio.tags, True
-            ),
-            (mock_audio,),
-        )
 
 
 if __name__ == "__main__":

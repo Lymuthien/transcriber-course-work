@@ -1,8 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transcriber_service.infrastructure.repositories import IFileManager
-from transcriber_service.domain.interfaces import IStorage
+from transcriber_service.domain.interfaces import IStorage, IFileManager, ISerializer
 from transcriber_service.infrastructure.repositories.in_memory.storage_repository import (
     LocalStorageRepository,
 )
@@ -11,12 +10,13 @@ from transcriber_service.infrastructure.repositories.in_memory.storage_repositor
 class TestLocalStorageRepository(unittest.TestCase):
     def setUp(self):
         self.mock_saver = MagicMock(spec=IFileManager)
+        self.mock_serializer = MagicMock(spec=ISerializer)
         self.mock_saver.save = MagicMock()
         self.mock_saver.load = {}, {}
 
         self.data_dir = " "
         self.local_storage_repository = LocalStorageRepository(
-            self.data_dir, self.mock_saver
+            self.data_dir, self.mock_saver, self.mock_serializer
         )
 
     def test_add(self):
