@@ -21,3 +21,12 @@ class StorageService(IStorageService):
         """Returns storage by user id if it exists else None."""
 
         return self.__storage_repository.get_by_user(user_id)
+
+    def remove_audio_record(self, storage_id: str, record_id: str) -> None:
+        storage = self.__storage_repository.get_by_id(storage_id)
+        storage.remove_audio_record(record_id)
+        self.__storage_repository.update(storage)
+
+    def get_all_record_ids(self, storage_id: str) -> list[str] | None:
+        storage = self.__storage_repository.get_by_id(storage_id)
+        return storage.audio_record_ids if storage else []

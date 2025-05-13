@@ -9,3 +9,9 @@ class IStorageService(ABC):
 
     @abstractmethod
     def get_user_storage(self, user_id: str) -> IStorage | None: ...
+
+    @abstractmethod
+    def remove_audio_record(self, storage_id: str, record_id: str) -> None: ...
+
+    @abstractmethod
+    def gel_all_record_ids(self, storage_id: str) -> list[str] | None: ...

@@ -81,7 +81,3 @@ class MongoStorageRepository(IStorageRepository):
             raise ValueError(f"Storage with ID {storage_id} not found")
 
         self.__collection.delete_one({"_id": storage_id})
-
-    def get_all_records(self, storage_id: str) -> list[str]:
-        storage = self.get_by_id(storage_id)
-        return storage.audio_record_ids if storage else []

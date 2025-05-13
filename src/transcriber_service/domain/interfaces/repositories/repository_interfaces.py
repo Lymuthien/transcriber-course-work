@@ -38,9 +38,6 @@ class IStorageRepository(ABC):
     @abstractmethod
     def delete(self, storage_id: str) -> None: ...
 
-    @abstractmethod
-    def get_all_records(self, storage_id: str) -> list[str]: ...
-
 
 class IAudioRepository(ABC):
     @abstractmethod

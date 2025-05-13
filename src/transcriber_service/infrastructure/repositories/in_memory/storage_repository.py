@@ -78,12 +78,6 @@ class LocalStorageRepository(IStorageRepository):
         del self.__storages[storage_id]
         self.__save()
 
-    def get_all_records(self, storage_id: str) -> list[str]:
-        """Return list of audio records for storage by its ID."""
-
-        storage = self.get_by_id(storage_id)
-        return storage.audio_record_ids if storage else []
-
     def __save(self):
         self.__file_manager.save(
             (self.__storages, self.__user_storage_map),
