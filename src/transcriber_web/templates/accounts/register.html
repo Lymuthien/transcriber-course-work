@@ -1,9 +1,9 @@
 {% extends 'accounts/login_base.html' %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<h3 class="text-center mb-4">Вход</h3>
+<h3 class="text-center mb-4">Регистрация</h3>
 <form method="post">
     {% csrf_token %}
     
@@ -21,15 +21,11 @@
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
     
-    <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
-    
-    <div class="text-center">
-        <a href="{% url 'recover_password' %}" class="text-decoration-none">Забыли пароль?</a>
-    </div>
+    <button type="submit" class="btn btn-primary w-100 mb-3">Зарегистрироваться</button>
     
     <div class="text-center mt-3">
-        <span>Нет аккаунта? </span>
-        <a href="{% url 'register' %}" class="text-decoration-none">Зарегистрироваться</a>
+        <span>Уже есть аккаунт? </span>
+        <a href="{% url 'login' %}" class="text-decoration-none">Войти</a>
     </div>
 </form>
 {% endblock %}
