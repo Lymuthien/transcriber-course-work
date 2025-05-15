@@ -1,9 +1,13 @@
-from django.views import View
-from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
-from django.urls import reverse_lazy
-from transcriber_web.services import ServiceContainer
+import os
+
 from accounts.utils import LoginRequiredMixin
+from django.core.files.storage import FileSystemStorage
+from django.http import FileResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from transcriber_web.services import ServiceContainer
+
 from .forms import AudioUploadForm
 
 container = ServiceContainer()
@@ -52,9 +56,25 @@ class RecordListView(LoginRequiredMixin, View):
 
     def get(self, request):
         storage = container.storage_service.get_user_storage(request.user.id)
-        records = (
-            container.audio_record_service.get_records(storage.id) if storage else []
-        )
+        tags = request.GET.get("tags", "").strip()
+        match_all = request.GET.get("match_all") == "on"
+        name = request.GET.get("name", "").strip()
+
+        if storage:
+            if tags:
+                tags = tags.split(",")
+                records = container.audio_record_service.search_by_tags(
+                    storage.id, tags, match_all
+                )
+            elif name:
+                records = container.audio_record_service.search_by_name(
+                    storage.id, name
+                )
+            else:
+                records = container.audio_record_service.get_records(storage.id)
+        else:
+            records = []
+
         return render(request, self.template_name, {"records": records})
 
 
@@ -102,10 +122,14 @@ class RecordDetailView(LoginRequiredMixin, View):
                 )
             elif action == "export":
                 fs = FileSystemStorage(location="media/exports")
-                container.audio_text_service.export_record_text(
+                export_path = container.audio_text_service.export_record_text(
                     record_id, fs.base_location, "docx"
                 )
-                return redirect(reverse_lazy("record_list"))
+                return FileResponse(
+                    open(export_path, "rb"),
+                    as_attachment=True,
+                    filename=os.path.basename(export_path),
+                )
             elif action == "rename":
                 name = request.POST.get("name")
                 container.audio_text_service.change_record_name(record_id, name)

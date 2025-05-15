@@ -39,4 +39,4 @@ class AudioSearchService(object):
         """
         name = name.lower()
 
-        return tuple(record for record in records if record.record_name.lower() == name)
+        return tuple(record for record in records if name in record.record_name.lower())

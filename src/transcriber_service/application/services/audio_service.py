@@ -134,12 +134,12 @@ class AudioTextService(object):
 
     def export_record_text(
         self, record_id: str, output_dir: str, file_format: str
-    ) -> None:
+    ) -> str:
         record = self._repository.get_by_id(record_id)
         if not record:
             raise ValueError("Audio record not found")
 
-        self._export_service.export_text(
+        return self._export_service.export_text(
             record.text, output_dir, record.record_name, file_format
         )
 

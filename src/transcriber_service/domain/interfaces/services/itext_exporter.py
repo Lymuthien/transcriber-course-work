@@ -5,7 +5,7 @@ class ITextExporter(ABC):
     @abstractmethod
     def export_text(
         self, content: str, output_dir: str, filename: str, file_format: str
-    ) -> None:
+    ) -> str:
         """
         Export text (string) to format.
 

@@ -13,7 +13,7 @@ class TextExporter(ITextExporter):
 
     def export_text(
         self, content: str, output_dir: str, filename: str, file_format: str
-    ) -> None:
+    ) -> str:
         """
         Export text (string) to format.
 
@@ -38,3 +38,5 @@ class TextExporter(ITextExporter):
         exporter = self.__exporters[file_format]
         output_path = f"{output_dir}/{filename}.{exporter.file_extension}"
         exporter.export(content, output_path)
+
+        return output_path
