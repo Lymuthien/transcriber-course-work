@@ -8,6 +8,9 @@ from transcriber_service.domain.interfaces import (
     IPasswordManager,
 )
 from transcriber_service.application.services.istorage_service import IStorageService
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserService(object):
@@ -26,9 +29,15 @@ class UserService(object):
 
     def create_user(self, email: str, password: str) -> IUser:
         if self._repository.get_by_email(email):
+            logger.error(f"User with email {email} already exists")
             raise Exception("User already exists")
-        if self._policy.test(password):
-            raise Exception(f"Password is weak: 8 symbols, 1 uppercase, number, special")
+
+        errors = self._policy.test(password)
+        if errors:
+            logger.error(f"Error validating password: {errors}, {password}")
+            raise Exception(
+                f"Password is weak: 8 symbols, 1 uppercase, number, special"
+            )
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
@@ -43,7 +52,9 @@ class UserService(object):
         if self._repository.get_by_email(email):
             raise Exception("User already exists")
         if self._policy.test(password):
-            raise Exception(f"Password is weak: 8 symbols, 1 uppercase, number, special")
+            raise Exception(
+                f"Password is weak: 8 symbols, 1 uppercase, number, special"
+            )
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
