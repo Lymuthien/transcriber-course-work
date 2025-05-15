@@ -54,7 +54,7 @@ class EmailService(IEmailService):
         
         --
         С уважением,
-        Служба поддержки проекта Text Transcriber
+        Служба поддержки
         """
         )
 
