@@ -28,7 +28,7 @@ class UserService(object):
         if self._repository.get_by_email(email):
             raise Exception("User already exists")
         if self._policy.test(password):
-            raise Exception("Password is weak")
+            raise Exception(f"Password is weak: 8 symbols, 1 uppercase, number, special")
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
@@ -43,7 +43,7 @@ class UserService(object):
         if self._repository.get_by_email(email):
             raise Exception("User already exists")
         if self._policy.test(password):
-            raise Exception("Password is weak")
+            raise Exception(f"Password is weak: 8 symbols, 1 uppercase, number, special")
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
