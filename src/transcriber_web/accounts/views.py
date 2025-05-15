@@ -1,22 +1,14 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
+
 from transcriber_web.services import ServiceContainer
 from transcriber_service.domain.exceptions import AuthException
+from .utils import LoginRequiredMixin
 
-
-def login_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        try:
-            user = ServiceContainer().auth_service.login(email, password)
-            request.session["user_id"] = user.id
-            return redirect("records_list")
-        except AuthException as e:
-            return render(request, "accounts/login.html", {"error": str(e)})
-
-    return render(request, "accounts/login.html")
+logger = logging.getLogger(__name__)
 
 
 class LoginView(View):
@@ -36,7 +28,7 @@ class LoginView(View):
             return render(request, self.template_name, {"error": str(e)})
 
 
-class RegisterView(View):
+class RegisterView(LoginRequiredMixin, View):
     template_name = "accounts/register.html"
 
     def get(self, request):
@@ -88,3 +80,9 @@ class RecoverPasswordView(View):
             )
         except AuthException as e:
             return render(request, self.template_name, {"error": str(e)})
+
+
+class LogoutView(View):
+    def get(self, request):
+        request.session.flush()
+        return redirect(reverse_lazy("login"))

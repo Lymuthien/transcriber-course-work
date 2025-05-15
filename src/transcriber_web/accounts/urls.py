@@ -9,4 +9,5 @@ urlpatterns = [
         views.RecoverPasswordView.as_view(),
         name="recover_password",
     ),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
 ]
