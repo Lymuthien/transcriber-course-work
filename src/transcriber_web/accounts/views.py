@@ -23,12 +23,12 @@ class LoginView(View):
         try:
             user = ServiceContainer().auth_service.login(email, password)
             request.session["user_id"] = user.id
-            return redirect("records_list")
+            return redirect("profile")
         except AuthException as e:
             return render(request, self.template_name, {"error": str(e)})
 
 
-class RegisterView(LoginRequiredMixin, View):
+class RegisterView(View):
     template_name = "accounts/register.html"
 
     def get(self, request):
@@ -41,26 +41,30 @@ class RegisterView(LoginRequiredMixin, View):
             user = ServiceContainer().auth_service.register_user(email, password)
             request.session["user_id"] = user.id
 
-            return redirect(reverse_lazy("records_list"))
+            return redirect(reverse_lazy("profile"))
         except Exception as e:
             return render(request, self.template_name, {"error": str(e)})
 
 
-# class ChangePasswordView(LoginRequiredMixin, View):
-#     template_name = "accounts/change_password.html"
-#
-#     def get(self, request):
-#         return render(request, self.template_name)
-#
-#     def post(self, request):
-#         email = request.user.email
-#         current_password = request.POST.get("current_password")
-#         new_password = request.POST.get("new_password")
-#         try:
-#             auth_service.change_password(email, current_password, new_password)
-#             return redirect(reverse_lazy("records_list"))
-#         except AuthException as e:
-#             return render(request, self.template_name, {"error": str(e)})
+class ChangePasswordView(LoginRequiredMixin, View):
+    template_name = "accounts/change_password.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        email = request.user.email
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+
+        try:
+            ServiceContainer().auth_service.change_password(
+                email, current_password, new_password
+            )
+
+            return redirect(reverse_lazy("profile"))
+        except AuthException as e:
+            return render(request, self.template_name, {"error": str(e)})
 
 
 class RecoverPasswordView(View):
@@ -86,3 +90,10 @@ class LogoutView(View):
     def get(self, request):
         request.session.flush()
         return redirect(reverse_lazy("login"))
+
+
+class ProfileView(LoginRequiredMixin, View):
+    template_name = "accounts/profile.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
