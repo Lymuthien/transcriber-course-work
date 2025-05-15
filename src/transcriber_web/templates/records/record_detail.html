@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Запись: {{ record.record_name }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Запись: {{ record.record_name }}</h1>
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% elif record %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Информация о записи</h5>
+                <p><strong>Название:</strong> {{ record.record_name }}</p>
+                <p><strong>Язык:</strong> {{ record.language|default:"Не указан" }}</p>
+                <p><strong>Тема:</strong> {{ record.main_theme|default:"Не указана" }}</p>
+                <p><strong>Теги:</strong> {% if record.tags %}{{ record.tags|join:", " }}{% else %}Нет тегов{% endif %}</p>
+                <p><strong>Последнее обновление:</strong> {{ record.last_updated|date:"d.m.Y H:i" }}</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Текст записи</h5>
+                {% if record.text %}
+                    {{ record.text|default:"Текст отсутствует" }}
+                {% else %}
+                    <p class="text-muted">Текст отсутствует</p>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Добавить тег</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="add_tag">
+                            <div class="mb-3">
+                                <label for="tag" class="form-label">Тег</label>
+                                <input type="text" class="form-control" id="tag" name="tag" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Удалить тег</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove_tag">
+                            <div class="mb-3">
+                                <label for="tag" class="form-label">Тег</label>
+                                <input type="text" class="form-control" id="tag" name="tag" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Удалить стоп-слова</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove_stopwords">
+                            <button type="submit" class="btn btn-danger">Удалить стоп-слова</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Экспортировать текст</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="export">
+                            <button type="submit" class="btn btn-primary">Экспортировать в DOCX</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Переименовать запись</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="rename">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Новое название</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Переименовать</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'record_list' %}" class="btn btn-secondary">Назад к списку</a>
+    {% else %}
+        <div class="alert alert-danger">Запись не найдена или недоступна.</div>
+    {% endif %}
+</div>
+{% endblock %}
