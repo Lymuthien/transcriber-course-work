@@ -139,6 +139,11 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# Media files
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "media")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -146,7 +151,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging
 
-LOG_DIR = os.path.join(BASE_DIR, "logs")
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), "logs")
 LOG_FILE = os.path.join(LOG_DIR, "django.log")
 
 if not os.path.exists(LOG_DIR):

@@ -6,6 +6,7 @@ from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
+from django.conf import settings
 from transcriber_web.services import ServiceContainer
 
 from .forms import AudioUploadForm
@@ -26,7 +27,7 @@ class AudioUploadView(LoginRequiredMixin, View):
 
         if form.is_valid():
             file = request.FILES["file"]
-            fs = FileSystemStorage(location="media/audio")
+            fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, "audio"))
             filename = fs.save(file.name, file)
             file_path = fs.path(filename)
 
@@ -121,7 +122,9 @@ class RecordDetailView(LoginRequiredMixin, View):
                     record_id, remove_swear_words=True
                 )
             elif action == "export":
-                fs = FileSystemStorage(location="media/exports")
+                fs = FileSystemStorage(
+                    location=os.path.join(settings.MEDIA_ROOT, "export")
+                )
                 export_path = container.audio_text_service.export_record_text(
                     record_id, fs.base_location, "docx"
                 )
