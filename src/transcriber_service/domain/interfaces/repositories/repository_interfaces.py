@@ -21,6 +21,9 @@ class IUserRepository(ABC):
     @abstractmethod
     def delete(self, user: IUser): ...
 
+    @abstractmethod
+    def get_all(self) -> list[IUser]: ...
+
 
 class IStorageRepository(ABC):
     @abstractmethod

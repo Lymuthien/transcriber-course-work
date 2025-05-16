@@ -75,5 +75,10 @@ class LocalUserRepository(IUserRepository):
         self._users.pop(user.id)
         self.__save()
 
+    def get_all(self) -> list[IUser]:
+        """Return all users in repository."""
+
+        return list(self._users.values())
+
     def __save(self):
         self.__file_manager.save(self._users, self.__dir, self.__serializer)

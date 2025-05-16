@@ -101,3 +101,6 @@ class UserService(object):
 
     def update_user(self, user: IUser):
         self._repository.update(user)
+
+    def get_all(self):
+        return self._repository.get_all()

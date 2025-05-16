@@ -78,3 +78,14 @@ class MongoUserRepository(IUserRepository):
             raise ValueError(f"User with ID {user.id} not found")
 
         self.__collection.delete_one({"_id": user.id})
+
+    def get_all(self) -> list[IUser]:
+        users = []
+        cursor = self.__collection.find()
+
+        for doc in cursor:
+            data = doc["data"] if self.__serializer.binary else doc["data"].decode()
+            user = self.__serializer.deserialize(data)
+            users.append(user)
+
+        return users
