@@ -1,12 +1,12 @@
 import os
 
 from accounts.utils import LoginRequiredMixin
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.conf import settings
 from transcriber_web.services import ServiceContainer
 
 from .forms import AudioUploadForm
@@ -118,9 +118,13 @@ class RecordDetailView(LoginRequiredMixin, View):
                 tag = request.POST.get("tag")
                 container.audio_tag_service.remove_tag_from_record(record_id, tag)
             elif action == "remove_stopwords":
+                remove_sw = request.POST.get("swear_words") == "on"
                 container.audio_text_service.remove_stopwords(
-                    record_id, remove_swear_words=True
+                    record_id, remove_swear_words=remove_sw
                 )
+            elif action == "remove_words":
+                words = request.POST.get("words").split()
+                container.audio_text_service.remove_words(record_id, words)
             elif action == "export":
                 fs = FileSystemStorage(
                     location=os.path.join(settings.MEDIA_ROOT, "export")
@@ -136,6 +140,8 @@ class RecordDetailView(LoginRequiredMixin, View):
             elif action == "rename":
                 name = request.POST.get("name")
                 container.audio_text_service.change_record_name(record_id, name)
+            elif action == "delete":
+                container.audio_record_service.delete(record_id)
         except ValueError as e:
             return render(
                 request, self.template_name, {"record": record, "error": str(e)}

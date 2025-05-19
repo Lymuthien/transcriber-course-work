@@ -100,7 +100,7 @@ class AuthService(object):
         ):
             raise AuthException("Incorrect password")
 
-        user.password_hash = new_password
+        user.password_hash = self._password_hasher.hash_password(new_password)
         self._user_service.update_user(user)
 
     def recover_password(self, email: str) -> None:

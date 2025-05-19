@@ -1,5 +1,8 @@
 from audio_transcribing import NatashaStopwordsRemover as BaseStopwordsRemover
 from transcriber_service.domain.interfaces import IStopwordsRemover
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class StopwordsRemover(IStopwordsRemover):
@@ -9,6 +12,7 @@ class StopwordsRemover(IStopwordsRemover):
     def remove_stopwords(
         self, text: str, remove_swear_words: bool, go_few_times: bool
     ) -> str:
+        logger.info(f"Call method remove stopwords in adapter")
         return self._remover.remove_stopwords(text, remove_swear_words, go_few_times)
 
     def remove_words(self, text: str, words: list[str] | tuple[str]) -> str:

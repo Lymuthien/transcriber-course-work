@@ -1,6 +1,6 @@
+from bson.binary import Binary
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from bson.binary import Binary
 
 from transcriber_service.domain.interfaces import (
     IAudioRepository,
@@ -98,7 +98,9 @@ class MongoAudioRepository(IAudioRepository):
         if not doc:
             raise ValueError(f"Record with ID {record_id} not found")
 
-        record = self.__serializer.deserialize(doc["data"])
+        record = self.__serializer.deserialize(
+            doc["data"] if self.__serializer.binary else doc["data"].decode()
+        )
         storage = self.__storage_repository.get_by_id(record.storage_id)
         if storage:
             storage.remove_audio_record(record_id)

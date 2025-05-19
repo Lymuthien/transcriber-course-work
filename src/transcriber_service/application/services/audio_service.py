@@ -11,6 +11,9 @@ from transcriber_service.application.serialization.audio_mapper import (
     AudioRecordDTO,
     AudioRecordMapper,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AudioRecordService(object):
@@ -96,6 +99,9 @@ class AudioRecordService(object):
         matching_records = self._search_service.search_by_name(records, name)
         return [self._mapper.to_dto(record) for record in matching_records]
 
+    def delete(self, record_id):
+        self._repository.delete(record_id)
+
 
 class AudioTagService(object):
     def __init__(self, repository: IAudioRepository):
@@ -151,13 +157,19 @@ class AudioTextService(object):
     ) -> None:
         record = self._repository.get_by_id(record_id)
         if not record:
+            logger.warning("Audio record not found")
             raise ValueError("Audio record not found")
         if record.language.lower() not in ["ru", "russian"]:
+            logger.warning(f"Unsupported language: {record.language}")
             raise ValueError(f"Unsupported language: {record.language}")
+        logger.info(f"Removing stopwords for text: {record.text}")
 
-        record.text = self._stopwords_remover.remove_stopwords(
+        updated_text = self._stopwords_remover.remove_stopwords(
             record.text, remove_swear_words, go_few_times
         )
+
+        logger.info(f"Text after removing stopwords: {updated_text}")
+        record.text = updated_text
         self._repository.update(record)
 
     def remove_words(self, record_id: str, words: list | tuple) -> None:

@@ -8,10 +8,10 @@
     <div class="mb-3 d-flex gap-2">
         <a href="{% url 'upload' %}" class="btn btn-primary"><i class="bi bi-upload"></i> Загрузить аудио</a>
         <form method="get" class="d-flex" style="max-width: 800px;">
-            <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">Сброс</a>
+            <a href="{% url 'record_list' %}" class="btn btn-outline-secondary me-2">Сброс</a>
             <input type="text" name="tags" class="form-control me-2" placeholder="Поиск по тегу (тег1, тег2)" value="{{ search_tag|default:'' }}">
-            <input type="text" name="name" class="form-control" placeholder="Поиск по имени (очистите теги)" value="{{ search_name|default:'' }}">
-            <div class="form-check align-self-center">
+            <input type="text" name="name" class="form-control me-2" placeholder="Поиск по имени (очистите теги)" value="{{ search_name|default:'' }}">
+            <div class="form-check align-self-center me-2">
                 <input type="checkbox" class="form-check-input" id="match_all" name="match_all" {% if match_all %}checked{% endif %}>
                 <label class="form-check-label" for="match_all">Соответствие всем тегам</label>
             </div>
