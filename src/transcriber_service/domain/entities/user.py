@@ -60,8 +60,6 @@ class User(IUser):
 
     @temp_password_hash.setter
     def temp_password_hash(self, temp_password_hash: str):
-        if not temp_password_hash:
-            raise AuthException("Temp password hash cannot be empty.")
         self._temp_password_hash = temp_password_hash
         self._last_updated = datetime.now()
 

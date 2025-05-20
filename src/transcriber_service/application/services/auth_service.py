@@ -3,6 +3,9 @@ from password_strength import PasswordPolicy
 from transcriber_service.application.services.user_service import UserService
 from transcriber_service.domain import AuthException
 from transcriber_service.domain.interfaces import IUser, IEmailService
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AuthService(object):
@@ -65,9 +68,17 @@ class AuthService(object):
         """
 
         user = self._user_service.get_user_by_email(email)
-        if not user or not self._password_hasher.verify_password(
-            user.password_hash, password
+        if not user or not password:
+            logger.warning(f"User {email} not found or no password.")
+            raise AuthException("Invalid credentials")
+        if user.temp_password_hash and self._password_hasher.verify_password(
+            user.temp_password_hash, password
         ):
+            logger.info(f"User {email} use temp password.")
+            user.password_hash = user.temp_password_hash
+            user.temp_password_hash = None
+        if not self._password_hasher.verify_password(user.password_hash, password):
+            logger.warning(f"User {email} login unsuccessful.")
             raise AuthException("Invalid credentials")
 
         if user.is_blocked:
