@@ -36,6 +36,6 @@ class AudioRecordMapper(IMapper):
         audio.id = dto.id
         audio.last_updated = datetime.fromisoformat(dto.last_updated)
         for tag in dto.tags:
-            audio.add_tag(tag)
+            audio.add_tag(tag, False)
 
         return audio

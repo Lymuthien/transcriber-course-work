@@ -27,7 +27,7 @@
                             <tr>
                                 <th>Название</th>
                                 <th>Язык</th>
-                                <th>Тема</th>
+                                <th>Дата последнего изменения</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
@@ -36,7 +36,7 @@
                                 <tr>
                                     <td>{{ record.record_name }}</td>
                                     <td>{{ record.language|default:"-" }}</td>
-                                    <td>{{ record.main_theme|default:"-" }}</td>
+                                    <td>{{ record.last_updated }}</td>
                                     <td>
                                         <a href="{% url 'record_detail' record.id %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
                                     </td>

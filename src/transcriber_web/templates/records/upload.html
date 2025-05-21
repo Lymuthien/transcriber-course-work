@@ -13,36 +13,35 @@
         </div>
     {% endif %}
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm w-50">
         <div class="card-body">
             <h5 class="card-title">Добавление новой записи</h5>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label for="{{ form.file.id_for_label }}" class="form-label">Аудиофайл (до 10 МБ, mp3)</label>
-                    {{ form.file }}
+                    <label for="file" class="form-label">Аудиофайл (до 10 МБ, mp3)</label>
+                    <input type="file" class="form-control" id="file" name="file" required>
                     {% if form.file.errors %}
                         <div class="text-danger">{{ form.file.errors }}</div>
                     {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="{{ form.language.id_for_label }}" class="form-label">Язык (желательно)</label>
-                    {{ form.language }}
-                    <div class="form-text">ru, RU, russian</div>
+                    <label for="language" class="form-label">Язык (желательно)</label>
+                    <input type="text" class="form-control" id="language" name="language" placeholder="ru, RU, russian">
                     {% if form.language.errors %}
                         <div class="text-danger">{{ form.language.errors }}</div>
                     {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="{{ form.max_speakers.id_for_label }}" class="form-label">Максимальное количество спикеров (опционально)</label>
-                    {{ form.max_speakers }}
+                    <label for="max_speakers" class="form-label">Максимальное количество спикеров (опционально)</label>
+                    <input type="number" class="form-control" id="max_speakers" name="max_speakers">
                     {% if form.max_speakers.errors %}
                         <div class="text-danger">{{ form.max_speakers.errors }}</div>
                     {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="{{ form.main_theme.id_for_label }}" class="form-label">Тема (опционально)</label>
-                    {{ form.main_theme }}
+                    <label for="main_theme" class="form-label">Тема (опционально)</label>
+                    <input type="text" class="form-control" id="main_theme" name="main_theme">
                     {% if form.main_theme.errors %}
                         <div class="text-danger">{{ form.main_theme.errors }}</div>
                     {% endif %}

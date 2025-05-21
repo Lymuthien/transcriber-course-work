@@ -77,6 +77,7 @@ class AuthService(object):
             logger.info(f"User {email} use temp password.")
             user.password_hash = user.temp_password_hash
             user.temp_password_hash = None
+            self._user_service.update_user(user)
         if not self._password_hasher.verify_password(user.password_hash, password):
             logger.warning(f"User {email} login unsuccessful.")
             raise AuthException("Invalid credentials")

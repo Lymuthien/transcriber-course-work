@@ -68,12 +68,13 @@ class AudioRecord(IAudioRecord):
 
         return self._tags.copy()
 
-    def add_tag(self, tag_name: str) -> None:
+    def add_tag(self, tag_name: str, update: bool = True) -> None:
         """Add tag to audio record. Saved in lower case."""
 
         if tag_name.lower() not in self._tags:
             self._tags.append(tag_name.lower())
-            self._last_updated = datetime.now()
+            if update:
+                self._last_updated = datetime.now()
 
     def remove_tag(self, tag_name: str) -> None:
         """

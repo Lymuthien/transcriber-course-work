@@ -11,7 +11,6 @@
             <h5 class="card-title">Информация о записи</h5>
             <p><strong>Название:</strong> {{ record.record_name }}</p>
             <p><strong>Язык:</strong> {{ record.language|default:"Не указан" }}</p>
-            <p><strong>Тема:</strong> {{ record.main_theme|default:"Не указана" }}</p>
             <p><strong>Теги:</strong> {% if record.tags %}{{ record.tags|join:", " }}{% else %}Нет тегов{% endif %}</p>
             <p><strong>Последнее обновление:</strong> {{ record.last_updated|date:"d.m.Y H:i" }}</p>
         </div>
@@ -60,7 +59,7 @@
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <h5 class="card-title">Удалить стоп-слова</h5>
+            <h5 class="card-title">Удалить слова-паразиты</h5>
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="remove_stopwords">
@@ -68,7 +67,7 @@
                     <input type="checkbox" class="form-check-input" id="swear_words" name="swear_words" {% if swear_words %}checked{% endif %}>
                     <label class="form-check-label" for="swear_words">Исключить нецензурную лексику</label>
                 </div>
-                <button type="submit" class="btn btn-danger">Удалить стоп-слова</button>
+                <button type="submit" class="btn btn-danger">Удалить слова-паразиты</button>
             </form>
         </div>
     </div>
