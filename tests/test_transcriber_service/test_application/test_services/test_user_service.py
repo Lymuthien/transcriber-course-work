@@ -86,49 +86,6 @@ class TestUserService(unittest.TestCase):
         self.password_policy.test.assert_called_once_with("weak")
         self.assertEqual(str(cm.exception), "Password is weak")
 
-    @patch("transcriber_service.application.services.user_service.validate_email")
-    def test_create_admin_success(self, mock_validate_email):
-        email = "admin@example.com"
-        password = "Admin1!"
-        normalized_email = "admin@example.com"
-        password_hash = "hashed_admin_password"
-
-        mock_validate_email.return_value.normalized = normalized_email
-        self.password_policy.test.return_value = []
-        self.password_manager.hash_password.return_value = password_hash
-        self.repository.get_by_email.return_value = None
-        admin = MagicMock(spec=IUser)
-        admin.id = "admin_123"
-        with patch(
-            "transcriber_service.application.services.user_service.AdminFactory"
-        ) as mock_factory:
-            mock_factory.return_value.create_user.return_value = admin
-
-            result = self.service.create_admin(email, password)
-
-            mock_validate_email.assert_called_once_with(email)
-            self.password_policy.test.assert_called_once_with(password)
-            self.password_manager.hash_password.assert_called_once_with(password)
-            mock_factory.return_value.create_user.assert_called_once_with(
-                normalized_email, password_hash
-            )
-            self.repository.add.assert_called_once_with(admin)
-            self.storage_service.create_storage.assert_called_once_with("admin_123")
-            self.assertEqual(result, admin)
-
-    @patch("transcriber_service.application.services.user_service.validate_email")
-    def test_create_admin_already_exists(self, mock_validate_email):
-        email = "admin@example.com"
-        self.repository.get_by_email.return_value = self.user
-
-        with self.assertRaises(Exception) as cm:
-            self.service.create_admin(email, "Admin1!")
-
-        self.repository.get_by_email.assert_called_once_with(email)
-        mock_validate_email.assert_not_called()
-        self.password_policy.test.assert_not_called()
-        self.assertEqual(str(cm.exception), "User already exists")
-
     def test_block_user_success(self):
         target_email = "user@example.com"
         self.repository.get_by_email.return_value = self.user

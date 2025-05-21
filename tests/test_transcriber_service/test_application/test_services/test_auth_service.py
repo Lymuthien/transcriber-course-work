@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import MagicMock
 from transcriber_service.application.services.user_service import UserService
-from transcriber_service.domain.interfaces import IUser, IEmailService
+from transcriber_service.domain.interfaces import IUser, IEmailService, IPasswordManager
 from transcriber_service.domain import AuthException
 from transcriber_service.application.services.auth_service import AuthService
+from transcriber_service.infrastructure import PasswordManager
 
 
 class TestAuthService(unittest.TestCase):
@@ -12,10 +13,15 @@ class TestAuthService(unittest.TestCase):
         self.password_hasher = MagicMock()
         self.user_service.password_hasher = self.password_hasher
         self.email_service = MagicMock(spec=IEmailService)
+        self.password_manager = MagicMock(spec=IPasswordManager)
 
         self.password_policy = MagicMock()
 
-        self.service = AuthService(self.user_service, self.email_service)
+        self.service = AuthService(
+            self.user_service,
+            self.email_service,
+            self.password_manager,
+        )
         self.service._AuthService__email_service = self.email_service
         self.service._AuthService__policy = self.password_policy
 

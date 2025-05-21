@@ -79,10 +79,10 @@ class ServiceContainer(object):
         # Application services
 
         self.storage_service = StorageService(self.storage_repository)
-        self.user_service = UserService(
-            self.user_repository, self.storage_service, password_manager
+        self.user_service = UserService(self.user_repository, self.storage_service)
+        self.auth_service = AuthService(
+            self.user_service, email_service, password_manager
         )
-        self.auth_service = AuthService(self.user_service, email_service)
         self.audio_record_service = AudioRecordService(
             self.audio_repository, transcriber
         )
