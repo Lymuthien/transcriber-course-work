@@ -1,20 +1,19 @@
-from typing import Dict
-from ...domain.interfaces import IMapper
-from .user_mapper import UserMapper
-from .storage_mapper import StorageMapper
 from .audio_mapper import AudioRecordMapper
+from .storage_mapper import StorageMapper
+from .user_mapper import UserMapper
+from ...domain.interfaces import IMapper
 
 
 class EntityMapperFactory(object):
     def __init__(self):
-        self._serializers: Dict[str, IMapper] = {
+        self._mappers: dict[str, IMapper] = {
             "authuser": UserMapper(),
             "admin": UserMapper(),
             "storage": StorageMapper(),
             "audiorecord": AudioRecordMapper(),
         }
 
-    def get_serializer(self, entity_type: str) -> IMapper:
+    def get_mapper(self, entity_type: str) -> IMapper:
         """
         Get serializer for an entity type.
 
@@ -22,13 +21,13 @@ class EntityMapperFactory(object):
         :return: IDictable serializer.
         :raises ValueError: If serializer is not found.
         """
-        serializer = self._serializers.get(entity_type)
+        serializer = self._mappers.get(entity_type)
         if serializer is None:
             raise ValueError(f"No serializer found for entity type: {entity_type}")
 
         return serializer
 
-    def register_serializer(self, entity_type: str, serializer: IMapper) -> None:
+    def register_mapper(self, entity_type: str, serializer: IMapper) -> None:
         """
         Register a new serializer for an entity type.
 
@@ -41,4 +40,4 @@ class EntityMapperFactory(object):
         if not isinstance(serializer, IMapper):
             raise TypeError("Serializer must implement IMapper.")
 
-        self._serializers[entity_type] = serializer
+        self._mappers[entity_type] = serializer

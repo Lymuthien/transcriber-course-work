@@ -1,6 +1,6 @@
-from ...domain.interfaces import IMapper, IStorage
-from ...domain.factories import StorageFactory, IStorageFactory
 from .dto.storage_dto import StorageDTO
+from ...domain.factories import StorageFactory, IStorageFactory
+from ...domain.interfaces import IMapper, IStorage
 
 
 class StorageMapper(IMapper):

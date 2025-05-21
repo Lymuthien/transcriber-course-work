@@ -2,9 +2,9 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from ...domain.interfaces import ISerializer
-from .entity_mapper_factory import EntityMapperFactory
 from .dto import UserDTO, StorageDTO, AudioRecordDTO
+from .entity_mapper_factory import EntityMapperFactory
+from ...domain.interfaces import ISerializer
 
 
 class SerializerAdapter(ISerializer):
@@ -57,7 +57,7 @@ class SerializerAdapter(ISerializer):
             hasattr(obj, "__class__")
             and obj.__class__.__name__.lower() in self._dto_mapping
         ):
-            serializer = self._entity_mapper_factory.get_serializer(
+            serializer = self._entity_mapper_factory.get_mapper(
                 obj.__class__.__name__.lower()
             )
             return serializer.to_dto(obj).model_dump()
@@ -71,9 +71,7 @@ class SerializerAdapter(ISerializer):
             dto_class = self._dto_mapping.get(data["entity_type"])
             if dto_class:
                 dto = dto_class(**data)
-                serializer = self._entity_mapper_factory.get_serializer(
-                    data["entity_type"]
-                )
+                serializer = self._entity_mapper_factory.get_mapper(data["entity_type"])
                 return serializer.from_dto(dto)
         elif isinstance(data, dict):
             return {key: self._from_dto(value) for key, value in data.items()}

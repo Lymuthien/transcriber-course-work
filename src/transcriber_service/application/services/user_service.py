@@ -1,7 +1,12 @@
 from email_validator import validate_email
 from password_strength import PasswordPolicy
 
-from transcriber_service.domain.factories import AuthUserFactory, AdminFactory
+from transcriber_service.application.serialization import UserDTO, UserMapper
+from transcriber_service.domain.factories import (
+    AuthUserFactory,
+    AdminFactory,
+    IUserFactory,
+)
 from transcriber_service.domain.interfaces import (
     IUserRepository,
     IUser,
@@ -23,12 +28,14 @@ class UserService(object):
         self._repository = repository
         self._storage_service = storage_service
         self.password_hasher = password_manager
+        self._user_factory: IUserFactory = AdminFactory()
         self._policy = PasswordPolicy.from_names(
             length=8, uppercase=1, numbers=1, special=1
         )
+        self.mapper = UserMapper()
 
-    def create_user(self, email: str, password: str) -> IUser:
-        if self._repository.get_by_email(email):
+    def create_user(self, email: str, password: str) -> UserDTO:
+        if self.get_user_by_email(email):
             logger.error(f"User with email {email} already exists")
             raise Exception("User already exists")
 
@@ -41,12 +48,13 @@ class UserService(object):
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
-        user = AuthUserFactory().create_user(email, password_hash)
+        self._user_factory = AuthUserFactory()
+        user = self._user_factory.create_user(email, password_hash)
 
         self._repository.add(user)
         self._storage_service.create_storage(user.id)
 
-        return user
+        return self.mapper.to_dto(user)
 
     def create_admin(self, email: str, password: str) -> IUser:
         if self._repository.get_by_email(email):
@@ -58,7 +66,8 @@ class UserService(object):
 
         email = validate_email(email).normalized
         password_hash = self.password_hasher.hash_password(password)
-        user = AdminFactory().create_user(email, password_hash)
+        self._user_factory = AdminFactory()
+        user = self._user_factory.create_user(email, password_hash)
 
         self._repository.add(user)
         self._storage_service.create_storage(user.id)
@@ -102,5 +111,5 @@ class UserService(object):
     def update_user(self, user: IUser):
         self._repository.update(user)
 
-    def get_all(self):
+    def get_all(self) -> list[IUser]:
         return self._repository.get_all()

@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from ...domain.interfaces import IMapper, IAudioRecord
-from ...domain.factories import AudioRecordFactory, IAudioRecordFactory
 from .dto.audio_record_dto import AudioRecordDTO
+from ...domain.factories import AudioRecordFactory, IAudioRecordFactory
+from ...domain.interfaces import IMapper, IAudioRecord
 
 
 class AudioRecordMapper(IMapper):

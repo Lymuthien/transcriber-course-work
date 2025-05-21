@@ -33,7 +33,7 @@ class AudioRecordService(object):
         self._transcriber = transcriber
         self._audio_factory: IAudioRecordFactory = AudioRecordFactory()
         self._search_service = AudioSearchService()
-        self._mapper = AudioRecordMapper()
+        self.mapper = AudioRecordMapper()
 
     def create_audio(
         self,
@@ -69,7 +69,7 @@ class AudioRecordService(object):
             file_name, file_path, storage_id, text, language
         )
         self._repository.add(audio)
-        return self._mapper.to_dto(audio)
+        return self.mapper.to_dto(audio)
 
     def get_records(self, storage_id: str) -> tuple[AudioRecordDTO, ...]:
         """
@@ -79,11 +79,11 @@ class AudioRecordService(object):
         :return: Tuple of audio records if it is found else None.
         """
         records = self._repository.get_by_storage(storage_id)
-        return tuple(self._mapper.to_dto(record) for record in records)
+        return tuple(self.mapper.to_dto(record) for record in records)
 
     def get_by_id(self, record_id: str) -> AudioRecordDTO:
         record = self._repository.get_by_id(record_id)
-        return self._mapper.to_dto(record)
+        return self.mapper.to_dto(record)
 
     def search_by_tags(
         self, storage_id: str, tags: list[str], match_all: bool = False
@@ -91,13 +91,13 @@ class AudioRecordService(object):
 
         records = self._repository.get_by_storage(storage_id)
         matching_records = self._search_service.search_by_tags(records, tags, match_all)
-        return [self._mapper.to_dto(record) for record in matching_records]
+        return [self.mapper.to_dto(record) for record in matching_records]
 
     def search_by_name(self, storage_id: str, name: str) -> list[AudioRecordDTO]:
 
         records = self._repository.get_by_storage(storage_id)
         matching_records = self._search_service.search_by_name(records, name)
-        return [self._mapper.to_dto(record) for record in matching_records]
+        return [self.mapper.to_dto(record) for record in matching_records]
 
     def delete(self, record_id):
         self._repository.delete(record_id)

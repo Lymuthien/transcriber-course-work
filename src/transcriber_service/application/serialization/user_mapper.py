@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from ...domain.interfaces import IMapper, IUser
+from .dto.user_dto import UserDTO
 from ...domain.entities.user import Admin
 from ...domain.factories import AuthUserFactory, AdminFactory, IUserFactory
-from .dto.user_dto import UserDTO
+from ...domain.interfaces import IMapper, IUser
 
 
 class UserMapper(IMapper):

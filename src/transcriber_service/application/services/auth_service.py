@@ -1,5 +1,6 @@
 from password_strength import PasswordPolicy
 
+from transcriber_service.application.serialization import UserDTO
 from transcriber_service.application.services.user_service import UserService
 from transcriber_service.domain import AuthException
 from transcriber_service.domain.interfaces import IUser, IEmailService
@@ -27,7 +28,7 @@ class AuthService(object):
 
         self.__email_service = email_service
 
-    def register_user(self, email: str, password: str) -> IUser:
+    def register_user(self, email: str, password: str) -> UserDTO:
         """
         Register a new user.
 

@@ -38,7 +38,7 @@ class RegisterView(View):
         email = request.POST.get("email")
         password = request.POST.get("password")
         try:
-            user = ServiceContainer().auth_service.register_user(email, password)
+            user = ServiceContainer().user_service.create_user(email, password)
             request.session["user_id"] = user.id
 
             return redirect(reverse_lazy("profile"))

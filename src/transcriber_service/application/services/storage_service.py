@@ -1,5 +1,6 @@
+from transcriber_service.application.serialization import StorageMapper, StorageDTO
 from transcriber_service.domain.factories import IStorageFactory, StorageFactory
-from transcriber_service.domain.interfaces import IStorage, IStorageRepository
+from transcriber_service.domain.interfaces import IStorageRepository
 from transcriber_service.application.services.istorage_service import IStorageService
 
 
@@ -9,18 +10,20 @@ class StorageService(IStorageService):
     def __init__(self, storage_repo: IStorageRepository):
         self.__storage_repository = storage_repo
         self.__storage_factory: IStorageFactory = StorageFactory()
+        self.mapper = StorageMapper()
 
-    def create_storage(self, user_id: str) -> IStorage:
+    def create_storage(self, user_id: str) -> StorageDTO:
         """Creates a new storage container for a user."""
 
         storage = self.__storage_factory.create_storage(user_id)
         self.__storage_repository.add(storage)
-        return storage
+        return self.mapper.to_dto(storage)
 
-    def get_user_storage(self, user_id: str) -> IStorage | None:
+    def get_user_storage(self, user_id: str) -> StorageDTO:
         """Returns storage by user id if it exists else None."""
 
-        return self.__storage_repository.get_by_user(user_id)
+        storage = self.__storage_repository.get_by_user(user_id)
+        return self.mapper.to_dto(storage)
 
     def remove_audio_record(self, storage_id: str, record_id: str) -> None:
         storage = self.__storage_repository.get_by_id(storage_id)

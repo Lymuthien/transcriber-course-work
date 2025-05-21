@@ -31,7 +31,7 @@ class TestAudioRecordService(unittest.TestCase):
         self.service = AudioRecordService(self.repo, self.transcriber)
         self.service._audio_factory = self.audio_factory
         self.service._search_service = self.search_service
-        self.service._mapper = self.mapper
+        self.service.mapper = self.mapper
 
     def test_create_audio_valid(self):
         content = b"audio_data"

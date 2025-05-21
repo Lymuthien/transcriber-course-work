@@ -19,38 +19,38 @@ class TestEntityMapperFactory(unittest.TestCase):
         self.mock_audio_mapper = MagicMock(spec=AudioRecordMapper)
 
     def test_get_serializer_existing_types(self):
-        self.assertIsInstance(self.factory.get_serializer("authuser"), IMapper)
-        self.assertIsInstance(self.factory.get_serializer("admin"), IMapper)
-        self.assertIsInstance(self.factory.get_serializer("storage"), IMapper)
-        self.assertIsInstance(self.factory.get_serializer("audiorecord"), IMapper)
+        self.assertIsInstance(self.factory.get_mapper("authuser"), IMapper)
+        self.assertIsInstance(self.factory.get_mapper("admin"), IMapper)
+        self.assertIsInstance(self.factory.get_mapper("storage"), IMapper)
+        self.assertIsInstance(self.factory.get_mapper("audiorecord"), IMapper)
 
     def test_get_serializer_non_existent_type(self):
         with self.assertRaises(ValueError) as context:
-            self.factory.get_serializer("nonexistent")
+            self.factory.get_mapper("nonexistent")
         self.assertEqual(
             str(context.exception), "No serializer found for entity type: nonexistent"
         )
 
     def test_register_serializer_valid(self):
         new_mapper = MagicMock(spec=IMapper)
-        self.factory.register_serializer("newtype", new_mapper)
+        self.factory.register_mapper("newtype", new_mapper)
 
-        self.assertEqual(self.factory.get_serializer("newtype"), new_mapper)
+        self.assertEqual(self.factory.get_mapper("newtype"), new_mapper)
 
     def test_register_serializer_invalid_mapper(self):
         with self.assertRaises(TypeError) as context:
-            self.factory.register_serializer("invalid", "not a mapper")
+            self.factory.register_mapper("invalid", "not a mapper")
         self.assertEqual(str(context.exception), "Serializer must implement IMapper.")
 
     def test_register_serializer_overwrite_existing(self):
         new_mapper = MagicMock(spec=UserMapper)
 
-        self.factory.register_serializer("authuser", new_mapper)
-        self.assertEqual(self.factory.get_serializer("authuser"), new_mapper)
+        self.factory.register_mapper("authuser", new_mapper)
+        self.assertEqual(self.factory.get_mapper("authuser"), new_mapper)
 
     def test_register_serializer_empty_type(self):
         with self.assertRaises(ValueError):
-            self.factory.register_serializer("", MagicMock(spec=IMapper))
+            self.factory.register_mapper("", MagicMock(spec=IMapper))
 
 
 if __name__ == "__main__":

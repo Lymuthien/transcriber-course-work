@@ -26,18 +26,20 @@ class MongoStorageRepository(IStorageRepository):
 
         self.__collection.create_index("user_id")
 
-    def get_by_id(self, storage_id: str) -> IStorage | None:
+    def get_by_id(self, storage_id: str) -> IStorage:
         doc = self.__collection.find_one({"_id": storage_id})
         if not doc:
-            return None
+            raise ValueError("Storage not found")
 
         data = doc["data"] if self.__serializer.binary else doc["data"].decode()
         return self.__serializer.deserialize(data)
 
-    def get_by_user(self, user_id: str) -> IStorage | None:
+    def get_by_user(self, user_id: str) -> IStorage:
+        if not user_id.strip():
+            raise ValueError("user_id cannot be empty")
         doc = self.__collection.find_one({"user_id": user_id})
         if not doc:
-            return None
+            raise ValueError("Storage not found")
 
         data = doc["data"] if self.__serializer.binary else doc["data"].decode()
         return self.__serializer.deserialize(data)
