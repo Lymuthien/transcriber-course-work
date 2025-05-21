@@ -18,12 +18,6 @@ class TestAuthUserFactory(unittest.TestCase):
         self.assertIsInstance(user, IUser)
         self.assertIsInstance(user, AuthUser)
 
-    def test_create_object_actual_implementation(self):
-        user = self.factory.create_object()
-
-        self.assertIsInstance(user, IUser)
-        self.assertIsInstance(user, AuthUser)
-
 
 class TestAdminFactory(unittest.TestCase):
     def setUp(self):

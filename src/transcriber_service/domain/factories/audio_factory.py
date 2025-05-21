@@ -17,10 +17,6 @@ class IAudioRecordFactory(ABC):
     ) -> IAudioRecord:
         pass
 
-    @abstractmethod
-    def create_object(self) -> IAudioRecord:
-        pass
-
 
 class AudioRecordFactory(IAudioRecordFactory):
 
@@ -33,6 +29,3 @@ class AudioRecordFactory(IAudioRecordFactory):
         language: str,
     ) -> IAudioRecord:
         return AudioRecord(file_name, file_path, storage_id, text, language)
-
-    def create_object(self) -> IAudioRecord:
-        return AudioRecord("", "", "", "", "")

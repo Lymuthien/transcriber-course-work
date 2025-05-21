@@ -63,11 +63,6 @@ class User(IUser):
         self._temp_password_hash = temp_password_hash
         self._last_updated = datetime.now()
 
-    def clear_temp_password_hash(self):
-        if self._temp_password_hash:
-            self._password_hash = self._temp_password_hash
-            self._temp_password_hash = None
-
     @property
     def id(self) -> str:
         """Returns user ID."""

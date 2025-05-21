@@ -1,7 +1,6 @@
 from transcriber_service.domain.factories import IAudioRecordFactory, AudioRecordFactory
 from transcriber_service.domain.interfaces import (
     IAudioRepository,
-    IAudioRecord,
     ITextExporter,
     IStopwordsRemover,
     ITranscriber,
@@ -45,7 +44,7 @@ class AudioRecordService(object):
         language: str = None,
         max_speakers: int = None,
         main_theme: str = None,
-    ) -> IAudioRecord:
+    ) -> AudioRecordDTO:
         """
         Create AudioRecord instance with basic metadata and do transcription
         into text with given transcribe services.
@@ -70,20 +69,21 @@ class AudioRecordService(object):
             file_name, file_path, storage_id, text, language
         )
         self._repository.add(audio)
-        return audio
+        return self._mapper.to_dto(audio)
 
-    def get_records(self, storage_id: str) -> tuple | None:
+    def get_records(self, storage_id: str) -> tuple[AudioRecordDTO, ...]:
         """
         Retrieves audio record by its storage container ID.
 
         :param storage_id: Storage id of audio file.
         :return: Tuple of audio records if it is found else None.
         """
+        records = self._repository.get_by_storage(storage_id)
+        return tuple(self._mapper.to_dto(record) for record in records)
 
-        return self._repository.get_by_storage(storage_id)
-
-    def get_by_id(self, record_id: str) -> IAudioRecord | None:
-        return self._repository.get_by_id(record_id)
+    def get_by_id(self, record_id: str) -> AudioRecordDTO:
+        record = self._repository.get_by_id(record_id)
+        return self._mapper.to_dto(record)
 
     def search_by_tags(
         self, storage_id: str, tags: list[str], match_all: bool = False

@@ -47,7 +47,7 @@ class AudioUploadView(LoginRequiredMixin, View):
                 max_speakers=form.cleaned_data["max_speakers"],
                 main_theme=form.cleaned_data["main_theme"],
             )
-            return redirect(reverse_lazy("profile"))
+            return redirect(reverse_lazy("record_list"))
 
         return render(request, self.template_name, {"form": form})
 

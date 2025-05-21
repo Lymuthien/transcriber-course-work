@@ -43,12 +43,12 @@ class MongoAudioRepository(IAudioRepository):
             if "data" in doc
         )
 
-    def get_by_id(self, record_id: str) -> IAudioRecord | None:
+    def get_by_id(self, record_id: str) -> IAudioRecord:
         if not record_id.strip():
             raise ValueError("Record ID cannot be empty")
         doc = self.__collection.find_one({"_id": record_id})
         if not doc:
-            return None
+            raise ValueError("Record ID not found")
 
         data = doc["data"] if self.__serializer.binary else doc["data"].decode()
         return self.__serializer.deserialize(data)
