@@ -1,4 +1,4 @@
-from transcriber_service.domain.interfaces import (
+from ....domain.interfaces import (
     IUser,
     IUserRepository,
     ISerializer,

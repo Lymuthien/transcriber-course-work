@@ -1,16 +1,17 @@
-from transcriber_service.domain.factories import IAudioRecordFactory, AudioRecordFactory
-from transcriber_service.domain.interfaces import (
+import logging
+
+from ..serialization.audio_mapper import (
+    AudioRecordDTO,
+    AudioRecordMapper,
+)
+from ...domain.factories import IAudioRecordFactory, AudioRecordFactory
+from ...domain.interfaces import (
     IAudioRepository,
     ITextExporter,
     IStopwordsRemover,
     ITranscriber,
 )
-from transcriber_service.domain.services.audio_search_service import AudioSearchService
-from transcriber_service.application.serialization.audio_mapper import (
-    AudioRecordDTO,
-    AudioRecordMapper,
-)
-import logging
+from ...domain.services.audio_search_service import AudioSearchService
 
 logger = logging.getLogger(__name__)
 

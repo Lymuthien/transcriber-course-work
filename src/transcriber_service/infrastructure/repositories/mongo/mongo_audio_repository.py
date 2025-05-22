@@ -2,7 +2,7 @@ from bson.binary import Binary
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
-from transcriber_service.domain.interfaces import (
+from ....domain.interfaces import (
     IAudioRepository,
     IStorageRepository,
     ISerializer,

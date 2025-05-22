@@ -1,7 +1,7 @@
-from transcriber_service.application.serialization import StorageMapper, StorageDTO
-from transcriber_service.domain.factories import IStorageFactory, StorageFactory
-from transcriber_service.domain.interfaces import IStorageRepository
-from transcriber_service.application.services.istorage_service import IStorageService
+from .istorage_service import IStorageService
+from ..serialization import StorageMapper, StorageDTO
+from ...domain.factories import IStorageFactory, StorageFactory
+from ...domain.interfaces import IStorageRepository
 
 
 class StorageService(IStorageService):

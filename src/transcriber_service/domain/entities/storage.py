@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from transcriber_service.domain.interfaces import IStorage
+from ..interfaces import IStorage
 
 
 class Storage(IStorage):

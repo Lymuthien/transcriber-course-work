@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from transcriber_service.domain.interfaces.entities.iaudio import IAudioRecord
-from transcriber_service.domain.interfaces.entities.istorage import IStorage
-from transcriber_service.domain.interfaces.entities.iuser import IUser
+from ..entities.iaudio import IAudioRecord
+from ..entities.istorage import IStorage
+from ..entities.iuser import IUser
 
 
 class IUserRepository(ABC):

@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from transcriber_service.domain.interfaces import IAudioRecord
+from ..interfaces import IAudioRecord
 
 
 class AudioRecord(IAudioRecord):

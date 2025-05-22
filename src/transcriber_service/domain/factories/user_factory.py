@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
+from ..entities.user import AuthUser, Admin
 from ..interfaces import IUser
-from transcriber_service.domain.entities.user import AuthUser, Admin
 
 
 class IUserFactory(ABC):

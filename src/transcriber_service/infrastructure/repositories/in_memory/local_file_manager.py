@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from transcriber_service.domain.interfaces import ISerializer, IFileManager
+from ....domain.interfaces import ISerializer, IFileManager
 
 
 class LocalFileManager(IFileManager):

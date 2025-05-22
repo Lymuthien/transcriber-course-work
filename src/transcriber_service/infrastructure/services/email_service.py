@@ -1,6 +1,7 @@
 import smtplib
 from email.message import EmailMessage
-from transcriber_service.domain.interfaces import IEmailService
+
+from ...domain.interfaces import IEmailService
 
 
 class EmailService(IEmailService):

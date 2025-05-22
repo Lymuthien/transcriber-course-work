@@ -1,18 +1,18 @@
+import logging
+
 from email_validator import validate_email
 from password_strength import PasswordPolicy
 
-from transcriber_service.application.serialization import UserMapper
-from transcriber_service.application.serialization.dto import UserDTO
-from transcriber_service.application.services.user_service import UserService
-from transcriber_service.domain import AuthException
-from transcriber_service.domain.factories import (
+from .user_service import UserService
+from ..serialization.dto import UserDTO
+from ..serialization.user_mapper import UserMapper
+from ...domain import AuthException
+from ...domain.factories import (
     AuthUserFactory,
     IUserFactory,
     AdminFactory,
 )
-from transcriber_service.domain.interfaces import IEmailService, IPasswordManager
-import logging
-
+from ...domain.interfaces import IEmailService, IPasswordManager
 
 logger = logging.getLogger(__name__)
 

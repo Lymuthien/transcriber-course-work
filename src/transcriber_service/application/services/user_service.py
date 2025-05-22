@@ -1,14 +1,15 @@
+import logging
+
 from password_strength import PasswordPolicy
 
-from transcriber_service.application import StorageService
-from transcriber_service.domain.factories import (
+from .storage_service import StorageService
+from ...domain.factories import (
     IUserFactory,
 )
-from transcriber_service.domain.interfaces import (
+from ...domain.interfaces import (
     IUserRepository,
     IUser,
 )
-import logging
 
 logger = logging.getLogger(__name__)
 

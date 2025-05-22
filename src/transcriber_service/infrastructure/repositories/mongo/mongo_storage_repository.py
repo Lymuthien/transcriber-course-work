@@ -1,8 +1,8 @@
+from bson.binary import Binary
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from bson.binary import Binary
 
-from transcriber_service.domain.interfaces import (
+from ....domain.interfaces import (
     IStorageRepository,
     ISerializer,
     IStorage,

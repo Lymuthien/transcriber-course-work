@@ -1,6 +1,8 @@
-from audio_transcribing import NatashaStopwordsRemover as BaseStopwordsRemover
-from transcriber_service.domain.interfaces import IStopwordsRemover
 import logging
+
+from audio_transcribing import NatashaStopwordsRemover as BaseStopwordsRemover
+
+from ...domain.interfaces import IStopwordsRemover
 
 logger = logging.getLogger(__name__)
 

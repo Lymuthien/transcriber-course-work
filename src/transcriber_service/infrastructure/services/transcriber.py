@@ -1,5 +1,6 @@
 from audio_transcribing import Transcriber as BaseTranscriber
-from transcriber_service.domain.interfaces import ITranscriber
+
+from ...domain.interfaces import ITranscriber
 
 
 class Transcriber(ITranscriber):

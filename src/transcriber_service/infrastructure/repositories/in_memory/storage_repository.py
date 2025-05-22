@@ -1,6 +1,6 @@
 from copy import copy
 
-from transcriber_service.domain.interfaces import (
+from ....domain.interfaces import (
     IStorageRepository,
     IStorage,
     ISerializer,

@@ -1,6 +1,6 @@
 import json
 
-from transcriber_service.domain.interfaces.services.iserializer import ISerializer
+from ...domain.interfaces.services.iserializer import ISerializer
 
 
 class JsonSerializer(ISerializer):

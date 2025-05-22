@@ -1,4 +1,5 @@
 import msgpack
+
 from ...domain.interfaces import ISerializer
 
 
