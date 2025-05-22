@@ -3,9 +3,12 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/audio_transcriber/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/audio_transcriber/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/service/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/service/transcriber_service" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/core/transcriber_service" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/test_audio_tmp" />
     </content>
