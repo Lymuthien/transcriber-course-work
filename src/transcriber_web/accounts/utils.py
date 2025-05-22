@@ -21,9 +21,9 @@ class LoginRequiredMixin:
             logger.warning("User id not found in session")
             return redirect(reverse_lazy("login"))
 
-        user = ServiceContainer().user_repository.get_by_id(request.session["user_id"])
+        user = ServiceContainer().user_service.get_by_id(request.session["user_id"])
         if not user or user.is_blocked:
-            logger.warning("User is blocked")
+            logger.warning("User is blocked or does not exist")
             return redirect(reverse_lazy("login"))
         request.user = user
 

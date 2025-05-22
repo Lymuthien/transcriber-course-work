@@ -24,11 +24,11 @@ class UsersView(LoginRequiredMixin, View):
         target_email = request.POST.get("email")
         try:
             if action == "block":
-                container.user_service.block_user(request.user, target_email)
+                container.user_service.set_blocked(request.user, target_email, True)
             elif action == "unblock":
-                container.user_service.unblock_user(request.user, target_email)
+                container.user_service.set_blocked(request.user, target_email, False)
             elif action == "delete":
-                container.user_service.delete_user(request.user, target_email)
+                container.user_service.delete(request.user, target_email)
         except (PermissionError, KeyError) as e:
             users = container.user_service.get_all()
             return render(

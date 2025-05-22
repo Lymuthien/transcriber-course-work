@@ -19,7 +19,7 @@ from transcriber_service.application import (
     SerializerAdapter,
     EntityMapperFactory,
 )
-from django.conf import settings
+from . import settings
 import logging
 
 logger = logging.getLogger(__name__)
