@@ -1,0 +1,35 @@
+{% extends 'accounts/login_base.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<h3 class="text-center mb-4">Вход</h3>
+<form method="post">
+    {% csrf_token %}
+    
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
+    <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="example@gmail.com" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="password" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
+    
+    <div class="text-center">
+        <a href="{% url 'recover_password' %}" class="text-decoration-none">Забыли пароль?</a>
+    </div>
+    
+    <div class="text-center mt-3">
+        <span>Нет аккаунта? </span>
+        <a href="{% url 'register' %}" class="text-decoration-none">Зарегистрироваться</a>
+    </div>
+</form>
+{% endblock %}
